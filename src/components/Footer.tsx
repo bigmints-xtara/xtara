@@ -8,25 +8,25 @@ import { getPlatformIconByName } from '@/utils';
 
 const Footer: React.FC = () => {
     return (
-        <footer className="bg-hero-background text-foreground py-10">
+        <footer className="bg-warning text-black py-10">
             <div className="max-w-7xl w-full mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div>
                     <Link href="/" className="flex items-center gap-2">
-                        <FaFingerprint className="min-w-fit w-5 h-5 md:w-7 md:h-7" />
-                        <h3 className="manrope text-xl font-semibold cursor-pointer">
+                        <FaFingerprint className="min-w-fit w-5 h-5 md:w-7 md:h-7 text-black" />
+                        <h3 className="font-gilda-display text-xl font-semibold cursor-pointer text-black">
                             {siteDetails.siteName}
                         </h3>
                     </Link>
-                    <p className="mt-3.5 text-foreground-accent">
+                    <p className="mt-3.5 text-gray-700">
                         {footerDetails.subheading}
                     </p>
                 </div>
                 <div>
-                    <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-                    <ul className="text-foreground-accent">
+                    <h4 className="text-lg font-semibold mb-4 text-black">Quick Links</h4>
+                    <ul className="text-gray-700">
                         {footerDetails.quickLinks.map(link => (
                             <li key={link.text} className="mb-2">
-                                <Link href={link.url} className="hover:text-foreground">{link.text}</Link>
+                                <Link href={link.url} className="hover:text-black">{link.text}</Link>
                             </li>
                         ))}
                     </ul>

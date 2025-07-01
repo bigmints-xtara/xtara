@@ -1,6 +1,6 @@
 export const ctaDetails = {
-    heading: 'Join Over 1 Million Users To Transform Your Finances',
-    subheading: 'Your journey to financial freedom starts here. Download Finwise today and take the first step towards a brighter financial future!',
+    heading: 'Download the App and Start Exploring',
+    subheading: 'Available for Android and iOS — for students, parents, schools, and companies.',
     appStoreUrl: '#',
     googlePlayUrl: '#'
 }

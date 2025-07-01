@@ -4,69 +4,91 @@ import { getImagePath } from '../utils';
 
 export const benefits: IBenefit[] = [
   {
-    title: "Personalized Career Discovery",
-    description: "Xtara helps students find the right career path based on their strengths, interests, and personality—without pressure or guesswork.",
+    title: "Help Students Find Their True Fit",
+    description: "Xtara guides students through career confusion with structured assessments, interest-based suggestions, and real college or course options—all in one app.",
     bullets: [
       {
-        title: "Guided Assessments",
-        description: "Smart questions that understand who you are and what fits you best.",
+        title: "Career Fit Assessment",
+        description: "Discover careers based on interests, personality, and subject strengths.",
         icon: <FiCompass size={26} />
       },
       {
-        title: "AI-Powered Matching",
-        description: "Get matched to careers and study options with real-world potential.",
-        icon: <FiCompass size={26} />
-      },
-      {
-        title: "Interest-Based Recommendations",
-        description: "We suggest only what aligns with your skills and passion.",
-        icon: <FiTarget size={26} />
-      }
-    ],
-    imageSrc: getImagePath("/images/mockup-career.webp")
-  },
-  {
-    title: "Learning Paths You Can Follow",
-    description: "Know what to study, where to study, and how it pays off—before making a decision.",
-    bullets: [
-      {
-        title: "Courses & Colleges",
-        description: "View recommended degrees, certifications, and real colleges in India.",
-        icon: <FiBookOpen size={26} />
-      },
-      {
-        title: "Step-by-Step Roadmaps",
-        description: "Clear timelines for getting job-ready in your chosen path.",
+        title: "Step-by-Step Learning Plans",
+        description: "Know what to study, where to go, and how long it takes to get job-ready.",
         icon: <FiLayers size={26} />
       },
       {
-        title: "Global & Local Options",
-        description: "Explore both Indian and international opportunities—side by side.",
-        icon: <FiGlobe size={26} />
+        title: "College & Course Match",
+        description: "Get matched with the right study paths and institutions based on your goals.",
+        icon: <FiBookOpen size={26} />
       }
     ],
-    imageSrc: getImagePath("/images/mockup-learning.webp")
+    imageSrc: getImagePath("/images/mockup-1.webp")
   },
   {
-    title: "Safe. Inclusive. Built for You.",
-    description: "Whether you're exploring quietly or building boldly, Xtara is a private, trustworthy space built to empower students.",
+    title: "Support Parents to Guide with Confidence",
+    description: "Give parents the clarity they need to support their child's future—without pressure or outdated advice.",
     bullets: [
       {
-        title: "Private by Default",
-        description: "No forced sign-ups. Assessments and insights can be used anonymously.",
+        title: "Understand Career Trends",
+        description: "Get insights on job markets, growth sectors, and salary ranges.",
+        icon: <FiGlobe size={26} />
+      },
+      {
+        title: "Monitor Student Progress",
+        description: "Know how your child is progressing with career exploration.",
+        icon: <FiTarget size={26} />
+      },
+      {
+        title: "No Jargon, Just Guidance",
+        description: "We keep things simple so everyone understands what matters.",
+        icon: <FiUserCheck size={26} />
+      }
+    ],
+    imageSrc: getImagePath("/images/mockup-2.webp")
+  },
+  {
+    title: "Empower Schools with Scalable Career Guidance",
+    description: "Xtara acts as a digital career counselor—reaching every student with personalized pathways, interest grouping, and decision support.",
+    bullets: [
+      {
+        title: "Career Reports for Every Student",
+        description: "Auto-generate smart reports to support stream and subject choices.",
         icon: <FiShield size={26} />
       },
       {
-        title: "Student-First Design",
-        description: "Clear language. Friendly UI. No ads. No pressure.",
-        icon: <FiUserCheck size={26} />
+        title: "Manage & Track School Progress",
+        description: "View insights by class, grade, or school level.",
+        icon: <FiTarget size={26} />
       },
       {
-        title: "Accessible for All",
-        description: "Works on mobile, low bandwidth, and available in multiple languages (coming soon).",
-        icon: <FiTarget size={26} />
+        title: "Aligned to Indian Curriculums",
+        description: "Built for CBSE, ICSE, and state boards.",
+        icon: <FiBookOpen size={26} />
       }
     ],
-    imageSrc: getImagePath("/images/mockup-safe.webp")
+    imageSrc: getImagePath("/images/mockup-1.webp")
+  },
+  {
+    title: "Upskill Your Workforce with Smart L&D",
+    description: "Enterprises use Xtara to help employees explore growth paths, discover relevant skills, and align with internal opportunities.",
+    bullets: [
+      {
+        title: "AI-Powered Career Mapping",
+        description: "Employees discover growth opportunities based on skills and goals.",
+        icon: <FiCompass size={26} />
+      },
+      {
+        title: "Integrated Learning Pathways",
+        description: "Map learning journeys to roles, departments, or goals.",
+        icon: <FiLayers size={26} />
+      },
+      {
+        title: "Boost Retention & Engagement",
+        description: "Give employees purpose-driven career development support.",
+        icon: <FiUserCheck size={26} />
+      }
+    ],
+    imageSrc: getImagePath("/images/mockup-2.webp")
   }
 ];
