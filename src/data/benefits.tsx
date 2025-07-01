@@ -1,6 +1,7 @@
 import { FiBarChart2, FiBriefcase, FiDollarSign, FiLock, FiPieChart, FiShield, FiTarget, FiTrendingUp, FiUser } from "react-icons/fi";
 
 import { IBenefit } from "@/types"
+import { getImagePath } from '../utils';
 
 export const benefits: IBenefit[] = [
     {
@@ -23,7 +24,7 @@ export const benefits: IBenefit[] = [
                 icon: <FiTrendingUp size={26} />
             }
         ],
-        imageSrc: "/images/mockup-1.webp"
+        imageSrc: getImagePath("/images/mockup-1.webp")
     },
     {
         title: "Seamless Investing",
@@ -45,7 +46,7 @@ export const benefits: IBenefit[] = [
                 icon: <FiPieChart size={26} />
             }
         ],
-        imageSrc: "/images/mockup-2.webp"
+        imageSrc: getImagePath("/images/mockup-2.webp")
     },
     {
         title: "Bank-Grade Security",
@@ -67,6 +68,6 @@ export const benefits: IBenefit[] = [
                 icon: <FiShield size={26} />
             }
         ],
-        imageSrc: "/images/mockup-1.webp"
+        imageSrc: getImagePath("/images/mockup-1.webp")
     },
 ]

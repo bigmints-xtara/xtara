@@ -1,4 +1,11 @@
+import React from 'react';
 import { FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaThreads, FaTwitter, FaXTwitter, FaYoutube } from "react-icons/fa6";
+
+// Utility function to handle image paths with basePath for GitHub Pages
+export const getImagePath = (imagePath: string): string => {
+    const basePath = '/xtara'; // Match the basePath from next.config.mjs
+    return `${basePath}${imagePath}`;
+};
 
 export const getPlatformIconByName = (platformName: string): JSX.Element | null => {
     switch (platformName) {
