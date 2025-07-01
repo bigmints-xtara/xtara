@@ -2,7 +2,6 @@ import React from 'react';
 import { FiCheck } from 'react-icons/fi';
 import { whoItHelps } from '@/data/whoItHelps';
 import Container from './Container';
-import SectionTitle from './SectionTitle';
 
 const WhoItHelps: React.FC = () => {
   return (

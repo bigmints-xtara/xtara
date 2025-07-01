@@ -1,5 +1,4 @@
 import { FiCompass, FiBookOpen, FiGlobe, FiTarget, FiLayers, FiUserCheck, FiShield } from "react-icons/fi";
-import { RiLightbulbLine } from "react-icons/ri"; // Using Remix icon instead since FiLightbulb doesn't exist
 import { IBenefit } from "@/types";
 import { getImagePath } from '../utils';
 
