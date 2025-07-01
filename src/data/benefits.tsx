@@ -1,73 +1,73 @@
-import { FiBarChart2, FiBriefcase, FiDollarSign, FiLock, FiPieChart, FiShield, FiTarget, FiTrendingUp, FiUser } from "react-icons/fi";
-
-import { IBenefit } from "@/types"
+import { FiCompass, FiBookOpen, FiGlobe, FiTarget, FiLayers, FiUserCheck, FiShield } from "react-icons/fi";
+import { RiLightbulbLine } from "react-icons/ri"; // Using Remix icon instead since FiLightbulb doesn't exist
+import { IBenefit } from "@/types";
 import { getImagePath } from '../utils';
 
 export const benefits: IBenefit[] = [
-    {
-        title: "Smart Budgeting",
-        description: "Take the guesswork out of managing your money. Our AI-powered budgeting tool adapts to your lifestyle and helps you stay on track.",
-        bullets: [
-            {
-                title: "Intelligent Categorization",
-                description: "Automatically sorts your transactions for crystal-clear insights.",
-                icon: <FiBarChart2 size={26} />
-            },
-            {
-                title: "Customizable Goals",
-                description: "Set and track financial objectives that matter to you.",
-                icon: <FiTarget size={26} />
-            },
-            {
-                title: "Predictive Analysis",
-                description: "Get ahead of your finances with spending forecasts and alerts.",
-                icon: <FiTrendingUp size={26} />
-            }
-        ],
-        imageSrc: getImagePath("/images/mockup-1.webp")
-    },
-    {
-        title: "Seamless Investing",
-        description: "Start building wealth today, no financial degree required. Finwise makes investing accessible and straightforward.",
-        bullets: [
-            {
-                title: "Micro-Investing",
-                description: "Begin with as little as $1 and watch your money grow.",
-                icon: <FiDollarSign size={26} />
-            },
-            {
-                title: "Expert Portfolios",
-                description: "Choose from investment strategies tailored to your risk tolerance.",
-                icon: <FiBriefcase size={26} />
-            },
-            {
-                title: "Real-Time Performance",
-                description: "Track your investments with easy-to-understand metrics and visuals.",
-                icon: <FiPieChart size={26} />
-            }
-        ],
-        imageSrc: getImagePath("/images/mockup-2.webp")
-    },
-    {
-        title: "Bank-Grade Security",
-        description: "Your financial data deserves the best protection. Rest easy knowing Finwise employs cutting-edge security measures.",
-        bullets: [
-            {
-                title: "Military-Grade Encryption",
-                description: "Your information is safeguarded with the highest level of encryption.",
-                icon: <FiLock size={26} />
-            },
-            {
-                title: "Biometric Authentication",
-                description: "Access your account securely with fingerprint or facial recognition.",
-                icon: <FiUser size={26} />
-            },
-            {
-                title: "Real-Time Fraud Detection",
-                description: "Our system constantly monitors for suspicious activity to keep your money safe.",
-                icon: <FiShield size={26} />
-            }
-        ],
-        imageSrc: getImagePath("/images/mockup-1.webp")
-    },
-]
+  {
+    title: "Personalized Career Discovery",
+    description: "Xtara helps students find the right career path based on their strengths, interests, and personality—without pressure or guesswork.",
+    bullets: [
+      {
+        title: "Guided Assessments",
+        description: "Smart questions that understand who you are and what fits you best.",
+        icon: <FiCompass size={26} />
+      },
+      {
+        title: "AI-Powered Matching",
+        description: "Get matched to careers and study options with real-world potential.",
+        icon: <FiCompass size={26} />
+      },
+      {
+        title: "Interest-Based Recommendations",
+        description: "We suggest only what aligns with your skills and passion.",
+        icon: <FiTarget size={26} />
+      }
+    ],
+    imageSrc: getImagePath("/images/mockup-career.webp")
+  },
+  {
+    title: "Learning Paths You Can Follow",
+    description: "Know what to study, where to study, and how it pays off—before making a decision.",
+    bullets: [
+      {
+        title: "Courses & Colleges",
+        description: "View recommended degrees, certifications, and real colleges in India.",
+        icon: <FiBookOpen size={26} />
+      },
+      {
+        title: "Step-by-Step Roadmaps",
+        description: "Clear timelines for getting job-ready in your chosen path.",
+        icon: <FiLayers size={26} />
+      },
+      {
+        title: "Global & Local Options",
+        description: "Explore both Indian and international opportunities—side by side.",
+        icon: <FiGlobe size={26} />
+      }
+    ],
+    imageSrc: getImagePath("/images/mockup-learning.webp")
+  },
+  {
+    title: "Safe. Inclusive. Built for You.",
+    description: "Whether you're exploring quietly or building boldly, Xtara is a private, trustworthy space built to empower students.",
+    bullets: [
+      {
+        title: "Private by Default",
+        description: "No forced sign-ups. Assessments and insights can be used anonymously.",
+        icon: <FiShield size={26} />
+      },
+      {
+        title: "Student-First Design",
+        description: "Clear language. Friendly UI. No ads. No pressure.",
+        icon: <FiUserCheck size={26} />
+      },
+      {
+        title: "Accessible for All",
+        description: "Works on mobile, low bandwidth, and available in multiple languages (coming soon).",
+        icon: <FiTarget size={26} />
+      }
+    ],
+    imageSrc: getImagePath("/images/mockup-safe.webp")
+  }
+];

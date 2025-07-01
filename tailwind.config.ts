@@ -17,6 +17,15 @@ const config: Config = {
         "primary-accent": "var(--primary-accent)",
         "foreground-accent": "var(--foreground-accent)",
         "hero-background": "var(--hero-background)",
+        
+        // Additional Flutter theme colors
+        surface: "var(--surface)",
+        highlight: "var(--highlight)",
+        success: "var(--success)",
+        warning: "var(--warning)",
+        error: "var(--error)",
+        info: "var(--info)",
+        divider: "var(--divider)",
       },
     },
   },

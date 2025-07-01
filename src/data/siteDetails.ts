@@ -1,12 +1,13 @@
 export const siteDetails = {
     siteName: "Xtara",
-    siteUrl: 'https://finwise-omega.vercel.app/',
+    siteUrl: 'https://xtara.ai',
     metadata: {
-        title: 'Xtara - Next.js and Tailwind CSS Landing Page Template',
-        description: 'Finwise empowers businesses with cutting-edge technology solutions to drive success and efficiency.',
+      title: 'Xtara — AI-Powered Career Guidance for Students',
+      description: 'Xtara is an AI-powered career guidance platform that helps students in India discover careers, courses, and colleges that truly fit their strengths, interests, and goals.',
     },
     language: 'en-us',
     locale: 'en-US',
-    siteLogo: `${process.env.BASE_PATH || ''}/images/logo.png`, // or use a string for the logo e.g. "TechStartup"
-    googleAnalyticsId: '', // e.g. G-XXXXXXX,
-}
+    siteLogo: `${process.env.BASE_PATH || ''}/images/logo.png`,
+    googleAnalyticsId: '', // Add your GA ID if needed
+  }
+  

@@ -1,33 +1,24 @@
-import React from 'react';
-import Image from 'next/image';
-import { testimonials } from '@/data/testimonials';
+import { ITestimonial } from "@/types";
+import { siteDetails } from "@/data/siteDetails";
+import { getImagePath } from '../utils';
 
-const Testimonials: React.FC = () => {
-    return (
-        <div className="grid gap-14 max-w-lg w-full mx-auto lg:gap-8 lg:grid-cols-3 lg:max-w-full">
-            {testimonials.map((testimonial, index) => (
-                <div
-                    key={index}
-                    className=""
-                >
-                    <div className="flex items-center mb-4 w-full justify-center lg:justify-start">
-                        <Image
-                            src={testimonial.avatar}
-                            alt={`${testimonial.name} avatar`}
-                            width={50}
-                            height={50}
-                            className="rounded-full shadow-md"
-                        />
-                        <div className="ml-4">
-                            <h3 className="text-lg font-semibold text-secondary">{testimonial.name}</h3>
-                            <p className="text-sm text-foreground-accent">{testimonial.role}</p>
-                        </div>
-                    </div>
-                    <p className="text-foreground-accent text-center lg:text-left">&quot;{testimonial.message}&quot;</p>
-                </div>
-            ))}
-        </div>
-    );
-};
-
-export default Testimonials;
+export const testimonials: ITestimonial[] = [
+  {
+    name: 'Anjali R.',
+    role: '12th Grade Student',
+    message: `${siteDetails.siteName} helped me understand what careers match my personality. Now I have a clear goal and a plan.`,
+    avatar: getImagePath('/images/testimonial-1.webp'),
+  },
+  {
+    name: 'Rakesh M.',
+    role: 'Parent from Pune',
+    message: `Thanks to ${siteDetails.siteName}, we were able to make an informed decision for my son. It's like having a career counselor at home.`,
+    avatar: getImagePath('/images/testimonial-2.webp'),
+  },
+  {
+    name: 'Ayesha S.',
+    role: 'BA Student, Delhi',
+    message: `I loved how simple and relatable everything was. It’s the first time I felt confident about choosing my career path.`,
+    avatar: getImagePath('/images/testimonial-3.webp'),
+  }
+];

@@ -1,7 +1,7 @@
 import { getImagePath } from '../utils';
 
 export const heroDetails = {
-    heading: 'Smart, Secure, Simple Financial Management',
-    subheading: 'From effortless budgeting to real-time investment insights, Finwise puts you in control of your money like never before',
-    centerImageSrc: getImagePath('/images/hero-mockup.webp'),
+  heading: 'Discover Careers That Fit You.',
+  subheading: 'Xtara helps students explore future-ready career paths with AI-powered assessments, personalized recommendations, and real guidance—based on who they are.',
+  centerImageSrc: getImagePath('/images/hero-mockup.webp'),
 }

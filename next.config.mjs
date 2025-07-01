@@ -5,9 +5,11 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
-  // GitHub Pages configuration for repository subdirectory
-  basePath: '/xtara',
-  assetPrefix: '/xtara/',
+  // GitHub Pages configuration for repository subdirectory (production only)
+  ...(process.env.NODE_ENV === 'production' && {
+    basePath: '/xtara',
+    assetPrefix: '/xtara/',
+  }),
 };
 
 export default nextConfig;

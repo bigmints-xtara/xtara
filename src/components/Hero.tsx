@@ -17,7 +17,7 @@ const Hero: React.FC = () => {
                 </div>
             </div>
 
-            <div className="absolute left-0 right-0 bottom-0 backdrop-blur-[2px] h-40 bg-gradient-to-b from-transparent via-[rgba(233,238,255,0.5)] to-[rgba(202,208,230,0.5)]">
+            <div className="absolute left-0 right-0 bottom-0 backdrop-blur-[2px] h-40 bg-gradient-to-b from-transparent via-[rgba(242,227,213,0.5)] to-[rgba(242,227,213,0.8)]">
             </div>
 
             <div className="text-center">

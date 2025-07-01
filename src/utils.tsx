@@ -3,7 +3,8 @@ import { FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaThreads, FaTwitter, Fa
 
 // Utility function to handle image paths with basePath for GitHub Pages
 export const getImagePath = (imagePath: string): string => {
-    const basePath = '/xtara'; // Match the basePath from next.config.mjs
+    // Only add basePath in production (for GitHub Pages)
+    const basePath = process.env.NODE_ENV === 'production' ? '/xtara' : '';
     return `${basePath}${imagePath}`;
 };
 

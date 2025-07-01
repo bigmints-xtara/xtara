@@ -3,14 +3,24 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --primary: #FED835;
-  --secondary: #304fff;
+  /* Flutter Deep Teal Sea Theme Colors */
+  --background: #FAF8F5; /* kBackgroundColor - Slightly warm white */
+  --foreground: #012E40; /* kTextColor - Very dark teal */
+  --primary: #024959; /* kPrimaryColor - Dark teal */
+  --secondary: #026773; /* kAccentColor - Medium teal */
 
-  --primary-accent: #e5c230;
-  --foreground-accent: #454545;
-  --hero-background: #F3F3F5;
+  --primary-accent: #3CA6A6; /* kQuaternaryColor - Light teal */
+  --foreground-accent: #012E40; /* kTextColor for consistency */
+  --hero-background: #F2E3D5; /* kTertiaryColor - Warm cream */
+  
+  /* Additional Flutter theme colors */
+  --surface: #FFFFFF; /* kSurfaceColor */
+  --highlight: #7CC4C4; /* kHighlightColor - Soft light teal */
+  --success: #AED9C4; /* kSuccessColor */
+  --warning: #FFD89E; /* kWarningColor */
+  --error: #ECA1A6; /* kErrorColor */
+  --info: #96B5E4; /* kInfoColor */
+  --divider: #E8E8E8; /* kDividerColor */
 }
 
 html {
