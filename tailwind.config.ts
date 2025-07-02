@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        'gilda-display': ['Gilda Display', 'serif'],
-        'alef': ['Alef', 'sans-serif'],
+        'inter': ['Inter', 'sans-serif'],
+        'merriweather': ['Merriweather', 'serif'],
       },
       colors: {
         background: "var(--background)",

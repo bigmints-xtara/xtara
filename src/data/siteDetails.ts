@@ -1,5 +1,5 @@
 export const siteDetails = {
-    siteName: "Xtara",
+    siteName: "xtara.ai",
     siteUrl: 'https://xtara.ai',
     metadata: {
       title: 'Xtara — AI-Powered Career Guidance for Students',

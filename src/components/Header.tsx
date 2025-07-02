@@ -4,7 +4,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { Transition } from '@headlessui/react';
 import { HiOutlineXMark, HiBars3 } from 'react-icons/hi2';
-import { FaFingerprint } from 'react-icons/fa';
+import Image from 'next/image';
 
 import Container from './Container';
 import { siteDetails } from '@/data/siteDetails';
@@ -23,8 +23,14 @@ const Header: React.FC = () => {
                 <nav className="shadow-md md:shadow-none bg-primary mx-auto flex justify-between items-center py-2 px-5 md:py-10">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2">
-                        <FaFingerprint className="text-white min-w-fit w-7 h-7" />
-                        <span className="font-gilda-display text-xl font-semibold text-white cursor-pointer">
+                    <Image 
+                            src="/images/logo-white.svg" 
+                            alt="Xtara Logo" 
+                            width={24}
+                            height={24}
+                            
+                        />
+                        <span className="font-merriweather text-xl font-semibold text-white cursor-pointer">
                             {siteDetails.siteName}
                         </span>
                     </Link>
