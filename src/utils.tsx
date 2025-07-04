@@ -25,14 +25,14 @@ export const getPlatformIconByName = (platformName: string): JSX.Element | null 
         case 'threads': {
             return <FaThreads size={24} className='min-w-fit' />;
         }
-        case 'x': {
+        case 'twitter': {
             return <FaTwitter size={24} className='min-w-fit' />;
-        } 
-        case 'youtube': {
-            return <FaYoutube size={24} className='min-w-fit' />;
         }
         case 'x': {
             return <FaXTwitter size={24} className='min-w-fit' />;
+        } 
+        case 'youtube': {
+            return <FaYoutube size={24} className='min-w-fit' />;
         }
         default:
             console.log('Platform name not supported, no icon is returned:', platformName);
