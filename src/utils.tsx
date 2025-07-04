@@ -1,11 +1,10 @@
 import React from 'react';
 import { FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaThreads, FaTwitter, FaXTwitter, FaYoutube } from "react-icons/fa6";
 
-// Utility function to handle image paths with basePath for GitHub Pages
+// Utility function to handle image paths
 export const getImagePath = (imagePath: string): string => {
-    // Only add basePath in production (for GitHub Pages)
-    const basePath = process.env.NODE_ENV === 'production' ? '/xtara' : '';
-    return `${basePath}${imagePath}`;
+    // No base path needed for custom domain
+    return imagePath;
 };
 
 export const getPlatformIconByName = (platformName: string): JSX.Element | null => {
