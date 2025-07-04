@@ -8,7 +8,7 @@ const CTA: React.FC = () => {
         <section id="cta" className="mt-10 mb-5 lg:my-20">
             <div className="relative h-full w-full z-10 mx-auto py-12 sm:py-20">
                 <div className="h-full w-full">
-                    <div className="rounded-3xl opacity-95 absolute inset-0 -z-10 h-full w-full bg-[#012E40]">
+                    <div className="rounded-3xl opacity-95 absolute inset-0 -z-10 h-full w-full bg-ocean-navy">
                     </div>
 
                     <div className="h-full flex flex-col items-center justify-center text-white text-center px-5">

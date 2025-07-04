@@ -21,7 +21,7 @@ const PricingColumn: React.FC<Props> = ({ tier, highlight }: Props) => {
                     </span>
                     {typeof price === 'number' && <span className="text-lg font-normal text-gray-600">/mo</span>}
                 </p>
-                <button className={clsx("w-full py-3 px-4 rounded-full transition-colors", { "bg-warning text-black hover:bg-warning/80": highlight, "bg-hero-background hover:bg-gray-200": !highlight })}>
+                <button className={clsx("w-full py-3 px-4 rounded-full transition-colors", { "bg-sun-gold text-black hover:bg-sun-gold/80": highlight, "bg-cream-sand hover:bg-gray-200": !highlight })}>
                     Get Started
                 </button>
             </div>
@@ -31,7 +31,7 @@ const PricingColumn: React.FC<Props> = ({ tier, highlight }: Props) => {
                 <ul className="space-y-4 mb-8">
                     {features.map((feature, index) => (
                         <li key={index} className="flex items-center">
-                            <BsFillCheckCircleFill className="h-5 w-5 text-secondary mr-2" />
+                            <BsFillCheckCircleFill className="h-5 w-5 text-sky-blue mr-2" />
                             <span className="text-foreground-accent">{feature}</span>
                         </li>
                     ))}

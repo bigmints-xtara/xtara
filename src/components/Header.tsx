@@ -7,7 +7,7 @@ import { HiOutlineXMark, HiBars3 } from 'react-icons/hi2';
 import Image from 'next/image';
 
 import Container from './Container';
-import { siteDetails } from '@/data/siteDetails';
+// import { siteDetails } from '@/data/siteDetails';
 import { menuItems } from '@/data/menuItems';
 
 const Header: React.FC = () => {
@@ -18,21 +18,20 @@ const Header: React.FC = () => {
     };
 
     return (
-        <header className="bg-primary fixed top-0 left-0 right-0 md:absolute z-50 mx-auto w-full">
+        <header className="bg-ocean-navy fixed top-0 left-0 right-0 md:absolute z-50 mx-auto w-full">
             <Container className="!px-0">
-                <nav className="shadow-md md:shadow-none bg-primary mx-auto flex justify-between items-center py-2 px-5 md:py-10">
+                <nav className="shadow-md md:shadow-none bg-ocean-navy mx-auto flex justify-between items-center py-2 px-5 md:py-10">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2">
                     <Image 
-                            src="/images/logo-white.svg" 
+                            src="/images/logo-color.svg" 
                             alt="Xtara Logo" 
-                            width={24}
-                            height={24}
+                            width={80}
+                            height={0}
+                           
                             
                         />
-                        <span className="font-merriweather text-xl font-semibold text-white cursor-pointer">
-                            {siteDetails.siteName}
-                        </span>
+                       
                     </Link>
 
                     {/* Desktop Menu */}
@@ -45,7 +44,7 @@ const Header: React.FC = () => {
                             </li>
                         ))}
                         <li>
-                            <Link href="#cta" className="text-black bg-warning hover:bg-warning/80 px-8 py-3 rounded-full transition-colors">
+                            <Link href="#cta" className="text-black bg-sun-gold hover:bg-sun-gold/80 px-8 py-3 rounded-full transition-colors">
                                 Download
                             </Link>
                         </li>
@@ -56,7 +55,7 @@ const Header: React.FC = () => {
                         <button
                             onClick={toggleMenu}
                             type="button"
-                            className="bg-warning text-black focus:outline-none rounded-full w-10 h-10 flex items-center justify-center"
+                            className="bg-sun-gold text-black focus:outline-none rounded-full w-10 h-10 flex items-center justify-center"
                             aria-controls="mobile-menu"
                             aria-expanded={isOpen}
                         >
@@ -81,7 +80,7 @@ const Header: React.FC = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
             >
-                <div id="mobile-menu" className="md:hidden bg-primary shadow-lg">
+                <div id="mobile-menu" className="md:hidden bg-ocean-navy shadow-lg">
                     <ul className="flex flex-col space-y-4 pt-1 pb-6 px-6">
                         {menuItems.map(item => (
                             <li key={item.text}>
@@ -91,7 +90,7 @@ const Header: React.FC = () => {
                             </li>
                         ))}
                         <li>
-                            <Link href="#cta" className="text-black bg-warning hover:bg-warning/80 px-5 py-2 rounded-full block w-fit" onClick={toggleMenu}>
+                            <Link href="#cta" className="text-black bg-sun-gold hover:bg-sun-gold/80 px-5 py-2 rounded-full block w-fit" onClick={toggleMenu}>
                                 Get Started
                             </Link>
                         </li>

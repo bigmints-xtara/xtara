@@ -1,6 +1,7 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import React from 'react';
-import { FaFingerprint } from 'react-icons/fa';
+// import { FaFingerprint } from 'react-icons/fa';
 
 import { siteDetails } from '@/data/siteDetails';
 import { footerDetails } from '@/data/footer';
@@ -8,14 +9,17 @@ import { getPlatformIconByName } from '@/utils';
 
 const Footer: React.FC = () => {
     return (
-        <footer className="bg-warning text-black py-10">
+        <footer className="bg-sun-gold text-black py-10">
             <div className="max-w-7xl w-full mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div>
                     <Link href="/" className="flex items-center gap-2">
-                        <FaFingerprint className="min-w-fit w-5 h-5 md:w-7 md:h-7 text-black" />
-                        <h3 className="font-merriweather text-xl font-semibold cursor-pointer text-black">
-                            {siteDetails.siteName}
-                        </h3>
+                    <Image 
+                            src="/images/logo-dark.svg" 
+                            alt="Xtara Logo" 
+                            width={50}
+                            height={0}
+                        />
+                       
                     </Link>
                     <p className="mt-3.5 text-gray-700">
                         {footerDetails.subheading}
@@ -59,8 +63,6 @@ const Footer: React.FC = () => {
             </div>
             <div className="mt-8 md:text-center text-foreground-accent px-6">
                 <p>Copyright &copy; {new Date().getFullYear()} {siteDetails.siteName}. All rights reserved.</p>
-                <p className="text-sm mt-2 text-gray-500">Made with &hearts; by <a href="https://nexilaunch.com" target="_blank">Nexi Launch</a></p>
-                <p className="text-sm mt-2 text-gray-500">UI kit by <a href="https://ui8.net/youthmind/products/fintech-finance-mobile-app-ui-kit" target="_blank">Youthmind</a></p>
             </div>
         </footer>
     );

@@ -22,7 +22,16 @@ const config: Config = {
         "foreground-accent": "var(--foreground-accent)",
         "hero-background": "var(--hero-background)",
         
-        // Additional Flutter theme colors
+        // New color palette
+        "ocean-navy": "#003763",
+        "sky-blue": "#61B3E4",
+        "coral-orange": "#EF7521",
+        "sun-gold": "#F6B333",
+        "ivory-white": "#FFFFFF",
+        "seafoam-teal": "#3CA6A6",
+        "cream-sand": "#F2E3D5",
+        
+        // Additional theme colors
         surface: "var(--surface)",
         highlight: "var(--highlight)",
         success: "var(--success)",

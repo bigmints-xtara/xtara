@@ -20,23 +20,23 @@
   --font-body-md: 1rem;
   --font-body-sm: 0.875rem;
 
-  /* Flutter Deep Teal Sea Theme Colors */
-  --background: #FAF8F5; /* kBackgroundColor - Slightly warm white */
-  --foreground: #012E40; /* kTextColor - Very dark teal */
-  --primary: #024959; /* kPrimaryColor - Dark teal */
-  --secondary: #026773; /* kAccentColor - Medium teal */
+  /* New Color Palette */
+  --background: #FFFFFF; /* kIvoryWhite - Contrast base */
+  --foreground: #003763; /* kOceanNavy - Primary Color */
+  --primary: #003763; /* kOceanNavy - Primary Color */
+  --secondary: #61B3E4; /* kSkyBlue - Accent Color */
 
-  --primary-accent: #3CA6A6; /* kQuaternaryColor - Light teal */
-  --foreground-accent: #012E40; /* kTextColor for consistency */
-  --hero-background: #F2E3D5; /* kTertiaryColor - Warm cream */
+  --primary-accent: #F6B333; /* kSunGold - Secondary accent */
+  --foreground-accent: #003763; /* kOceanNavy for consistency */
+  --hero-background: #F2E3D5; /* kCreamSand - Card background */
   
-  /* Additional Flutter theme colors */
-  --surface: #FFFFFF; /* kSurfaceColor */
-  --highlight: #7CC4C4; /* kHighlightColor - Bright light teal */
-  --success: #AED9C4; /* kSuccessColor - Bright mint green */
-  --warning: #FFD89E; /* kWarningColor - Bright golden */
-  --error: #ECA1A6; /* kErrorColor */
-  --info: #96B5E4; /* kInfoColor - Bright blue */
+  /* Additional theme colors */
+  --surface: #F2E3D5; /* kCreamSand - Card background */
+  --highlight: #EF7521; /* kCoralOrange - Motivational accent */
+  --success: #3CA6A6; /* kSeafoamTeal - Tertiary accent */
+  --warning: #F6B333; /* kSunGold - Secondary accent */
+  --error: #EF7521; /* kCoralOrange - Motivational accent */
+  --info: #61B3E4; /* kSkyBlue - Accent Color */
   --divider: #E8E8E8; /* kDividerColor */
 }
 

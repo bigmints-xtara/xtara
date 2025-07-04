@@ -23,7 +23,7 @@ export const benefits: IBenefit[] = [
         icon: <FiBookOpen size={26} />
       }
     ],
-    imageSrc: getImagePath("/images/mockup-1.webp")
+    imageSrc: getImagePath("/images/student.png")
   },
   {
     title: "Support Parents to Guide with Confidence",
@@ -45,7 +45,7 @@ export const benefits: IBenefit[] = [
         icon: <FiUserCheck size={26} />
       }
     ],
-    imageSrc: getImagePath("/images/mockup-2.webp")
+    imageSrc: getImagePath("/images/parent.png")
   },
   {
     title: "Empower Schools with Scalable Career Guidance",
