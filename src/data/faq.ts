@@ -8,7 +8,7 @@ export const faqs: IFAQ[] = [
   },
   {
     question: `How accurate are the recommendations?`,
-    answer: 'Our AI uses your strengths, interests, and goals to suggest well-matched careers. It’s designed to guide—not decide—for you.',
+    answer: 'Our platform uses your strengths, interests, and goals to suggest well-matched careers. It’s designed to guide—not decide—for you.',
   },
   {
     question: 'Will I get college or course suggestions too?',
