@@ -23,7 +23,7 @@ export const benefits: IBenefit[] = [
         icon: <FiBookOpen size={26} />
       }
     ],
-    imageSrc: getImagePath("/images/img-001.png")
+    imageSrc: getImagePath("/images/001.png")
   },
   {
     title: "Support Parents to Guide with Confidence",
@@ -45,7 +45,7 @@ export const benefits: IBenefit[] = [
         icon: <FiUserCheck size={26} />
       }
     ],
-    imageSrc: getImagePath("/images/img-001.png")
+    imageSrc: getImagePath("/images/002.png")
   },
   {
     title: "Empower Schools with Scalable Career Guidance",
@@ -67,7 +67,7 @@ export const benefits: IBenefit[] = [
         icon: <FiBookOpen size={26} />
       }
     ],
-    imageSrc: getImagePath("/images/img-003.jpg")
+    imageSrc: getImagePath("/images/003.jpg")
   },
   {
     title: "Upskill Your Workforce with Smart L&D",
@@ -89,6 +89,6 @@ export const benefits: IBenefit[] = [
         icon: <FiUserCheck size={26} />
       }
     ],
-    imageSrc: getImagePath("/images/img-003.jpg")
+    imageSrc: getImagePath("/images/004.jpg")
   }
 ];
