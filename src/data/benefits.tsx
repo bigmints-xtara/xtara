@@ -67,7 +67,7 @@ export const benefits: IBenefit[] = [
         icon: <FiBookOpen size={26} />
       }
     ],
-    imageSrc: getImagePath("/images/003.jpg")
+    imageSrc: getImagePath("/images/003.png")
   },
   {
     title: "Upskill Your Workforce with Smart L&D",
@@ -89,6 +89,6 @@ export const benefits: IBenefit[] = [
         icon: <FiUserCheck size={26} />
       }
     ],
-    imageSrc: getImagePath("/images/004.jpg")
+    imageSrc: getImagePath("/images/004.png")
   }
 ];
