@@ -7,7 +7,7 @@ export const footerDetails: {
     telephone: string;
     socials: ISocials;
 } = {
-    subheading: "AI-powered career guidance platform helping students discover their perfect career path.",
+    subheading: "Personalized career guidance platform helping students discover their perfect career path.",
     quickLinks: [
         {
             text: "Features",
