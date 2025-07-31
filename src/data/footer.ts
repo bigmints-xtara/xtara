@@ -12,6 +12,14 @@ export const footerDetails: {
         {
             text: "Features",
             url: "#features"
+        },
+        {
+            text: "Privacy Policy",
+            url: "/privacy-policy"
+        },
+        {
+            text: "Terms of Use",
+            url: "/terms-of-use"
         }
     ],
     email: 'help@xtara.ai',
