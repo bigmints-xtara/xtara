@@ -230,7 +230,31 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-ocean-navy mb-4">10. Contact Information</h2>
+            <h2 className="text-2xl font-semibold text-ocean-navy mb-4">10. Your Rights - Account Deletion</h2>
+            <p>You have the right to request the deletion of your account and all associated personal data. We will:</p>
+            <ul className="list-disc pl-6 mb-4">
+              <li><strong>Process Your Request:</strong> Within 30 days of receiving your deletion request</li>
+              <li><strong>Delete All Data:</strong> Remove your personal information from our systems</li>
+              <li><strong>Confirm Deletion:</strong> Send you a confirmation email once the deletion is complete</li>
+              <li><strong>Retain Legal Records:</strong> Keep only information required by law or for legitimate business purposes</li>
+            </ul>
+            
+            <div className="bg-sky-blue bg-opacity-10 border border-sky-blue rounded-lg p-6 mt-6">
+              <h3 className="text-lg font-semibold text-ocean-navy mb-3">Request Account Deletion</h3>
+              <p className="text-gray-700 mb-4">
+                To request the deletion of your account and personal data, please use our dedicated account deletion form.
+              </p>
+              <a 
+                href="/privacy-policy/delete-account" 
+                className="inline-block bg-ocean-navy text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-colors"
+              >
+                Request Account Deletion
+              </a>
+            </div>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold text-ocean-navy mb-4">11. Contact Information</h2>
             <p>If you have any questions about this Privacy Policy or our data practices, please contact us:</p>
             <div className="bg-cream-sand p-6 rounded-lg mt-4">
               <p><strong>Email:</strong> privacy@bigmints.com</p>
@@ -238,13 +262,13 @@ const PrivacyPolicyPage: React.FC = () => {
               <p><strong>Phone:</strong> [Your Contact Number]</p>
             </div>
             
-            <h3 className="text-xl font-medium text-ocean-navy mb-3 mt-6">10.1 Data Protection Officer</h3>
+            <h3 className="text-xl font-medium text-ocean-navy mb-3 mt-6">11.1 Data Protection Officer</h3>
             <p>For EU users, you can also contact our Data Protection Officer:</p>
             <p><strong>Email:</strong> dpo@bigmints.com</p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-ocean-navy mb-4">11. Legal Basis for Processing (EU Users)</h2>
+            <h2 className="text-2xl font-semibold text-ocean-navy mb-4">12. Legal Basis for Processing (EU Users)</h2>
             <p>For users in the European Union, we process your data based on:</p>
             <ul className="list-disc pl-6 mb-4">
               <li><strong>Consent:</strong> For marketing communications and optional features</li>
@@ -255,7 +279,7 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-ocean-navy mb-4">12. California Privacy Rights (CCPA)</h2>
+            <h2 className="text-2xl font-semibold text-ocean-navy mb-4">13. California Privacy Rights (CCPA)</h2>
             <p>California residents have additional rights under the California Consumer Privacy Act:</p>
             <ul className="list-disc pl-6 mb-4">
               <li><strong>Right to Know:</strong> Request information about data collection and sharing</li>
@@ -266,7 +290,7 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-ocean-navy mb-4">13. India Privacy Rights (DPDPA)</h2>
+            <h2 className="text-2xl font-semibold text-ocean-navy mb-4">14. India Privacy Rights (DPDPA)</h2>
             <p>For users in India, you have rights under the Digital Personal Data Protection Act:</p>
             <ul className="list-disc pl-6 mb-4">
               <li><strong>Right to Information:</strong> Know what personal data is being processed</li>
@@ -277,7 +301,7 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-ocean-navy mb-4">14. Governing Law</h2>
+            <h2 className="text-2xl font-semibold text-ocean-navy mb-4">15. Governing Law</h2>
             <p>This Privacy Policy is governed by the laws of [Your Jurisdiction]. Any disputes will be resolved in the courts of [Your Jurisdiction].</p>
           </section>
 

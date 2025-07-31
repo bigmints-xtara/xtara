@@ -20,6 +20,10 @@ export const footerDetails: {
         {
             text: "Terms of Use",
             url: "/terms-of-use"
+        },
+        {
+            text: "Delete Account",
+            url: "/privacy-policy/delete-account"
         }
     ],
     email: 'help@xtara.ai',
