@@ -29,6 +29,14 @@ const parseFrontMatter = (fileContents: string): FrontMatterResult => {
     return { data, content };
 };
 
+
+const getExcerpt = (content: string): string => {
+    const line = content
+        .split('\n')
+        .find(l => l.trim() && !l.startsWith('#')) || '';
+    return line.trim().slice(0, 160);
+};
+
 export const getAllNews = (): INewsMeta[] => {
     const files = fs.readdirSync(newsDirectory);
     const items: INewsMeta[] = files
@@ -36,12 +44,17 @@ export const getAllNews = (): INewsMeta[] => {
         .map(file => {
             const fullPath = path.join(newsDirectory, file);
             const fileContents = fs.readFileSync(fullPath, 'utf8');
-            const { data } = parseFrontMatter(fileContents);
+
+            const { data, content } = parseFrontMatter(fileContents);
+
             return {
                 slug: file.replace(/\.md$/, ''),
                 title: data.title,
                 date: data.date,
                 image: data.image,
+
+                description: getExcerpt(content),
+
             } as INewsMeta;
         })
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -57,6 +70,9 @@ export const getNewsBySlug = (slug: string): INewsArticle => {
         title: data.title,
         date: data.date,
         image: data.image,
+
+        description: getExcerpt(content),
+
         content,
     } as INewsArticle;
 };
