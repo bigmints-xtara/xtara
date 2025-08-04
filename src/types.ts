@@ -51,3 +51,15 @@ export interface ISocials {
     x?: string;
     [key: string]: string | undefined;
 }
+
+export interface INewsMeta {
+    slug: string;
+    title: string;
+    date: string;
+    image?: string;
+    description: string;
+}
+
+export interface INewsArticle extends INewsMeta {
+    content: string;
+}
