@@ -16,7 +16,9 @@ export function generateMetadata({ params }: Params): Metadata {
     const article = getNewsBySlug(params.slug);
     return {
         title: `${article.title} - Xtara`,
+
         description: article.description,
+
     };
 }
 
@@ -27,6 +29,7 @@ const NewsDetailPage = ({ params }: Params) => {
     return (
         <Container>
             <article className="max-w-3xl mx-auto py-12">
+
                 {article.image && (
                     <Image
                         src={article.image}
@@ -36,6 +39,15 @@ const NewsDetailPage = ({ params }: Params) => {
                         className="w-full h-64 object-cover rounded-lg mt-6 mb-6"
                     />
                 )}
+
+                <Image
+                    src={article.image}
+                    alt={article.title}
+                    width={800}
+                    height={400}
+                    className="w-full h-64 object-cover rounded-lg mb-6"
+                />
+
                 <h1 className="text-4xl font-bold text-ocean-navy mb-4">{article.title}</h1>
                 <p className="text-sm text-gray-600 mb-8">
                     {new Date(article.date).toLocaleDateString()}

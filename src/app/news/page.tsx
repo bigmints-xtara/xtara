@@ -18,17 +18,21 @@ const NewsPage = ({ searchParams }: { searchParams?: { page?: string } }) => {
     const paginated = newsItems.slice(start, start + PAGE_SIZE);
     const totalPages = Math.ceil(newsItems.length / PAGE_SIZE);
 
+
     return (
         <Container>
             <div className="max-w-5xl mx-auto py-12">
                 <h1 className="text-4xl font-bold text-ocean-navy mb-8">News</h1>
                 <ul className="space-y-8">
+
                     {paginated.map(item => (
+
                         <li key={item.slug}>
                             <Link
                                 href={`/news/${item.slug}`}
                                 className="block rounded-lg overflow-hidden bg-cream-sand hover:bg-cream-sand/80 transition-colors"
                             >
+
                                 <div className={item.image ? "md:flex" : ""}>
                                     {item.image && (
                                         <Image
@@ -39,6 +43,7 @@ const NewsPage = ({ searchParams }: { searchParams?: { page?: string } }) => {
                                             className="w-full md:w-64 h-48 object-cover md:mr-6 mb-4 md:mb-0"
                                         />
                                     )}
+
                                     <div className="p-6">
                                         <p className="text-sm text-gray-600 mb-2">
                                             {new Date(item.date).toLocaleDateString()}
@@ -46,13 +51,16 @@ const NewsPage = ({ searchParams }: { searchParams?: { page?: string } }) => {
                                         <h2 className="text-2xl font-semibold text-ocean-navy">
                                             {item.title}
                                         </h2>
+
                                         <p className="text-gray-700 mt-2">{item.description}</p>
+
                                     </div>
                                 </div>
                             </Link>
                         </li>
                     ))}
                 </ul>
+
                 {totalPages > 1 && (
                     <div className="flex justify-between mt-8">
                         {page > 1 ? (
@@ -69,6 +77,7 @@ const NewsPage = ({ searchParams }: { searchParams?: { page?: string } }) => {
                         )}
                     </div>
                 )}
+
             </div>
         </Container>
     );

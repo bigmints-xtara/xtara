@@ -56,8 +56,10 @@ export interface INewsMeta {
     slug: string;
     title: string;
     date: string;
+
     image?: string;
     description: string;
+
 }
 
 export interface INewsArticle extends INewsMeta {
