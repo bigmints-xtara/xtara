@@ -1,4 +1,4 @@
-import { ctaDetails } from "@/data/cta"
+import { homeData } from "@/data/homeData"
 
 import AppStoreButton from "./AppStoreButton"
 import PlayStoreButton from "./PlayStoreButton"
@@ -12,14 +12,14 @@ const CTA: React.FC = () => {
                     </div>
 
                     <div className="h-full flex flex-col items-center justify-center text-white text-center px-5">
-                        <h2 className="text-2xl sm:text-3xl md:text-5xl md:leading-tight font-semibold mb-4 max-w-2xl">{ctaDetails.heading}</h2>
+                        <h2 className="text-2xl sm:text-3xl md:text-5xl md:leading-tight font-semibold mb-4 max-w-2xl">{homeData.content['CTA Section']['Heading']}</h2>
 
-                        <p className="mx-auto max-w-xl md:px-5">{ctaDetails.subheading}</p>
+                        <p className="mx-auto max-w-xl md:px-5">{homeData.content['CTA Section']['Subheading']}</p>
 
-                        <div className="mt-4 flex flex-col sm:flex-row items-center sm:gap-4">
-                        <AppStoreButton />
-                        <PlayStoreButton />
-                        </div>
+                                                 <div className="mt-4 flex flex-col sm:flex-row items-center sm:gap-4">
+                         <AppStoreButton url={homeData.content['CTA Section']['App Store URL']} />
+                         <PlayStoreButton url={homeData.content['CTA Section']['Google Play URL']} />
+                         </div>
                     </div>
                 </div>
             </div>

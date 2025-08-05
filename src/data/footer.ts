@@ -26,15 +26,15 @@ export const footerDetails: {
             url: "/privacy-policy/delete-account"
         }
     ],
-    email: 'help@xtara.ai',
-    telephone: '+91 98765 43210',
+    email: 'xtara.connect@gmail.com',
+    telephone: '+91 99477 93728',
     socials: {
         // github: 'https://github.com',
         // x: 'https://twitter.com/x',
         twitter: 'https://twitter.com/xtara_ai',
         facebook: 'https://facebook.com/xtara.ai',
         // youtube: 'https://youtube.com',
-        linkedin: 'https://www.linkedin.com/company/xtara-ai',
+        linkedin: 'https://www.linkedin.com/company/xtara',
         // threads: 'https://www.threads.net',
         instagram: 'https://www.instagram.com/xtara.ai',
     }

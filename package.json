@@ -3,17 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "export": "next build",
+    "dev": "node scripts/generate-news-data.js && node scripts/generate-about-data.js && node scripts/generate-page-data.js && next dev",
+    "build": "node scripts/generate-news-data.js && node scripts/generate-about-data.js && node scripts/generate-page-data.js && next build",
+    "export": "node scripts/generate-news-data.js && node scripts/generate-about-data.js && node scripts/generate-page-data.js && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate-news": "node scripts/generate-news-data.js",
+    "generate-about": "node scripts/generate-about-data.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.8",
     "@next/third-parties": "^14.2.13",
     "clsx": "^2.1.1",
     "framer-motion": "^11.11.9",
+    "gray-matter": "^4.0.3",
+    "marked": "^16.1.2",
     "next": "^14.2.13",
     "react": "^18",
     "react-dom": "^18",

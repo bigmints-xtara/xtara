@@ -1,15 +1,34 @@
 import type { Metadata } from "next";
 import Container from "@/components/Container";
+import { privacyPolicyData } from "@/data/privacyPolicyData";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - Xtara",
-  description: "Privacy Policy for Xtara Career Guidance Platform. Learn how we collect, use, and protect your personal information.",
+  title: privacyPolicyData.metadata.title,
+  description: privacyPolicyData.metadata.description,
+  keywords: privacyPolicyData.metadata.keywords,
+  openGraph: {
+    title: privacyPolicyData.metadata.title,
+    description: privacyPolicyData.metadata.description,
+    images: [privacyPolicyData.metadata.ogImage],
+    url: privacyPolicyData.metadata.canonicalUrl,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: privacyPolicyData.metadata.title,
+    description: privacyPolicyData.metadata.description,
+    images: [privacyPolicyData.metadata.ogImage],
+  },
+  alternates: {
+    canonical: privacyPolicyData.metadata.canonicalUrl,
+  },
 };
 
 const PrivacyPolicyPage: React.FC = () => {
   return (
     <Container>
-      <div className="max-w-4xl mx-auto py-12">
+      <div className="py-4 px-6 md:py-6 md:px-8">
+        <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-ocean-navy mb-8">Privacy Policy for Xtara Career Guidance Platform</h1>
         
         <div className="prose prose-lg max-w-none">
@@ -313,6 +332,7 @@ const PrivacyPolicyPage: React.FC = () => {
               <em>This Privacy Policy is effective as of January 2025 and will remain in effect except with respect to any changes in its provisions in the future.</em>
             </p>
           </div>
+        </div>
         </div>
       </div>
     </Container>

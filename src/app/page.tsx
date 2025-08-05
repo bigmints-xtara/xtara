@@ -1,12 +1,33 @@
+import type { Metadata } from "next";
 import Hero from "@/components/Hero";
-// import Pricing from "@/components/Pricing/Pricing";
 import FAQ from "@/components/FAQ";
 import Logos from "@/components/Logos";
 import Benefits from "@/components/Benefits/Benefits";
 import Container from "@/components/Container";
-// import Section from "@/components/Section";
-// import Stats from "@/components/Stats";
 import CTA from "@/components/CTA";
+import { homeData } from "@/data/homeData";
+
+export const metadata: Metadata = {
+  title: homeData.metadata.title,
+  description: homeData.metadata.description,
+  keywords: homeData.metadata.keywords,
+  openGraph: {
+    title: homeData.metadata.title,
+    description: homeData.metadata.description,
+    images: [homeData.metadata.ogImage],
+    url: homeData.metadata.canonicalUrl,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: homeData.metadata.title,
+    description: homeData.metadata.description,
+    images: [homeData.metadata.ogImage],
+  },
+  alternates: {
+    canonical: homeData.metadata.canonicalUrl,
+  },
+};
 
 const HomePage: React.FC = () => {
   return (

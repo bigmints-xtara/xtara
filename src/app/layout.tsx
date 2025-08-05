@@ -12,6 +12,7 @@ import "./globals.css";
 
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://xtara.ai'),
   title: siteDetails.metadata.title,
   description: siteDetails.metadata.description,
   openGraph: {

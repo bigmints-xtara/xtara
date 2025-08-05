@@ -1,15 +1,34 @@
 import type { Metadata } from "next";
 import Container from "@/components/Container";
+import { termsOfUseData } from "@/data/termsOfUseData";
 
 export const metadata: Metadata = {
-  title: "Terms of Use - Xtara",
-  description: "Terms of Use for Xtara Career Guidance Platform. Learn about the terms and conditions for using our platform.",
+  title: termsOfUseData.metadata.title,
+  description: termsOfUseData.metadata.description,
+  keywords: termsOfUseData.metadata.keywords,
+  openGraph: {
+    title: termsOfUseData.metadata.title,
+    description: termsOfUseData.metadata.description,
+    images: [termsOfUseData.metadata.ogImage],
+    url: termsOfUseData.metadata.canonicalUrl,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: termsOfUseData.metadata.title,
+    description: termsOfUseData.metadata.description,
+    images: [termsOfUseData.metadata.ogImage],
+  },
+  alternates: {
+    canonical: termsOfUseData.metadata.canonicalUrl,
+  },
 };
 
 const TermsOfUsePage: React.FC = () => {
   return (
     <Container>
-      <div className="max-w-4xl mx-auto py-12">
+      <div className="py-4 px-6 md:py-6 md:px-8">
+        <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-ocean-navy mb-8">Terms of Use for Xtara Career Guidance Platform</h1>
         
         <div className="prose prose-lg max-w-none">
@@ -421,6 +440,7 @@ const TermsOfUsePage: React.FC = () => {
               <em>These Terms of Use are effective as of January 2025 and will remain in effect except with respect to any changes in their provisions in the future.</em>
             </p>
           </div>
+        </div>
         </div>
       </div>
     </Container>
