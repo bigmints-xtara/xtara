@@ -1,24 +1,72 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
+/* MonaSans Font Declarations - Individual Files Only (No Italics) */
+@font-face {
+  font-family: 'MonaSans';
+  src: url('/fonts/MonaSans-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MonaSans';
+  src: url('/fonts/MonaSans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MonaSans';
+  src: url('/fonts/MonaSans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MonaSans';
+  src: url('/fonts/MonaSans-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Typography System */
-  --font-heading: 'Merriweather', serif;
-  --font-body: 'Inter', sans-serif;
+  /* Typography System - Following GitHub Primer Guidelines */
+  --font-heading: 'MonaSans', sans-serif;
+  --font-body: 'MonaSans', sans-serif;
 
-  --font-h1: 3rem;
-  --font-h2: 2.25rem;
-  --font-h3: 1.75rem;
-  --font-h4: 1.5rem;
-  --font-h5: 1.25rem;
-  --font-h6: 1.125rem;
+  /* Font Weights - Only the four standard weights from Primer */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
 
-  --font-body-lg: 1.125rem;
-  --font-body-md: 1rem;
-  --font-body-sm: 0.875rem;
+  /* Typography Scale - Following Primer's approach */
+  --font-display: 2.5rem;      /* 40px - Display text */
+  --font-title-large: 2rem;    /* 32px - Title large */
+  --font-title-medium: 1.25rem; /* 20px - Title medium */
+  --font-title-small: 1rem;    /* 16px - Title small */
+  --font-subtitle: 1.25rem;    /* 20px - Subtitle */
+  --font-body-large: 1rem;     /* 16px - Body large */
+  --font-body-medium: 0.875rem; /* 14px - Body medium */
+  --font-body-small: 0.75rem;  /* 12px - Body small */
+  --font-caption: 0.75rem;     /* 12px - Caption */
+
+  /* Line Heights - Following Primer's line-height values */
+  --line-height-display: 1.4;
+  --line-height-title-large: 1.5;
+  --line-height-title-medium: 1.6;
+  --line-height-title-small: 1.5;
+  --line-height-subtitle: 1.6;
+  --line-height-body-large: 1.5;
+  --line-height-body-medium: 1.4285;
+  --line-height-body-small: 1.6666;
+  --line-height-caption: 1.3333;
 
   /* New Color Palette */
   --background: #FFFFFF; /* kIvoryWhite - Contrast base */
@@ -45,77 +93,146 @@ html {
 }
 
 body {
-  @apply text-lg;
+  @apply text-body-large;
   
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-body);
-  font-size: var(--font-body-md);
-  line-height: 1.5rem;
+  font-size: var(--font-body-large);
+  line-height: var(--line-height-body-large);
   font-optical-sizing: auto;
   font-style: normal;
 }
+
+/* GitHub Primer Compliance - No Italic Fonts Available */
+/* All font files are normal (upright) style only */
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+  
+
 }
 
-/* Typography Classes */
-.inter {
+/* Typography Classes - Following GitHub Primer Guidelines */
+.monasans {
   font-family: var(--font-body);
   font-optical-sizing: auto;
   font-style: normal;
 }
 
-.merriweather {
+.monasans-heading {
   font-family: var(--font-heading);
   font-optical-sizing: auto;
   font-style: normal;
 }
 
-/* Heading Styles */
+/* Typography Scale Classes - Following Primer's System */
+.text-display {
+  font-family: var(--font-heading);
+  font-size: var(--font-display);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-display);
+}
+
+.text-title-large {
+  font-family: var(--font-heading);
+  font-size: var(--font-title-large);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-title-large);
+}
+
+.text-title-medium {
+  font-family: var(--font-heading);
+  font-size: var(--font-title-medium);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-title-medium);
+}
+
+.text-title-small {
+  font-family: var(--font-heading);
+  font-size: var(--font-title-small);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-title-small);
+}
+
+.text-subtitle {
+  font-family: var(--font-heading);
+  font-size: var(--font-subtitle);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-subtitle);
+}
+
+.text-body-large {
+  font-family: var(--font-body);
+  font-size: var(--font-body-large);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-body-large);
+}
+
+.text-body-medium {
+  font-family: var(--font-body);
+  font-size: var(--font-body-medium);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-body-medium);
+}
+
+.text-body-small {
+  font-family: var(--font-body);
+  font-size: var(--font-body-small);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-body-small);
+}
+
+.text-caption {
+  font-family: var(--font-body);
+  font-size: var(--font-caption);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-caption);
+}
+
+/* Heading Styles - Updated to use Primer scale */
 h1 {
   font-family: var(--font-heading);
-  font-size: var(--font-h1);
-  font-weight: 700;
-  line-height: 3.5rem;
+  font-size: var(--font-display);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-display);
 }
 
 h2 {
   font-family: var(--font-heading);
-  font-size: var(--font-h2);
-  font-weight: 600;
-  line-height: 2.75rem;
+  font-size: var(--font-title-large);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-title-large);
 }
 
 h3 {
   font-family: var(--font-heading);
-  font-size: var(--font-h3);
-  font-weight: 600;
-  line-height: 2.25rem;
+  font-size: var(--font-title-medium);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-title-medium);
 }
 
 h4 {
   font-family: var(--font-heading);
-  font-size: var(--font-h4);
-  font-weight: 600;
-  line-height: 2rem;
+  font-size: var(--font-title-small);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-title-small);
 }
 
 h5 {
   font-family: var(--font-heading);
-  font-size: var(--font-h5);
-  font-weight: 500;
-  line-height: 1.75rem;
+  font-size: var(--font-subtitle);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-subtitle);
 }
 
 h6 {
   font-family: var(--font-heading);
-  font-size: var(--font-h6);
-  font-weight: 500;
-  line-height: 1.5rem;
+  font-size: var(--font-body-large);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-body-large);
 }
 
 #logos svg {

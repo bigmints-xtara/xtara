@@ -9,8 +9,25 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        'inter': ['Inter', 'sans-serif'],
-        'merriweather': ['Merriweather', 'serif'],
+        'monasans': ['MonaSans', 'sans-serif'],
+        'monasans-heading': ['MonaSans', 'sans-serif'],
+      },
+      fontWeight: {
+        'light': '300',
+        'normal': '400',
+        'medium': '500',
+        'semibold': '600',
+      },
+      fontSize: {
+        'display': ['2.5rem', { lineHeight: '1.4' }],
+        'title-large': ['2rem', { lineHeight: '1.5' }],
+        'title-medium': ['1.25rem', { lineHeight: '1.6' }],
+        'title-small': ['1rem', { lineHeight: '1.5' }],
+        'subtitle': ['1.25rem', { lineHeight: '1.6' }],
+        'body-large': ['1rem', { lineHeight: '1.5' }],
+        'body-medium': ['0.875rem', { lineHeight: '1.4285' }],
+        'body-small': ['0.75rem', { lineHeight: '1.6666' }],
+        'caption': ['0.75rem', { lineHeight: '1.3333' }],
       },
       colors: {
         background: "var(--background)",
@@ -41,6 +58,10 @@ const config: Config = {
         divider: "var(--divider)",
       },
     },
+  },
+  corePlugins: {
+    // Disable fontStyle plugin to prevent italic classes - GitHub Primer compliance
+    fontStyle: false,
   },
   plugins: [],
 };

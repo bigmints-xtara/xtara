@@ -36,6 +36,7 @@ const HomePage: React.FC = () => {
       <Logos />
       {/* <div className="h-[50px]"></div> */}
       <Container>
+
         <Benefits />
         {/*
         <Section
