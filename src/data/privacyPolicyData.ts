@@ -27,8 +27,8 @@ export interface PageData {
 export const privacyPolicyData: PageData = {
   metadata: {
   "title": "Privacy Policy - Xtara",
-  "description": "Privacy Policy for Xtara Career Guidance Platform. Learn how we collect, use, and protect your personal information.",
-  "keywords": "privacy policy, data protection, personal information, Xtara privacy, career guidance privacy",
+  "description": "Privacy Policy for Xtara Career Guidance Platform. We do NOT track users across apps or websites. Learn how we collect, use, and protect your personal information.",
+  "keywords": "privacy policy, data protection, personal information, Xtara privacy, career guidance privacy, no tracking, app tracking transparency",
   "ogImage": "/images/og-privacy.jpg",
   "canonicalUrl": "https://xtara.com/privacy-policy"
 },

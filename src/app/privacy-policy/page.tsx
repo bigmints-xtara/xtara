@@ -48,6 +48,9 @@ const PrivacyPolicyPage: React.FC = () => {
               Welcome to Xtara, a comprehensive career guidance platform designed to help students and professionals make informed career decisions. This Privacy Policy explains how we collect, use, store, and protect your personal information when you use our platform and related services.
             </p>
             <p>
+              <strong>IMPORTANT: Xtara does NOT track users across different platforms or websites. We do not collect data used to track your activity outside our platform.</strong>
+            </p>
+            <p>
               By using Xtara, you agree to the collection and use of information in accordance with this policy. If you do not agree with this policy, please do not use our platform.
             </p>
           </section>
@@ -207,22 +210,40 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-ocean-navy mb-4">7. Cookies and Tracking Technologies</h2>
+            <h2 className="text-2xl font-semibold text-ocean-navy mb-4">7. Data Collection and Analytics</h2>
             
             <h3 className="text-xl font-medium text-ocean-navy mb-3">7.1 Platform Analytics</h3>
-            <p>We use analytics tools to understand platform usage:</p>
+            <p>We use analytics tools to understand platform usage and improve performance:</p>
             <ul className="list-disc pl-6 mb-4">
-              <li><strong>Firebase Analytics:</strong> Track platform performance and user behavior</li>
+              <li><strong>Firebase Analytics:</strong> Track platform performance and user behavior within our platform only</li>
               <li><strong>Crash Reporting:</strong> Monitor and fix platform crashes</li>
               <li><strong>Performance Monitoring:</strong> Track platform speed and reliability</li>
             </ul>
 
-            <h3 className="text-xl font-medium text-ocean-navy mb-3">7.2 Opt-Out Options</h3>
-            <p>You can opt out of analytics tracking through:</p>
+            <h3 className="text-xl font-medium text-ocean-navy mb-3">7.2 No Cross-Platform or Cross-Website Tracking</h3>
+            <p><strong>IMPORTANT:</strong> Xtara does NOT track users across different platforms or websites. We do not:</p>
+            <ul className="list-disc pl-6 mb-4">
+              <li><strong>Cross-Platform Tracking:</strong> Track your activity in other applications</li>
+              <li><strong>Cross-Website Tracking:</strong> Monitor your browsing on other websites</li>
+              <li><strong>User Profiling:</strong> Create profiles based on your activity outside our platform</li>
+              <li><strong>Behavioral Advertising:</strong> Use your data for targeted advertising across platforms</li>
+            </ul>
+
+            <h3 className="text-xl font-medium text-ocean-navy mb-3">7.3 Data Not Used to Track You</h3>
+            <p>All data we collect is used solely for:</p>
+            <ul className="list-disc pl-6 mb-4">
+              <li>Providing personalized career guidance within our platform</li>
+              <li>Improving platform functionality and user experience</li>
+              <li>Technical support and troubleshooting</li>
+              <li>Legal compliance and security</li>
+            </ul>
+
+            <h3 className="text-xl font-medium text-ocean-navy mb-3">7.4 Opt-Out Options</h3>
+            <p>You can control data collection through:</p>
             <ul className="list-disc pl-6 mb-4">
               <li><strong>Platform Settings:</strong> Disable analytics in platform preferences</li>
               <li><strong>Browser Settings:</strong> Adjust privacy settings in your browser</li>
-              <li><strong>Contact Us:</strong> Request complete opt-out of tracking</li>
+              <li><strong>Contact Us:</strong> Request complete opt-out of data collection</li>
             </ul>
           </section>
 
