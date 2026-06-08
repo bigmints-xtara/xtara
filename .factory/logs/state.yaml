@@ -1,0 +1,98 @@
+project:
+  name: xtara-web
+  status: in-development
+  readme_summary: A modern web application named xtara-web built with Next.js 16
+    and React 19. It leverages Firebase for backend services, NextAuth for
+    authentication, and a component-driven UI architecture using Radix UI,
+    Tailwind CSS v4, and Framer Motion.
+  analyzed: 2026-06-08
+audit:
+  completed: 2026-06-08
+  total_files: 207
+  source_dirs: 8
+  key_findings:
+    - Firebase Admin used client-side (security risk)
+    - No Firestore Security Rules file in repo
+    - No React Query or SWR for data caching
+    - No unit tests (0 test files)
+    - CareerPath type duplicated across 2 files
+    - Busy-polling for career path (30 × 2s)
+    - Firebase config hard-coded (no env vars)
+    - NextAuth installed but minimally used
+  p0_recommendations:
+    - Add Firestore Security Rules
+    - Remove firebase-admin from client bundle
+    - Add Firestore index for waitForCareerPath
+  p1_recommendations:
+    - Deduplicate CareerPath interface
+    - Add React Query or SWR
+    - Replace npm install with npm ci in Dockerfile
+    - Add CI/CD pipeline
+package:
+  name: xtara-web
+  description: ""
+  version: 0.1.0
+  key_deps:
+    - "@radix-ui/react-avatar"
+    - "@radix-ui/react-dropdown-menu"
+    - "@radix-ui/react-progress"
+    - "@radix-ui/react-select"
+    - "@radix-ui/react-separator"
+    - "@radix-ui/react-slot"
+    - "@types/canvas-confetti"
+    - algoliasearch
+    - canvas-confetti
+    - class-variance-authority
+    - clsx
+    - firebase
+stack:
+  framework: next.js
+  packageManager: npm
+  linter: eslint
+user_journeys:
+  assessment: Anonymous → Location → Questionnaire → AI Recommendations → Career Path
+  career_exploration: Browse → Detail → Learn/Connect/Grow → Slideshow
+  profile: Sign Up → Edit Profile → Achievements → Dashboard
+  admin: Stories, Good Reads, Challenges, Sparks, Analytics
+structure:
+  - 📄 AGENTS.md
+  - 📄 DEPLOYMENT.md
+  - 📄 Dockerfile
+  - 📄 README.md
+  - 📄 components.json
+  - 📄 deploy.sh
+  - 📄 eslint.config.mjs
+  - 📄 next-env.d.ts
+  - 📄 next.config.ts
+  - 📄 package-lock.json
+  - 📄 package.json
+  - 📄 postcss.config.mjs
+  - 📁 public
+  - "  📄 file.svg"
+  - "  📁 fonts"
+  - "  📄 globe.svg"
+  - "  📁 illustrations"
+  - "  📁 images"
+  - "  📁 logo"
+  - "  📄 next.svg"
+  - "  📄 vercel.svg"
+  - "  📄 window.svg"
+  - 📁 scripts
+  - "  📄 diagnose-user-data.js"
+  - "  📄 migrate-data.js"
+  - 📄 set-env.sh
+  - 📁 src
+  - "  📁 app"
+  - "  📁 components"
+  - "  📁 content"
+  - "  📁 context"
+  - "  📁 data"
+  - "  📁 i18n"
+  - "  📁 lib"
+  - "  📁 types"
+  - "  📄 utils.tsx"
+  - 📄 start.sh
+  - 📄 tsconfig.json
+conventions:
+  - TypeScript
+key_decisions: []

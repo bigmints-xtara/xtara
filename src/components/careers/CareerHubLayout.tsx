@@ -1,0 +1,99 @@
+"use client";
+
+import { CareerPath, getCareerPathById } from "@/lib/firebase/career-helpers";
+import { ArrowLeft } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Navbar from "@/components/layout/Navbar";
+
+interface CareerHubLayoutProps {
+    title: string;
+    subtitle: string;
+    description: string;
+    icon: React.ReactNode;
+    colorClass: string; // e.g., "text-blue-400"
+    bgClass: string; // e.g., "bg-blue-500/10"
+    hideHeader?: boolean;
+    children: React.ReactNode;
+}
+
+export default function CareerHubLayout({
+    title, subtitle, description, icon,
+    colorClass, bgClass, children, hideHeader = false
+}: CareerHubLayoutProps) {
+    const { id } = useParams();
+    const router = useRouter();
+    const [careerPath, setCareerPath] = useState<CareerPath | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchPath = async () => {
+            if (!id) return;
+            // We fetch this just to ensure parent career exists and maybe show title in nav
+            try {
+                const path = await getCareerPathById(id as string);
+                setCareerPath(path);
+            } catch (error) {
+                console.error("Error fetching career", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPath();
+    }, [id]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[#0f172c] text-white flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+            </div>
+        );
+    }
+
+    if (!careerPath && !loading) {
+        return (
+            <div className="min-h-screen bg-[#0f172c] text-white flex items-center justify-center flex-col gap-4">
+                <h2 className="text-xl font-bold">Career path not found</h2>
+                <button onClick={() => router.push('/')} className="text-blue-400 hover:underline">Return Home</button>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-[#0f172c] text-white">
+            <Navbar />
+
+            <div className="container mx-auto max-w-5xl p-6 md:p-8 pb-20">
+                {/* Breadcrumb nav */}
+                <button
+                    onClick={() => router.push(`/careers/${id}`)}
+                    className="flex items-center text-gray-400 hover:text-white transition-colors mb-8 group text-sm font-medium"
+                >
+                    <ArrowLeft size={18} className="mr-2 group-hover:-translate-x-1 transition-transform" />
+                    Back to {careerPath?.title}
+                </button>
+
+                {/* Header */}
+                {!hideHeader && (
+                    <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mb-12 border-b border-white/10 pb-12">
+                        <div className={`p-6 rounded-2xl ${bgClass} ${colorClass}`}>
+                            {icon}
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-3 mb-2">
+                                <h1 className="text-4xl font-bold text-white">{title}</h1>
+                            </div>
+                            <h2 className={`text-xl font-medium ${colorClass} mb-3`}>{subtitle}</h2>
+                            <p className="text-gray-400 text-lg max-w-2xl">{description}</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* Content */}
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-none">
+                    {children}
+                </div>
+            </div>
+        </div>
+    );
+}

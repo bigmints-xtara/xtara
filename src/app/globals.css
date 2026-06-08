@@ -1,0 +1,188 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --font-sans: var(--font-inter);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-radius: var(--radius);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+:root {
+  /* Xtara Palette */
+  --xtara-navy: #003763;
+  --xtara-sky: #61B3E4;
+  --xtara-coral: #EF7521;
+  --xtara-gold: #F6B333;
+  --xtara-teal: #3CA6A6;
+  --xtara-cream: #F2E3D5;
+  --xtara-white: #FFFFFF;
+
+  /* Shadcn Semantic Mapping */
+  --background: #FFFFFF;
+  --foreground: #003763;
+  /* Navy text on white */
+
+  --card: #FFFFFF;
+  --card-foreground: #003763;
+
+  --popover: #FFFFFF;
+  --popover-foreground: #003763;
+
+  --primary: #003763;
+  --primary-foreground: #FFFFFF;
+
+  --secondary: #F6B333;
+  /* Sun Gold */
+  --secondary-foreground: #003763;
+  /* Navy text on Gold */
+
+  --muted: #F2E3D5;
+  /* Cream Sand */
+  --muted-foreground: #003763;
+  /* Navy text on Cream */
+
+  --accent: #61B3E4;
+  /* Sky Blue */
+  --accent-foreground: #003763;
+
+  --destructive: #EF7521;
+  /* Coral Orange as destructive/attention */
+  --destructive-foreground: #FFFFFF;
+
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #003763;
+
+  --radius: 0.625rem;
+
+  /* Chart Colors (Mapped to Palette) */
+  --chart-1: #003763;
+  /* Navy */
+  --chart-2: #61B3E4;
+  /* Sky */
+  --chart-3: #F6B333;
+  /* Gold */
+  --chart-4: #EF7521;
+  /* Coral */
+  --chart-5: #3CA6A6;
+  /* Teal */
+
+  --sidebar: #003763;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #F6B333;
+  --sidebar-primary-foreground: #003763;
+  --sidebar-accent: #61B3E4;
+  --sidebar-accent-foreground: #003763;
+  --sidebar-border: #334155;
+  --sidebar-ring: #61B3E4;
+}
+
+.dark {
+  /* Dark Mode - Inverted/Adjusted for readability if needed, 
+     but user asked for strict palette. Keeping Navy base. */
+  --background: #003763;
+  /* Navy Background */
+  --foreground: #FFFFFF;
+
+  --card: #0d426d;
+  /* Slightly lighter navy for cards */
+  --card-foreground: #FFFFFF;
+
+  --popover: #003763;
+  --popover-foreground: #FFFFFF;
+
+  --primary: #61B3E4;
+  /* Sky Blue as primary in dark mode for contrast */
+  --primary-foreground: #003763;
+
+  --secondary: #F6B333;
+  --secondary-foreground: #003763;
+
+  --muted: #1e4b75;
+  /* Muted Navy */
+  --muted-foreground: #a0c4e3;
+
+  --accent: #3CA6A6;
+  /* Teal */
+  --accent-foreground: #FFFFFF;
+
+  --destructive: #EF7521;
+  --destructive-foreground: #FFFFFF;
+
+  --border: #1e4b75;
+  --input: #1e4b75;
+  --ring: #61B3E4;
+
+  --chart-1: #61B3E4;
+  --chart-2: #F6B333;
+  --chart-3: #EF7521;
+  --chart-4: #3CA6A6;
+  --chart-5: #FFFFFF;
+
+  --sidebar: #00284a;
+  /* Darker Navy */
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #61B3E4;
+  --sidebar-primary-foreground: #003763;
+  --sidebar-accent: #1e4b75;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #1e4b75;
+  --sidebar-ring: #61B3E4;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+}

@@ -1,0 +1,55 @@
+# Dependencies
+node_modules
+
+# Build outputs
+.next
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Environment (copied explicitly if needed)
+.env
+.env.local
+.env.*.local
+.env.example
+
+# IDE & Editor
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Factory build engine
+.factory
+
+# Logs
+logs
+*.log
+
+# Deployment scripts (not needed in image)
+deploy.sh
+start.sh
+set-env.sh
+
+# Coverage
+coverage
+
+# TypeScript build info
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Test artifacts
+test-results
+
+# Misc build artifacts
+.eslintcache

@@ -1,0 +1,27 @@
+apiVersion: factory.com/v1alpha1
+kind: App
+name: xtara-web
+description: Existing codebase for xtara-web
+brd: >-
+  # xtara-web (BRD)
+
+
+  Existing codebase for xtara-web
+
+
+  ## Core Requirements & Integrations
+
+  - **Framework**: next.js
+
+  - **Package Manager**: npm
+
+  - **Detected Routes**: about, achievements, admin, assessment, assessment-data, careers, colleges, contact, dashboard,
+  download, home, login, news, privacy-policy, profile, signup, terms-of-use, test-college
+version: 0.1.0
+stack:
+  framework: next.js
+  packageManager: npm
+  linter: eslint
+features: []
+status: draft
+progressPercent: 0

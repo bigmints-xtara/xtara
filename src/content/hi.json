@@ -1,0 +1,540 @@
+{
+  "languageSwitcher": {
+    "label": "भाषा",
+    "options": {
+      "en": "English",
+      "hi": "हिन्दी",
+      "ml": "മലയാളം",
+      "ta": "தமிழ்"
+    }
+  },
+  "metadata": {
+    "title": "Xtara - करियर गाइडेंस",
+    "description": "सफलता की ओर आपका पहला कदम"
+  },
+  "home": {
+    "hero": {
+      "badge": "AI-पावर्ड करियर गाइडेंस",
+      "titleLine1": "खोजें अपना",
+      "titleEmphasis": "सही भविष्य",
+      "description": "भविष्य की चिंता छोड़ें। हमारा स्मार्ट AI आपकी पर्सनालिटी और स्किल्स को समझकर 800+ करियर विकल्पों में से आपके लिए सबसे बेहतरीन रास्ता चुनता है।",
+      "ctaPrimaryLoggedIn": "अपनी प्रोग्रेस देखें",
+      "ctaPrimaryLoggedOut": "वेटलिस्ट में जुड़ें",
+      "ctaSecondary": "करियर एक्सप्लोर करें",
+      "highlights": [
+        {
+          "title": "करियर फिट असेसमेंट",
+          "description": "अपनी रुचि और स्वभाव के अनुसार सही करियर चुनें।"
+        },
+        {
+          "title": "सही लर्निंग प्लान",
+          "description": "क्या पढ़ना है, कहां एडमिशन लेना है और जॉब के लिए कैसे तैयार होना है - सब कुछ जानें।"
+        },
+        {
+          "title": "कॉलेज और कोर्स मैच",
+          "description": "अपने लक्ष्यों के हिसाब से बेस्ट कॉलेज और कोर्स खोजें।"
+        }
+      ]
+    },
+    "logos": {
+      "badge": "भरोसेमंद साथी",
+      "trustedByPrefix": "भरोसा है",
+      "trustedByCount": "2000+",
+      "trustedBySuffix": "छात्रों और अभिभावकों का"
+    },
+    "benefits": {
+      "badge": "किसके लिए है?",
+      "title": "छात्रों और उन्हें गाइड करने वालों के लिए।",
+      "description": "Xtara आपको करियर से जुड़े जरूरी फैसले सही समय पर लेने में मदद करता है।",
+      "audiences": [
+        {
+          "title": "छात्र",
+          "description": "अपनी स्किल्स और पसंद के हिसाब से करियर चुनें।"
+        },
+        {
+          "title": "माता-पिता",
+          "description": "बच्चों के भविष्य को लेकर सही जानकारी और गाइडेंस पाएं।"
+        },
+        {
+          "title": "करियर कोच",
+          "description": "सही डेटा के साथ छात्रों को बेहतर सलाह दें।"
+        },
+        {
+          "title": "शिक्षक",
+          "description": "क्लास में छात्रों को करियर के बारे में सही जानकारी दें।"
+        },
+        {
+          "title": "संस्थान",
+          "description": "बड़े पैमाने पर करियर गाइडेंस दें और रिजल्ट्स ट्रैक करें।"
+        },
+        {
+          "title": "कंपनियां",
+          "description": "इंटर्नशिप और जॉब्स के लिए टैलेंटेड छात्रों को खोजें।"
+        }
+      ],
+      "featuresBadge": "खास फीचर्स",
+      "featuresTitle": "सभी के लिए कुछ न कुछ।",
+      "featuresDescription": "सरल और आसान टूल्स, हर किसी की जरूरत के हिसाब से।",
+      "segments": [
+        {
+          "badge": "छात्र और माता-पिता",
+          "title": "सही कोर्स और कॉलेज चुनें, बिना किसी कंफ्यूजन के।",
+          "bullets": [
+            "आगे क्या पढ़ना है, यह बताने वाला कोर्स फाइंडर।",
+            "बजट और शहर के हिसाब से कॉलेज लिस्ट।",
+            "आसान भाषा में करियर की जानकारी।"
+          ]
+        },
+        {
+          "badge": "शिक्षक",
+          "title": "छात्रों को सही दिशा दिखाएं।",
+          "bullets": [
+            "पूरी क्लास की करियर रिपोर्ट शेयर करें।",
+            "छात्रों की प्रोग्रेस एक ही जगह देखें।",
+            "क्लास या बैच के हिसाब से इनसाइट्स पाएं।"
+          ]
+        },
+        {
+          "badge": "कंपनियां",
+          "title": "इंटर्नशिप और हायरिंग के लिए सही छात्र चुनें।",
+          "bullets": [
+            "कोर्स और स्किल के आधार पर टैलेंट खोजें।",
+            "रुचि और क्षमता के आधार पर शॉर्टलिस्ट करें।",
+            "कॉलेज और शहर के हिसाब से कनेक्ट करें।"
+          ]
+        }
+      ]
+    },
+    "faq": {
+      "label": "FAQs",
+      "title": "अक्सर पूछे जाने वाले सवाल",
+      "subtitle": "कुछ भी पूछें!",
+      "contactEmail": "help@xtara.ai",
+      "items": [
+        {
+          "question": "क्या Xtara फ्री है?",
+          "answer": "जी हां। छात्रों के लिए Xtara बिल्कुल फ्री है। असेसमेंट, करियर जानकारी और कोर्स सुझावों के लिए कोई चार्ज नहीं है।"
+        },
+        {
+          "question": "सुझाव कितने सटीक होते हैं?",
+          "answer": "हम आपकी स्किल्स, रुचि और लक्ष्यों के आधार पर करियर सुझाते हैं। हमारा काम आपको सही राह दिखाना है, फैसला आपका है।"
+        },
+        {
+          "question": "क्या कॉलेज या कोर्स भी बताए जाएंगे?",
+          "answer": "बिल्कुल! Xtara आपको सही कोर्स, एन्ट्रेंस एग्जाम और कॉलेज के बारे में भी जानकारी देता है।"
+        },
+        {
+          "question": "अगर कम मार्क्स आए हैं तो क्या यह मदद करेगा?",
+          "answer": "हां! जो छात्र कंफ्यूज्ड हैं, उनके लिए ही Xtara बना है। हमारा असेसमेंट आपको स्टेप-बाय-स्टेप गाइड करेगा।"
+        },
+        {
+          "question": "क्या इसे माता-पिता या शिक्षक भी इस्तेमाल कर सकते हैं?",
+          "answer": "हम माता-पिता और मेंटर्स के लिए अलग डैशबोर्ड बना रहे हैं ताकि वे बच्चों की बेहतर मदद कर सकें - यह जल्द ही आ रहा है!"
+        }
+      ]
+    },
+    "cta": {
+      "badge": "अभी शुरू करें",
+      "title": "ऐप डाउनलोड करें और आगे बढ़ें",
+      "description": "Android और iOS पर उपलब्ध - छात्र, माता-पिता और शिक्षकों के लिए एकदम फ्री।"
+    },
+    "waitlist": {
+      "title": "Xtara वेटलिस्ट में जुड़ें",
+      "description": "सबसे पहले अर्ली एक्सेस पाने के लिए अभी साइन अप करें।"
+    }
+  },
+  "common": {
+    "breadcrumb": {
+      "home": "होम",
+      "about": "हमारे बारे में",
+      "contact": "संपर्क",
+      "news": "न्यूज़",
+      "download": "ऐप",
+      "terms": "नियम व शर्तें",
+      "privacy": "प्राइवेसी पॉलिसी"
+    },
+    "pagination": {
+      "previous": "पिछला",
+      "next": "अगला"
+    }
+  },
+  "about": {
+    "metadata": {
+      "title": "About - Xtara",
+      "description": "Xtara के मिशन और विज़न के बारे में जानें।",
+      "keywords": "xtara about, career guidance ai",
+      "ogImage": "/images/og-about.jpg"
+    },
+    "hero": {
+      "title": "हर छात्र को मिले सही करियर, यही है हमारा लक्ष्य।",
+      "subtitle": "AI की मदद से और सही डेटा के साथ, Xtara छात्रों को अपने भविष्य के लिए सही फैसले लेने में मदद करता है।"
+    },
+    "sections": [
+      {
+        "title": "हमारा मिशन",
+        "description": "हम मानते हैं कि हर छात्र को उसकी क्षमता के अनुसार करियर चुनने का मौका मिलना चाहिए। Xtara का AI प्लेटफॉर्म आपको वो सभी जरूरी टूल्स देता है जिससे आप अपने भविष्य के लिए सही फैसला ले सकें।",
+        "imageSrc": "/images/001.png",
+        "bullets": [
+          {
+            "title": "पर्सनल गाइडेंस",
+            "description": "AI असेसमेंट जो हर छात्र की यूनिक प्रोफाइल को समझता है।"
+          },
+          {
+            "title": "सही डेटा",
+            "description": "पूरी रिसर्च और डेटा पर आधारित करियर सलाह।"
+          },
+          {
+            "title": "सबके लिए",
+            "description": "भारत के हर कोने में छात्रों के लिए उपलब्ध।"
+          }
+        ]
+      },
+      {
+        "title": "हमारी कहानी",
+        "description": "2024 में हमने महसूस किया कि बहुत से छात्र बिना सही जानकारी के करियर चुन रहे हैं। इसी समस्या को सुलझाने के लिए शिक्षकों और टेक्नोलॉजी एक्सपर्ट्स ने मिलकर Xtara की शुरुआत की।",
+        "imageSrc": "/images/002.png",
+        "bullets": [
+          {
+            "title": "समस्या",
+            "description": "सही गाइडेंस के बिना करियर के फैसले लेना।"
+          },
+          {
+            "title": "समाधान",
+            "description": "AI प्लेटफॉर्म जो करियर गाइडेंस को आसान बनाए।"
+          },
+          {
+            "title": "टीम",
+            "description": "एजुकेटर्स और करियर एक्सपर्ट्स की एक समर्पित टीम।"
+          }
+        ]
+      }
+    ],
+    "stats": [
+      {
+        "title": "1M+",
+        "description": "लाखों छात्रों को सही करियर चुनने में मदद की।"
+      },
+      {
+        "title": "95%",
+        "description": "असेसमेंट और गाइडेंस के लिए पॉजिटिव फीडबैक।"
+      },
+      {
+        "title": "250+",
+        "description": "लोकल और ग्लोबल करियर ऑप्शन्स।"
+      }
+    ]
+  },
+  "contact": {
+    "metadata": {
+      "title": "Contact - Xtara",
+      "description": "मदद और पूछताछ के लिए Xtara टीम से संपर्क करें।",
+      "keywords": "connect xtara",
+      "ogImage": "/images/og-contact.jpg"
+    },
+    "hero": {
+      "title": "बताएं, हम कैसे मदद करें?",
+      "subtitle": "सपोर्ट, पार्टनरशिप या किसी भी सवाल के लिए हमसे संपर्क करें।"
+    },
+    "form": {
+      "title": "मैसेज भेजें",
+      "subtitle": "हम जल्द से जल्द आपको रिप्लाई करेंगे।",
+      "contactEmail": "help@xtara.ai",
+      "responseTime": "24-48 घंटों में",
+      "fields": {
+        "name": {
+          "label": "नाम *",
+          "placeholder": "आपका नाम"
+        },
+        "email": {
+          "label": "ईमेल *",
+          "placeholder": "your.email@example.com"
+        },
+        "subject": {
+          "label": "विषय *",
+          "placeholder": "किस बारे में है?"
+        },
+        "message": {
+          "label": "संदेश *",
+          "placeholder": "विस्तार से लिखें..."
+        }
+      },
+      "subjectOptions": [
+        {
+          "value": "General Inquiry",
+          "label": "सामान्य पूछताछ"
+        },
+        {
+          "value": "Technical Support",
+          "label": "टेक्निकल सपोर्ट"
+        },
+        {
+          "value": "Partnership",
+          "label": "पार्टनरशिप"
+        },
+        {
+          "value": "Feedback",
+          "label": "फीडबैक"
+        },
+        {
+          "value": "Other",
+          "label": "अन्य"
+        }
+      ],
+      "status": {
+        "success": "मैसेज मिल गया! हम जल्द संपर्क करेंगे।",
+        "error": "भेजने में दिक्कत हुई। फिर से कोशिश करें।"
+      },
+      "actions": {
+        "submit": "भेजें",
+        "sending": "भेजा जा रहा है..."
+      },
+      "otherWays": {
+        "title": "संपर्क के अन्य तरीके",
+        "emailLabel": "ईमेल",
+        "responseTimeLabel": "रिप्लाई टाइम"
+      },
+      "mailto": {
+        "name": "नाम",
+        "email": "ईमेल",
+        "message": "मैसेज"
+      }
+    }
+  },
+  "news": {
+    "metadata": {
+      "fallbackTitle": "न्यूज़ - Xtara",
+      "fallbackDescription": "Xtara से जुड़ी ताज़ा खबरें।"
+    },
+    "hero": {
+      "title": "Xtara अपडेट्स"
+    },
+    "badge": "समाचार",
+    "sections": {
+      "latest": "लेटेस्ट आर्टिकल्स",
+      "more": "और पढ़ें"
+    }
+  },
+  "download": {
+    "metadata": {
+      "title": "Download - Xtara",
+      "description": "Download Xtara for Android and iOS",
+      "keywords": "download xtara app",
+      "ogImage": "/images/og-download.jpg"
+    },
+    "hero": {
+      "title": "Xtara ऐप डाउनलोड करें",
+      "subtitle": "अपने फोन पर करियर जर्नी शुरू करें।"
+    },
+    "downloadSection": {
+      "title": "ऐप इंस्टॉल करें",
+      "subtitle": "iOS और Android पर उपलब्ध। छात्रों और अभिभावकों के लिए।",
+      "mockupImage": "/images/hero-mockup.png",
+      "mockupAlt": "Xtara app mockup",
+      "appStoreUrl": "https://apps.apple.com/app/xtara-career-guidance/id1234567890",
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.bigmints.xtara"
+    },
+    "features": {
+      "title": "आप क्या कर सकते हैं?",
+      "subtitle": "सही फैसलों के लिए स्मार्ट गाइडेंस।",
+      "items": [
+        {
+          "title": "पर्सनल असेसमेंट",
+          "description": "अपनी ताकत और रुचि को पहचानें।"
+        },
+        {
+          "title": "करियर प्लान",
+          "description": "आगे क्या करना है और कैसे अप्लाई करना है, जानें।"
+        },
+        {
+          "title": "अवसर",
+          "description": "अपने आसपास के कॉलेज और कोर्स खोजें।"
+        }
+      ]
+    },
+    "finalCta": {
+      "title": "तैयार हैं अपने भविष्य के लिए?",
+      "subtitle": "आज ही ऐप डाउनलोड करें और शुरुआत करें।"
+    },
+    "storeButtons": {
+      "appStore": {
+        "caption": "Download on the",
+        "title": "App Store"
+      },
+      "playStore": {
+        "caption": "GET IT ON",
+        "title": "Google Play"
+      }
+    }
+  },
+  "privacy": {
+    "metadata": {
+      "title": "Privacy Policy - Xtara",
+      "description": "Privacy Policy for Xtara Career Guidance Platform.",
+      "keywords": "privacy policy xtara",
+      "ogImage": "/images/og-privacy.jpg",
+      "canonicalUrl": "https://xtara.com/privacy-policy"
+    },
+    "contentHtml": "<h1>प्राइवेसी पॉलिसी</h1><p>जल्द आ रहा है...</p>"
+  },
+  "header": {
+    "logoAlt": "Xtara Logo",
+    "menu": {
+      "open": "मेन्यू"
+    },
+    "nav": {
+      "dashboard": "डैशबोर्ड",
+      "profile": "प्रोफाइल",
+      "achievements": "अचीवमेंट्स",
+      "about": "हमारे बारे में",
+      "news": "न्यूज़",
+      "contact": "संपर्क"
+    },
+    "cta": {
+      "joinWaitlist": "वेटलिस्ट जॉइन करें"
+    }
+  },
+  "footer": {
+    "brand": "Xtara",
+    "about": "छात्रों को उनके सपनों का करियर खोजने में मदद करने वाला प्लेटफॉर्म।",
+    "quickLinksTitle": "Quick Links",
+    "contactTitle": "संपर्क",
+    "labels": {
+      "email": "ईमेल",
+      "phone": "फोन"
+    },
+    "links": {
+      "about": "हमारे बारे में",
+      "news": "न्यूज़",
+      "contact": "संपर्क",
+      "privacy": "प्राइवेसी पॉलिसी",
+      "terms": "नियम"
+    },
+    "email": "xtara.connect@gmail.com",
+    "phone": "+91 99477 93728",
+    "socials": {
+      "twitter": "https://twitter.com/xtara_ai",
+      "facebook": "https://facebook.com/xtara.ai",
+      "linkedin": "https://www.linkedin.com/company/xtara",
+      "instagram": "https://www.instagram.com/xtara.ai"
+    },
+    "copyright": "Copyright © {year} xtara.ai. All rights reserved."
+  },
+  "achievements": {
+    "hero": {
+      "title": "आपकी उपलब्धियां",
+      "subtitle": "अपनी प्रोग्रेस ट्रैक करें और हर जीत का जश्न मनाएं।"
+    },
+    "stats": {
+      "points": "पॉइंट्स",
+      "currentTier": "वर्तमान लेवल",
+      "tier": "लेवल",
+      "medals": "मेडल",
+      "loading": "लोड हो रहा है...",
+      "fallbackTier": "स्पार्क"
+    },
+    "weeklyProgress": {
+      "title": "इस हफ्ते की प्रोग्रेस",
+      "goodReads": "रीडिंग",
+      "challenges": "चैलेंज",
+      "sparks": "स्पार्क्स"
+    },
+    "medals": {
+      "title": "मेडल",
+      "common": "कॉमन",
+      "rare": "रेयर",
+      "epic": "एपिक"
+    },
+    "allTime": {
+      "title": "अब तक की उपलब्धियां",
+      "games": "गेम्स",
+      "sparks": "स्पार्क्स",
+      "challenges": "चैलेंज",
+      "goodReads": "रीडिंग"
+    },
+    "pointsByCategory": {
+      "title": "कैटेगरी के हिसाब से पॉइंट्स",
+      "games": {
+        "title": "गेम्स",
+        "description": "क्विज़ और वर्ड गेम्स"
+      },
+      "sparks": {
+        "title": "स्पार्क्स",
+        "description": "शॉर्ट लेसन्स और कोर्सेस"
+      },
+      "challenges": {
+        "title": "चैलेंज",
+        "description": "मुकाबले और क्विज़"
+      },
+      "goodReads": {
+        "title": "रीडिंग",
+        "description": "करियर आर्टिकल्स"
+      },
+      "streaks": {
+        "title": "स्ट्रीक्स",
+        "description": "लगातार बने रहने का बोनस"
+      }
+    }
+  },
+  "currentGoalCard": {
+    "greeting": {
+      "hello": "हेलो {name}",
+      "fallbackName": "दोस्त",
+      "welcome": "करियर डैशबोर्ड में स्वागत है"
+    },
+    "emptyState": {
+      "eyebrow": "शुरुआत करें",
+      "title": "अपना सही करियर खोजें",
+      "description": "हमारी असेसमेंट से अपनी काबिलियत और पसंद का सही करियर पहचानें।",
+      "cta": "असेसमेंट शुरू करें"
+    },
+    "pursuing": {
+      "label": "आपका लक्ष्य",
+      "status": "चल रहा है"
+    }
+  },
+  "userDashboard": {
+    "featureLabel": "{prefix}: {title}",
+    "weeklyProgress": {
+      "title": "इस हफ्ते का स्कोर",
+      "subtitle": "बढ़िया चल रहा है!",
+      "remaining": "{hours} घंटे बाकी",
+      "completion": "{percent}% पूरा हुआ"
+    },
+    "sections": {
+      "stories": "आपके लिए स्टोरीज़",
+      "goodReads": "पढ़ने के लिए",
+      "challenges": "रीडिंग चैलेंज",
+      "sparks": "स्पार्क्स",
+      "games": "गेम्स"
+    },
+    "featurePrefixes": {
+      "story": "स्टोरी",
+      "read": "इन्फो",
+      "challenge": "चैलेंज",
+      "spark": "स्पार्क",
+      "game": "गेम"
+    },
+    "spark": {
+      "quickLearning": "क्विक लर्निंग"
+    },
+    "gameModes": {
+      "quiz": "क्विज़",
+      "puzzle": "पहेली",
+      "memory": "मेमोरी"
+    }
+  },
+  "statsCard": {
+    "title": "आपके आंकड़े",
+    "totalPoints": "कुल पॉइंट्स",
+    "medals": "मेडल",
+    "currentTier": "वर्तमान लेवल"
+  },
+  "downloadModal": {
+    "defaultTitle": "ऐप डाउनलोड करें",
+    "heading": "ऐप से और भी बहुत कुछ",
+    "body": "{feature} का इस्तेमाल करने के लिए हमारा मोबाइल ऐप डाउनलोड करें।",
+    "featureFallback": "यह फीचर",
+    "ios": "iOS ऐप",
+    "android": "Android ऐप"
+  }
+}

@@ -1,0 +1,17 @@
+version: 1
+name: xtara-web
+description: Bridge for xtara-web
+factory_home: /home/bigmints/.factory
+stack:
+  framework: next.js
+  packageManager: npm
+  linter: eslint
+conventions:
+  rules: .factory/knowledge
+  agents: .factory/AGENTS.md
+agentic:
+  logs_dir: .factory/logs
+  task_queue: .factory/task-manager/todo.yaml
+  skill_index: .factory/skill-index.yaml
+  workflows_dir: .factory/workflows
+  knowledge_dir: .factory/knowledge
