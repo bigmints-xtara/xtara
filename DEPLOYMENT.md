@@ -5,9 +5,10 @@ This guide explains how to deploy the Xtara Web application to Google Cloud Run.
 
 ## Prerequisites
 
-1. **Google Cloud SDK** - Install from [https://cloud.google.com/sdk/docs/install](https://cloud.google.com/sdk/docs/install)
-2. **Docker** - Install from [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
-3. **Service Account Key** - Located at `/credentials/serviceAccountKey_Prod.json`
+1. **Google Cloud SDK** — Install from [https://cloud.google.com/sdk/docs/install](https://cloud.google.com/sdk/docs/install)
+2. **Docker (with Buildx)** — Install from [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
+3. **Git** — Install from [https://git-scm.com/](https://git-scm.com/)
+4. **Application Default Credentials (ADC)** — Configure authentication (see Authentication section below)
 
 ## Project Configuration
 
@@ -15,56 +16,116 @@ This guide explains how to deploy the Xtara Web application to Google Cloud Run.
 - **Service Name**: `xtara-web`
 - **Region**: `us-central1`
 - **Platform**: `managed`
+- **Artifact Registry**: `us-docker.pkg.dev/bigmints-xtara/xtara-web-artifacts`
+
+## Authentication
+
+The deployment script uses **Application Default Credentials (ADC)** instead of a hardcoded service account key. This is more secure and works seamlessly with Workload Identity Federation in CI/CD pipelines.
+
+### Local Development
+
+```bash
+gcloud auth application-default login
+```
+
+### CI/CD Pipelines
+
+Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable:
+
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=<path-to-key>
+```
+
+Or use Workload Identity Federation (recommended):
+
+```bash
+gcloud auth application-default set-credentials
+```
+
+### First-Time Setup
+
+Create the dedicated Artifact Registry repository:
+
+```bash
+gcloud artifacts repositories create xtara-web-artifacts \
+  --repository-name=xtara-web-artifacts \
+  --project=bigmints-xtara \
+  --location=us-central1 \
+  --repository-format="Docker"
+```
 
 ## Quick Deploy
 
-### 1. Simple Deployment
-
-From the `xtara-web` directory, run:
+### Simple Deployment
 
 ```bash
 ./deploy.sh
 ```
 
-This script will:
-1. ✅ Verify prerequisites (gcloud, docker, service account)
-2. ✅ Authenticate with Google Cloud
-3. ✅ Build the Docker image
-4. ✅ Push to Google Container Registry (GCR)
-5. ✅ Deploy to Cloud Run
-6. ✅ Display the service URL
+This auto-computes a version tag from the git commit hash + timestamp and deploys.
 
-### 2. Manual Deployment
-
-If you prefer to run commands manually:
+### Deploy with Explicit Version Tag
 
 ```bash
-# 1. Authenticate
-gcloud auth activate-service-account --key-file=../credentials/serviceAccountKey_Prod.json
+./deploy.sh v1.2.3
+```
 
-# 2. Set project
-gcloud config set project bigmints-xtara
+### Preview Version Tag (no deploy)
 
-# 3. Configure Docker
-gcloud auth configure-docker
+```bash
+./deploy.sh --version
+```
 
-# 4. Build image
-docker build -t gcr.io/bigmints-xtara/xtara-web:latest .
+### Dry Run (print commands without executing)
 
-# 5. Push image
-docker push gcr.io/bigmints-xtara/xtara-web:latest
+```bash
+./deploy.sh --dry-run
+```
 
-# 6. Deploy to Cloud Run
-gcloud run deploy xtara-web \
-  --image gcr.io/bigmints-xtara/xtara-web:latest \
-  --platform managed \
+### Combined
+
+```bash
+./deploy.sh v1.2.3 --dry-run
+```
+
+## How the Deploy Script Works
+
+1. **Pre-flight Checks** — Verifies gcloud, Docker, Buildx, and git are installed
+2. **Authentication** — Validates ADC is configured (falls back to `GOOGLE_APPLICATION_CREDENTIALS`)
+3. **Build** — Uses `docker buildx build` with multi-platform support (`linux/amd64`, `linux/arm64`), BuildKit caching, and provenance metadata
+4. **Push** — Pushes versioned and `:latest` tags to the dedicated Artifact Registry repository
+5. **Deploy** — Deploys the versioned image to Cloud Run
+
+## Version Tagging
+
+Images are tagged with a deterministic version derived from the git commit short hash and a timestamp:
+
+```
+<git-hash>-<YYYYMMDD-HHMMSS>
+# e.g.: a1b2c3d-20260609-143000
+```
+
+Both the versioned tag and `:latest` are pushed to the registry. This enables easy rollbacks to any previous version.
+
+## Artifact Registry
+
+The dedicated repository `us-docker.pkg.dev/bigmints-xtara/xtara-web-artifacts` is used instead of the default `cloud-run-source-deploy` repository for better organization and versioning.
+
+### Listing Available Versions
+
+```bash
+gcloud artifacts versions list \
+  --repository=xtara-web-artifacts \
+  --project=bigmints-xtara
+```
+
+### Rollback to a Previous Version
+
+```bash
+gcloud run services update xtara-web \
+  --image us-docker.pkg.dev/bigmints-xtara/xtara-web-artifacts/xtara-web:<previous-tag> \
   --region us-central1 \
-  --allow-unauthenticated \
-  --port 8080 \
-  --memory 512Mi \
-  --cpu 1 \
-  --min-instances 0 \
-  --max-instances 10
+  --project bigmints-xtara
 ```
 
 ## Environment Variables
@@ -179,11 +240,12 @@ View metrics in the [Cloud Console](https://console.cloud.google.com/run/detail/
 
 1. Check Docker is running: `docker ps`
 2. Verify `next.config.ts` has `output: 'standalone'`
-3. Check build logs for errors
+3. Check BuildKit is enabled: `docker buildx ls`
+4. Check build logs for errors
 
 ### Deployment Fails
 
-1. Verify service account permissions
+1. Verify ADC is configured: `gcloud auth application-default credentials-list`
 2. Check quota limits in GCP
 3. Review Cloud Run error logs
 
@@ -192,33 +254,6 @@ View metrics in the [Cloud Console](https://console.cloud.google.com/run/detail/
 1. Check environment variables are set correctly
 2. Review application logs: `gcloud run logs read`
 3. Verify Firebase credentials
-
-## Rolling Back
-
-To rollback to a previous revision:
-
-```bash
-# List revisions
-gcloud run revisions list --service xtara-web --region us-central1
-
-# Rollback to specific revision
-gcloud run services update-traffic xtara-web \
-  --region us-central1 \
-  --to-revisions REVISION_NAME=100
-```
-
-## Cost Optimization
-
-Cloud Run charges based on:
-- CPU and memory usage (per second)
-- Number of requests
-- Egress traffic
-
-Tips to reduce costs:
-1. Use `--min-instances 0` to scale to zero when idle
-2. Optimize image size (multi-stage Docker build)
-3. Set appropriate memory limits
-4. Enable HTTP/2 and connection pooling
 
 ## CI/CD Integration
 
@@ -238,16 +273,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Setup Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
         with:
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
           project_id: bigmints-xtara
-      
+
+      - name: Authenticate with ADC
+        run: gcloud auth application-default set-credentials
+
       - name: Deploy
         run: ./deploy.sh
 ```
+
+## Cost Optimization
+
+Cloud Run charges based on:
+- CPU and memory usage (per second)
+- Number of requests
+- Egress traffic
+
+Tips to reduce costs:
+1. Use `--min-instances 0` to scale to zero when idle
+2. Optimize image size (multi-stage Docker build)
+3. Set appropriate memory limits
+4. Enable HTTP/2 and connection pooling
 
 ## Support
 

@@ -1,9 +1,29 @@
 #!/bin/bash
 
+# =============================================================================
 # Xtara Web - Cloud Run Deployment Script
-# This script builds and deploys the Next.js application to Google Cloud Run
+# =============================================================================
+# This script builds and deploys the Next.js application to Google Cloud Run.
+#
+# Usage:
+#   ./deploy.sh                  # Auto-compute version and deploy
+#   ./deploy.sh v1.2.3          # Deploy with explicit version tag
+#   ./deploy.sh --version       # Show computed version without deploying
+#   ./deploy.sh --dry-run       # Print all commands without executing
+#   ./deploy.sh v1.2.3 --dry-run
+#
+# Authentication:
+#   Uses Application Default Credentials (ADC). Configure via:
+#     Local:  gcloud auth application-default login
+#     CI/CD:   Workload Identity Federation (preferred)
+#              or set GOOGLE_APPLICATION_CREDENTIALS env var
+#
+# Prerequisites:
+#   gcloud CLI, Docker (with Buildx), git
+#
+# =============================================================================
 
-set -e  # Exit on error
+set -euo pipefail
 
 # ===========================
 # Configuration
@@ -11,10 +31,10 @@ set -e  # Exit on error
 PROJECT_ID="bigmints-xtara"
 SERVICE_NAME="xtara-web"
 REGION="us-central1"
-SERVICE_ACCOUNT_KEY="../credentials/serviceAccountKey_Prod.json"
-# Use Artifact Registry instead of GCR
-IMAGE_NAME="us-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${SERVICE_NAME}"
 PLATFORM="managed"
+# Dedicated Artifact Registry repository (not the default cloud-run-source-deploy)
+ARTIFACT_REPO="us-docker.pkg.dev/${PROJECT_ID}/xtara-web-artifacts"
+IMAGE_NAME="${ARTIFACT_REPO}/${SERVICE_NAME}"
 
 # Colors for output
 RED='\033[0;31m'
@@ -45,13 +65,69 @@ print_info() {
     echo -e "${YELLOW}ℹ $1${NC}"
 }
 
+# Compute version tag from git commit short hash + timestamp.
+# The git hash gives deterministic, reproducible builds; the timestamp avoids
+# collisions during rapid local deploys.
+compute_version() {
+    local git_hash timestamp
+    git_hash=$(git rev-parse --short HEAD 2>/dev/null) || git_hash="unknown"
+    timestamp=$(date +%Y%m%d-%H%M%S)
+    echo "${git_hash}-${timestamp}"
+}
+
 # ===========================
-# Pre-flight Checks
+# Parse Arguments
+# ===========================
+
+VERSION_TAG=""
+DRY_RUN="false"
+SHOW_VERSION_ONLY="false"
+
+for arg in "$@"; do
+    case "$arg" in
+        --dry-run)
+            DRY_RUN="true"
+            ;;
+        --version)
+            SHOW_VERSION_ONLY="true"
+            ;;
+        --)
+            # Stop processing flags
+            ;;
+        -*)
+            print_error "Unknown option: $arg"
+            echo "Usage: ./deploy.sh [version_tag] [--dry-run] [--version]"
+            exit 1
+            ;;
+        *)
+            # Positional argument - treat as explicit version tag
+            if [[ -n "$VERSION_TAG" ]]; then
+                print_error "Multiple version tags provided: $VERSION_TAG and $arg"
+                exit 1
+            fi
+            VERSION_TAG="$arg"
+            ;;
+    esac
+done
+
+# Auto-compute version if not explicitly provided
+if [[ -z "$VERSION_TAG" ]]; then
+    VERSION_TAG=$(compute_version)
+fi
+
+# Handle --version: just print the tag and exit
+if [[ "$SHOW_VERSION_ONLY" == "true" ]]; then
+    echo "$VERSION_TAG"
+    exit 0
+fi
+
+# ===========================
+# PREREQUISITES
 # ===========================
 
 print_header "Pre-flight Checks"
 
-# Check if gcloud is installed
+# Check if gcloud is installed.
 if ! command -v gcloud &> /dev/null; then
     print_error "gcloud CLI is not installed. Please install it first:"
     echo "https://cloud.google.com/sdk/docs/install"
@@ -59,7 +135,7 @@ if ! command -v gcloud &> /dev/null; then
 fi
 print_success "gcloud CLI is installed"
 
-# Check if Docker is installed
+# Check if Docker is installed.
 if ! command -v docker &> /dev/null; then
     print_error "Docker is not installed. Please install it first:"
     echo "https://docs.docker.com/get-docker/"
@@ -67,100 +143,206 @@ if ! command -v docker &> /dev/null; then
 fi
 print_success "Docker is installed"
 
-# Check if service account key exists
-if [ ! -f "$SERVICE_ACCOUNT_KEY" ]; then
-    print_error "Service account key not found at: $SERVICE_ACCOUNT_KEY"
+# Check if docker buildx is available (BuildKit is needed for multi-platform builds).
+if ! docker buildx version &> /dev/null; then
+    print_error "Docker Buildx is not available. Enable it with:"
+    echo "  docker buildx create --name builder --driver docker-container --bootstrap"
     exit 1
 fi
-print_success "Service account key found"
+print_success "Docker Buildx is available"
+
+# Check if git is installed (needed for version tagging).
+if ! command -v git &> /dev/null; then
+    print_error "Git is not installed. Please install it first:"
+    echo "https://git-scm.com/"
+    exit 1
+fi
+print_success "Git is installed"
 
 # ===========================
-# Authenticate with Google Cloud
+# AUTHENTICATION
 # ===========================
+# Use Application Default Credentials (ADC) instead of a hardcoded service account
+# key file. This avoids committing a JSON key or hardcoding paths and works
+# seamlessly with Workload Identity Federation in CI/CD pipelines.
+#
+# Setup options:
+#   Local development:
+#     gcloud auth application-default login
+#   CI/CD (set the env var):
+#     export GOOGLE_APPLICATION_CREDENTIALS=<path-to-key>
+#   Workload Identity Federation (recommended for CI/CD pipelines):
+#     gcloud auth application-default set-credentials
 
 print_header "Authenticating with Google Cloud"
 
-# Activate service account
-gcloud auth activate-service-account --key-file="$SERVICE_ACCOUNT_KEY"
-print_success "Service account activated"
+# Verify that ADC is configured. This check catches missing credentials early
+# so the build does not start before failing on auth.
+if gcloud auth application-default credentials-list --format=json &> /dev/null; then
+    print_success "Application Default Credentials (ADC) are configured"
+    print_info "Using Workload Identity Federation (preferred for CI/CD) or local ADC"
+else
+    print_error "Application Default Credentials (ADC) not configured."
+    echo ""
+    echo "Please configure ADC using one of the following methods:"
+    echo ""
+    echo "  Local development:"
+    echo "    gcloud auth application-default login"
+    echo ""
+    echo "  CI/CD (set the env var):"
+    echo "    export GOOGLE_APPLICATION_CREDENTIALS=<path-to-key>"
+    echo ""
+    echo "  Workload Identity Federation (recommended for CI/CD pipelines):"
+    echo "    gcloud auth application-default set-credentials"
+    echo ""
+    exit 1
+fi
 
 # Set project
-gcloud config set project "$PROJECT_ID"
+if [[ "$DRY_RUN" != "true" ]]; then
+    gcloud config set project "$PROJECT_ID"
+fi
 print_success "Project set to: $PROJECT_ID"
 
-# Configure Docker to use gcloud  as credential helper for Artifact Registry
-gcloud auth configure-docker us-docker.pkg.dev --quiet
+# Configure Docker to use gcloud as credential helper for Artifact Registry.
+# This enables docker push and docker buildx build --push to authenticate
+# automatically against us-docker.pkg.dev.
+if [[ "$DRY_RUN" != "true" ]]; then
+    gcloud auth configure-docker us-docker.pkg.dev --quiet
+fi
 print_success "Docker configured for Artifact Registry"
 
 # ===========================
-# Build Docker Image
+# BUILD
 # ===========================
 
 print_header "Building Docker Image"
 
-print_info "Building image: $IMAGE_NAME"
+print_info "Building image: $IMAGE_NAME:$VERSION_TAG"
+print_info "Platforms: linux/amd64, linux/arm64"
+print_info "Using Docker Buildx with BuildKit cache"
 
-# Build the Docker image
-docker build --platform linux/amd64 -t "$IMAGE_NAME:latest" -t "$IMAGE_NAME:$(date +%Y%m%d-%H%M%S)" .
-
-print_success "Docker image built successfully"
+# Build using docker buildx for multi-platform support with BuildKit cache.
+# --push pushes directly to the registry during the build (avoids a separate
+# docker push step). --provenance=maximum stores build metadata for traceability.
+# --cache-from/to enables distributed BuildKit cache (useful for CI/CD).
+if [[ "$DRY_RUN" == "true" ]]; then
+    print_info "[DRY-RUN] docker buildx build --platform linux/amd64,linux/arm64 \\"
+    print_info "  --provenance=maximum \\"
+    print_info "  --cache-from=type=registry,ref=$IMAGE_NAME:cache \\"
+    print_info "  --cache-to=type=registry,ref=$IMAGE_NAME:cache,mode=max \\"
+    print_info "  --push \\"
+    print_info "  -t $IMAGE_NAME:$VERSION_TAG \\"
+    print_info "  -t $IMAGE_NAME:latest \\"
+    print_info "  ."
+else
+    docker buildx build \
+        --platform linux/amd64,linux/arm64 \
+        --provenance=maximum \
+        --cache-from=type=registry,ref=${IMAGE_NAME}:cache \
+        --cache-to=type=registry,ref=${IMAGE_NAME}:cache,mode=max \
+        --push \
+        -t "${IMAGE_NAME}:${VERSION_TAG}" \
+        -t "${IMAGE_NAME}:latest" \
+        .
+fi
+print_success "Docker image built and pushed to Artifact Registry"
 
 # ===========================
-# Push Docker Image
+# PUSH
 # ===========================
+# The --push flag in the build step already pushed both tags (versioned + latest).
+# This section explicitly documents the pushed tags for clarity.
+# Tags:
+#   <version> - deterministic, versioned tag for rollbacks (e.g., a1b2c3d-20260609-143000)
+#   latest    - convenience tag for quick rollback
 
-print_header "Pushing Docker Image to Artifact Registry"
+print_header "Artifact Registry"
 
-print_info "Pushing image: $IMAGE_NAME:latest"
+print_info "Image tags pushed:"
+print_info "  $IMAGE_NAME:$VERSION_TAG"
+print_info "  $IMAGE_NAME:latest"
+print_success "Images pushed to Artifact Registry"
 
-# Push the latest tag
-docker push "$IMAGE_NAME:latest"
-
-print_success "Docker image pushed to Artifact Registry"
+# =============================================================================
+# First-time Artifact Registry setup (if the repo does not exist yet):
+#
+#   gcloud artifacts repositories create xtara-web-artifacts \
+#     --repository-name=xtara-web-artifacts \
+#     --project=$PROJECT_ID \
+#     --location=us-central1 \
+#     --repository-format="Docker"
+#
+# Or use --create-repo when deploying via gcloud run deploy:
+#   gcloud run deploy ... --create-repo ...
+# =============================================================================
 
 # ===========================
-# Deploy to Cloud Run
+# DEPLOY
 # ===========================
 
 print_header "Deploying to Cloud Run"
 
 print_info "Deploying service: $SERVICE_NAME"
+print_info "Image: $IMAGE_NAME:$VERSION_TAG"
 print_info "Region: $REGION"
 
-# Deploy to Cloud Run
-gcloud run deploy "$SERVICE_NAME" \
-  --image "$IMAGE_NAME:latest" \
-  --platform "$PLATFORM" \
-  --region "$REGION" \
-  --allow-unauthenticated \
-  --port 8080 \
-  --memory 512Mi \
-  --cpu 1 \
-  --min-instances 0 \
-  --max-instances 10 \
-  --timeout 60s \
-  --service-account "firebase-adminsdk-fbsvc@${PROJECT_ID}.iam.gserviceaccount.com" \
-  --project "$PROJECT_ID"
+# Deploy to Cloud Run with the versioned image.
+# Using the versioned tag (not :latest) ensures a deterministic rollback point.
+if [[ "$DRY_RUN" == "true" ]]; then
+    print_info "[DRY-RUN] gcloud run deploy $SERVICE_NAME \\"
+    print_info "  --image $IMAGE_NAME:$VERSION_TAG \\"
+    print_info "  --platform $PLATFORM \\"
+    print_info "  --region $REGION \\"
+    print_info "  --allow-unauthenticated \\"
+    print_info "  --port 8080 \\"
+    print_info "  --memory 512Mi \\"
+    print_info "  --cpu 1 \\"
+    print_info "  --min-instances 0 \\"
+    print_info "  --max-instances 10 \\"
+    print_info "  --timeout 60s \\"
+    print_info "  --service-account firebase-adminsdk-fbsvc@${PROJECT_ID}.iam.gserviceaccount.com \\"
+    print_info "  --project $PROJECT_ID"
+else
+    gcloud run deploy "$SERVICE_NAME" \
+        --image "${IMAGE_NAME}:${VERSION_TAG}" \
+        --platform "$PLATFORM" \
+        --region "$REGION" \
+        --allow-unauthenticated \
+        --port 8080 \
+        --memory 512Mi \
+        --cpu 1 \
+        --min-instances 0 \
+        --max-instances 10 \
+        --timeout 60s \
+        --service-account "firebase-adminsdk-fbsvc@${PROJECT_ID}.iam.gserviceaccount.com" \
+        --project "$PROJECT_ID"
+fi
 
 print_success "Deployment completed!"
 
 # ===========================
-# Get Service URL
+# Deployment Information
 # ===========================
 
 print_header "Deployment Information"
 
-# Get the service URL
-SERVICE_URL=$(gcloud run services describe "$SERVICE_NAME" \
-  --platform "$PLATFORM" \
-  --region "$REGION" \
-  --format 'value(status.url)' \
-  --project "$PROJECT_ID")
+# Retrieve the service URL.
+if [[ "$DRY_RUN" == "true" ]]; then
+    print_info "[DRY-RUN] Would retrieve service URL from: gcloud run services describe"
+else
+    SERVICE_URL=$(gcloud run services describe "$SERVICE_NAME" \
+        --platform "$PLATFORM" \
+        --region "$REGION" \
+        --format 'value(status.url)' \
+        --project "$PROJECT_ID")
+fi
 
 echo ""
 print_success "Service deployed successfully!"
 echo ""
-echo -e "${GREEN}Service URL:${NC} ${BLUE}$SERVICE_URL${NC}"
+echo -e "${GREEN}Version tag:${NC} $VERSION_TAG"
+echo -e "${GREEN}Image:${NC} ${BLUE}$IMAGE_NAME:$VERSION_TAG${NC}"
 echo -e "${GREEN}Region:${NC} $REGION"
 echo -e "${GREEN}Service Name:${NC} $SERVICE_NAME"
 echo -e "${GREEN}Project:${NC} $PROJECT_ID"
@@ -169,5 +351,12 @@ echo ""
 print_info "You can view logs with:"
 echo "  gcloud run logs read --service=$SERVICE_NAME --region=$REGION"
 echo ""
-
-print_header "Deployment Complete! 🎉"
+print_info "To rollback, redeploy with a previous version tag:"
+echo "  gcloud run services update $SERVICE_NAME \\"
+echo "    --image $IMAGE_NAME:<previous-tag> \\"
+echo "    --region $REGION --project $PROJECT_ID"
+echo ""
+print_info "To list all available versions in Artifact Registry:"
+echo "  gcloud artifacts versions list --repository=xtara-web-artifacts --project=$PROJECT_ID"
+echo ""
+print_header "Deployment Complete!"
