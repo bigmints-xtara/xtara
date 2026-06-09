@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Save, X } from 'lucide-react';
 import type { Story } from '@/types/admin';
+import { formatSnakeCaseToTitleCase } from '@/lib/utils';
 
 interface StoryEditorProps {
     story: Story | null;
@@ -237,7 +238,7 @@ export default function StoryEditor({ story, onSave, onCancel }: StoryEditorProp
                                 key={cluster}
                                 className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm flex items-center gap-2"
                             >
-                                {cluster}
+                                {formatSnakeCaseToTitleCase(cluster)}
                                 <button
                                     type="button"
                                     onClick={() => removeCluster(cluster)}
@@ -278,7 +279,7 @@ export default function StoryEditor({ story, onSave, onCancel }: StoryEditorProp
                                 key={relevance}
                                 className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm flex items-center gap-2"
                             >
-                                {relevance}
+                                {formatSnakeCaseToTitleCase(relevance)}
                                 <button
                                     type="button"
                                     onClick={() => removeRelevance(relevance)}

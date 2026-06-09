@@ -90,17 +90,17 @@ features:
     progressPercent: 0
   - name: Format Snake-Case Labels to Title Case in Admin UI
     description: Feature capability for Format Snake-Case Labels to Title Case in Admin UI.
-    status: ready-to-build
+    status: done
     stories:
       - name: Format Snake-Case Labels to Title Case in Admin UI
         file: features/admin-snake-case-labels.yaml
-        status: ready-to-build
+        status: done
         tasks:
           - id: task-format-snake-case-labels-to-title-case-in-admin-ui-default
             title: Implement core requirements for Format Snake-Case Labels to Title Case in Admin UI
-            status: ready-to-build
-        progressPercent: 0
-    progressPercent: 0
+            status: done
+        progressPercent: 100
+    progressPercent: 100
   - name: Implement Challenges Management Module
     description: Feature capability for Implement Challenges Management Module.
     status: ready-to-build
@@ -245,4 +245,4 @@ features:
         progressPercent: 100
     progressPercent: 100
 status: building
-progressPercent: 35
+progressPercent: 41

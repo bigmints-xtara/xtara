@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Search, Plus, Filter, X } from 'lucide-react';
 import type { AdminEntity, AdminConfig, EntityStatus } from '@/types/admin';
 import { AdminService } from '@/lib/services/adminService';
+import { formatSnakeCaseToTitleCase } from '@/lib/utils';
 import AdminListTile from './AdminListTile';
 
 interface AdminMasterDetailProps<T extends AdminEntity> {
@@ -245,7 +246,7 @@ export default function AdminMasterDetail<T extends AdminEntity>({
                                 >
                                     {availableDomains.map((domain) => (
                                         <option key={domain} value={domain}>
-                                            {domain === 'all' ? 'All Domains' : domain}
+                                            {domain === 'all' ? 'All Domains' : formatSnakeCaseToTitleCase(domain)}
                                         </option>
                                     ))}
                                 </select>

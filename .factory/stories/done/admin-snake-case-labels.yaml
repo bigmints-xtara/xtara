@@ -1,12 +1,14 @@
 feature:
-  name: "Format Snake-Case Labels to Title Case in Admin UI"
+  name: Format Snake-Case Labels to Title Case in Admin UI
   slug: admin-snake-case-labels
 target:
   app: xtara-web
 phase: 1
 dependsOn: []
 description: >
-  Several parts of the Admin UI leak raw, unformatted string literals (e.g., snake_case values from the database or enums) rather than user-friendly text. Examples: Career clusters in list items, selected chips in editor, and domain filter options.
+  Several parts of the Admin UI leak raw, unformatted string literals (e.g., snake_case values from the database or
+  enums) rather than user-friendly text. Examples: Career clusters in list items, selected chips in editor, and domain
+  filter options.
 dependencies: []
 modules:
   - name: Utils
@@ -22,4 +24,4 @@ behavior:
   - All career clusters and domains visible to the admin are formatted into readable Title Case strings.
   - The underlying data sent to the API/database remains the original snake_case format.
 config: {}
-status: ready-to-build
+status: done

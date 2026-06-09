@@ -12,6 +12,7 @@
 - **State Management Patterns**: 
   - Firebase `onSnapshot` listeners require idempotent state reduction (`reduce` + `Object.values` by `id`) to handle React 18+ Strict Mode double-mounting.
   - Form State Isolation: `useEffect` watchers for entity selection must explicitly reset form state to defaults when transitioning to a `null`/`New` entity to prevent stale data bleed across editor views.
+- **Data Formatting Standards**: Firestore/API payloads use `snake_case` strings. UI display uses `formatSnakeCaseToTitleCase()` utility (`src/lib/utils.ts`) to transform labels/chips without mutating underlying schema.
 - **Build & Orchestration**: Multi-stage Docker (`deps` → `builder` → `runner`). Local dev via `start.sh` (port 5077). CI/CD driven by `deploy.sh` (ADC auth, Docker Buildx, versioned tagging, Cloud Run rollout).
 - **Key Decisions**:
   - Deterministic dependency resolution via `npm ci` in `deps` stage.
@@ -27,6 +28,9 @@
 - **2026-06-09 | Admin UI, Accessibility, State Management & Form Isolation**:
   - *Action*: Refactored `AdminListTile.tsx` to enforce full-card interaction models and WCAG compliance. Updated `AdminSidebar.tsx` to implement typed navigation data and `comingSoon` state handling. Resolved React Strict Mode double-mounting causing duplicate Firebase snapshot updates in `AdminMasterDetail.tsx` via idempotent state reduction. Fixed `StoryEditor.tsx` form state bleed by resetting `formData`, `clusterInput`, and `relevanceInput` to defaults on `story === null` transitions.
   - *Outcome*: Implemented unified click targets, semantic ARIA states, keyboard event handling, and nested button isolation. Standardized pattern for all admin list components. Admin sidebar uses `NavItem` interface with `comingSoon` flag, rendering non-interactive items as buttons with opacity/badge styling. Eliminated state duplication across all entity types. Guaranteed clean form initialization for "New" entity creation, preventing cross-record data contamination.
+- **2026-06-09 | Data Formatting & Label Standardization**:
+  - *Action*: Implemented `formatSnakeCaseToTitleCase` utility in `src/lib/utils.ts`. Applied to domain filter dropdowns (`AdminMasterDetail.tsx`) and career cluster/relevance chips (`StoryEditor.tsx`).
+  - *Outcome*: Consistent UI label formatting without mutating Firestore schema or API payloads. Zero TypeScript/ESLint regressions. Preserves `snake_case` as the source-of-truth for DB queries and API serialization.
 
 ## 3. Failure Post-Mortems & Anti-Patterns
 - **Non-Deterministic Dependency Resolution**:
@@ -53,4 +57,4 @@
   - *What Failed*: `StoryEditor.tsx` `useEffect` only handled `story` population, lacking explicit reset logic for `story === null` transitions.
   - *Symptom*: Clicking "New" after viewing an existing record retained stale data from the previous selection, causing incorrect defaults and cross-record contamination.
   - *Fix*: Added explicit reset branch in `useEffect` to clear `formData`, `clusterInput`, and `relevanceInput` to baseline defaults when `story` is `null`. Ensures clean state isolation for creation vs. editing workflows.
-- **Status**: Optimization phase resolved structural anti-patterns; CI/CD pipeline stabilized with deterministic builds, multi-arch support, versioned deployment strategy, standardized UI interaction models, idempotent state management, and isolated form state handling.
+- **Status**: Optimization phase resolved structural anti-patterns; CI/CD pipeline stabilized with deterministic builds, multi-arch support, versioned deployment strategy, standardized UI interaction models, idempotent state management, isolated form state handling, and schema-preserving label formatting.
