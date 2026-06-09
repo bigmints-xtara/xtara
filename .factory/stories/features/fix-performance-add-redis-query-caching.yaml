@@ -1,0 +1,28 @@
+name: "Fix: performance-add-redis-query-caching"
+description: |-
+  Automated fix task created by Factory TPM.
+
+  Original story: /home/bigmints/projects/xtara/xtara-web/.factory/stories/features/performance-add-redis-query-caching.yaml
+  Issue: CLI engineer stalled twice on this story. Both attempts resulted in STALL with the CLI only listing directory contents without executing any work. The story requires installing @tanstack/react-query and creating 5 new modules (query-client.ts, useFirestoreQuery.ts, useCareerPath.ts, useContentQuery.ts) plus updating AuthContext.tsx. The CLI appears to be getting stuck during initialization or npm install. This likely requires human intervention to: (1) verify npm install works in the target directory, (2) check if there are network/dependency issues, or (3) manually scaffold the files. The story scope is appropriate but the CLI agent is failing to execute.
+status: ready-to-build
+feature:
+  name: Fix
+  slug: fix
+target: {}
+stack: {}
+acceptance_criteria: []
+fix_instructions: "CLI engineer stalled twice on this story. Both attempts
+  resulted in STALL with the CLI only listing directory contents without
+  executing any work. The story requires installing @tanstack/react-query and
+  creating 5 new modules (query-client.ts, useFirestoreQuery.ts,
+  useCareerPath.ts, useContentQuery.ts) plus updating AuthContext.tsx. The CLI
+  appears to be getting stuck during initialization or npm install. This likely
+  requires human intervention to: (1) verify npm install works in the target
+  directory, (2) check if there are network/dependency issues, or (3) manually
+  scaffold the files. The story scope is appropriate but the CLI agent is
+  failing to execute."
+original_story: /home/bigmints/projects/xtara/xtara-web/.factory/stories/features/performance-add-redis-query-caching.yaml
+phase: 0
+dependsOn: []
+createdBy: factory-tpm
+createdAt: 2026-06-09T11:36:26.810Z

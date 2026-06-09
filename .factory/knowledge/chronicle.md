@@ -7,6 +7,7 @@
   - *Client (`NEXT_PUBLIC_*`)*: Firebase config, Algolia search keys, FCM sender ID, Analytics ID.
   - *Server*: `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `NODE_ENV`, `FIREBASE_ADMIN_CREDENTIALS`.
   - *Secrets Integration*: Centralized GCP Secret Manager via `scripts/manage-secrets.sh`. `deploy.sh` supports `--use-secrets` flag to mount runtime variables, eliminating `.env` drift. `SECRETS.md` documents IAM roles, migration, and rollback procedures.
+  - *Config Hardening*: Migrated hardcoded Firebase/GA configs to `process.env.NEXT_PUBLIC_*` with dev fallbacks and `validateFirebaseEnv()` production guards. Exposed via `next.config.ts` `env` property to prevent bundle leakage.
 - **UI/Component Standards**:
   - *Interaction Models*: Full-card click targets (`w-full`, `text-left`), semantic accessibility (`role="button"`, `tabIndex={0}`, `aria-pressed`), keyboard navigation (`Enter`/`Space` with `preventDefault`), nested action isolation (`e.stopPropagation()`), explicit focus rings (`focus:ring-2`).
   - *Admin Navigation*: `NavItem` interface with `comingSoon` boolean; non-interactive items render as `<button>` with `opacity-50`, `cursor-default`, and `Soon` badge to prevent broken link navigation and provide clear state.
@@ -23,6 +24,7 @@
   - Artifact Management: Dedicated versioned repo (`xtara-web-artifacts`) with `<git-hash>-<YYYYMMDD-HHMMSS>` tagging to prevent Cloud Run race conditions.
   - Secret Management: Centralized GCP Secret Manager integration with CLI migration tooling to eliminate environment variable fragmentation.
   - Admin CMS Architecture: Generic `AdminMasterDetail<T>` pattern with entity-specific configs (`storiesConfig`, `goodReadsConfig`, `sparksConfig`) enabling rapid module scaling with minimal boilerplate.
+  - *Pending Infrastructure*: Redis query caching (`@tanstack/react-query`) and Vitest unit test suite are queued but require manual scaffolding or atomic decomposition due to CLI context limits.
 
 ## 2. Chronology of Major Milestones & What Worked
 - **2026-06-08 | Orchestration & Docker Optimization**:
@@ -43,6 +45,9 @@
 - **2026-06-09 | Secret Manager Integration & Environment Migration**:
   - *Action*: Integrated GCP Secret Manager into deployment workflow. Created `scripts/manage-secrets.sh` for initialization, listing, and deployment. Updated `deploy.sh` with `--use-secrets` flag and `build_secret_flags()` logic. Rewrote `.env.example` with `[SECRET]` annotations and created `SECRETS.md`.
   - *Outcome*: Centralized secret management eliminates `.env` drift across environments. CLI tooling enables seamless migration and rollback. Zero build regressions; `bash -n` and `npm run build` pass cleanly.
+- **2026-06-09 | Security & Config Hardening**:
+  - *Action*: Migrated hardcoded Firebase and Google Analytics configurations to `process.env.NEXT_PUBLIC_*` variables. Implemented dev fallbacks and `validateFirebaseEnv()` production guards. Exposed client vars via `next.config.ts`.
+  - *Outcome*: Eliminated config drift across environments. Local dev remains functional without `.env.local`. Production builds fail fast on missing secrets. Zero regression on existing routes.
 
 ## 3. Failure Post-Mortems & Anti-Patterns
 - **Non-Deterministic Dependency Resolution**:
@@ -69,12 +74,12 @@
   - *What Failed*: `StoryEditor.tsx` `useEffect` only handled `story` population, lacking explicit reset logic for `story === null` transitions.
   - *Symptom*: Clicking "New" after viewing an existing record retained stale data from the previous selection, causing incorrect defaults and cross-record contamination.
   - *Fix*: Added explicit reset branch in `useEffect` to clear `formData`, `clusterInput`, and `relevanceInput` to baseline defaults when `story` is `null`. Ensures clean state isolation for creation vs. editing workflows.
-- **CLI Execution Timeouts & Context Limits**:
-  - *What Failed*: Complex multi-file scaffolding tasks (`challenges-management`, `dream-careers-management`, `orchestration-env-secrets`, `admin-hydration-warning`) triggered CLI agent timeouts (`exit code null`).
-  - *Symptom*: Incomplete file generation, partial TypeScript compilation, and fragmented state requiring manual reconciliation.
-  - *Fix*: Decompose large scaffolding tasks into atomic sub-stories (types → config → editor → page). Enforce strict file-scoped diffs and incremental verification (`npx tsc --noEmit`) before final commit. Avoid monolithic CLI prompts; split into sequential, state-aware executions.
+- **CLI Agent Context & Initialization Stalls**:
+  - *What Failed*: Complex multi-file scaffolding or infrastructure setup stories (`performance-add-redis-query-caching`, `testing-add-unit-tests`, `dream-careers-management`, `admin-hydration-warning`).
+  - *Symptom*: CLI agent stalls at directory enumeration phase, outputs file list, then hangs or exits with `code null` after 600+ seconds. No actual file generation occurs.
+  - *Fix/Mitigation*: Decompose large stories into atomic sub-tasks (types → config → editor → page). Avoid monolithic prompts. For infrastructure/setup stories, prefer manual CLI execution or pre-scaffolded templates. Enforce strict file-scoped diffs and incremental `tsc` verification. Documented as a known agent limitation requiring task granularity control.
 - **Next.js Hydration Mismatches (Pending)**:
   - *What Failed*: Server/Client state divergence on initial render.
   - *Symptom*: Console warnings regarding text content mismatch during hydration.
   - *Fix*: Isolate dynamic rendering behind `useEffect` or `useClient` wrappers; ensure initial server-rendered DOM matches client-side state. Awaiting targeted fix in `admin-hydration-warning` sprint.
-- **Status**: Optimization phase resolved structural anti-patterns; CI/CD pipeline stabilized with deterministic builds, multi-arch support, versioned deployment strategy, standardized UI interaction models, idempotent state management, isolated form state handling, schema-preserving label formatting, and centralized secret management. Admin CMS expansion is actively scaling entity management modules. CLI timeout mitigation requires task decomposition for future scaffolding.
+- **Status**: Optimization phase resolved structural anti-patterns; CI/CD pipeline stabilized with deterministic builds, multi-arch support, versioned deployment strategy, standardized UI interaction models, idempotent state management, isolated form state handling, schema-preserving label formatting, centralized secret management, and hardened environment configuration. Admin CMS expansion is actively scaling entity management modules. CLI timeout mitigation requires strict task decomposition for future scaffolding and infrastructure stories.
