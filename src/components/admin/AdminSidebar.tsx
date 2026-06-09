@@ -17,7 +17,14 @@ import { useTenant } from '@/lib/hooks/useTenant';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 
-const navigationItems = [
+interface NavItem {
+    name: string;
+    href: string;
+    icon: React.ComponentType<{ size?: number }>;
+    comingSoon?: boolean;
+}
+
+const navigationItems: NavItem[] = [
     {
         name: 'Dashboard',
         href: '/admin',
@@ -32,36 +39,43 @@ const navigationItems = [
         name: 'Challenges',
         href: '/admin/challenges',
         icon: Trophy,
+        comingSoon: true,
     },
     {
         name: 'Good Reads',
         href: '/admin/good-reads',
         icon: FileText,
+        comingSoon: true,
     },
     {
         name: 'Sparks',
         href: '/admin/sparks',
         icon: Sparkles,
+        comingSoon: true,
     },
     {
         name: 'Dream Careers',
         href: '/admin/dream-careers',
         icon: Star,
+        comingSoon: true,
     },
     {
         name: 'Content Resources',
         href: '/admin/resources',
         icon: Library,
+        comingSoon: true,
     },
     {
         name: 'Analytics',
         href: '/admin/analytics',
         icon: BarChart3,
+        comingSoon: true,
     },
     {
         name: 'Settings',
         href: '/admin/settings',
         icon: Settings,
+        comingSoon: true,
     },
 ];
 
@@ -80,6 +94,26 @@ export default function AdminSidebar() {
                 {navigationItems.map((item) => {
                     const Icon = item.icon;
                     const isActive = pathname === item.href;
+                    const isComingSoon = item.comingSoon ?? false;
+
+                    if (isComingSoon) {
+                        return (
+                            <button
+                                key={item.href}
+                                type="button"
+                                onClick={() => {
+                                    console.log(`[Sidebar] "${item.name}" — Coming Soon`);
+                                }}
+                                title={`${item.name} — Coming Soon`}
+                                aria-label={`${item.name} (Coming Soon)`}
+                                className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-gray-500 opacity-50 cursor-default hover:opacity-70 hover:text-gray-400"
+                            >
+                                <Icon size={20} />
+                                <span className="font-medium">{item.name}</span>
+                                <span className="text-xs bg-gray-700 text-gray-300 px-1.5 py-0.5 rounded-full font-medium">Soon</span>
+                            </button>
+                        );
+                    }
 
                     return (
                         <Link

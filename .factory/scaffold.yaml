@@ -38,17 +38,17 @@ features:
     progressPercent: 100
   - name: Add Context to 'Coming Soon' Sidebar Links
     description: Feature capability for Add Context to 'Coming Soon' Sidebar Links.
-    status: ready-to-build
+    status: done
     stories:
       - name: Add Context to 'Coming Soon' Sidebar Links
         file: features/admin-coming-soon-sidebar.yaml
-        status: ready-to-build
+        status: done
         tasks:
           - id: task-add-context-to-coming-soon-sidebar-links-default
             title: Implement core requirements for Add Context to 'Coming Soon' Sidebar Links
-            status: ready-to-build
-        progressPercent: 0
-    progressPercent: 0
+            status: done
+        progressPercent: 100
+    progressPercent: 100
   - name: Fix Duplicate Data in Story List
     description: Feature capability for Fix Duplicate Data in Story List.
     status: ready-to-build
@@ -245,4 +245,4 @@ features:
         progressPercent: 100
     progressPercent: 100
 status: building
-progressPercent: 18
+progressPercent: 24

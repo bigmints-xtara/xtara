@@ -6,7 +6,9 @@
 - **Environment Scoping**:
   - *Client (`NEXT_PUBLIC_*`)*: Firebase config, Algolia search keys, FCM sender ID, Analytics ID.
   - *Server*: `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `NODE_ENV` (production), `FIREBASE_ADMIN_CREDENTIALS`.
-- **UI/Component Standards**: Full-card click targets (`w-full`, `text-left`), semantic accessibility (`role="button"`, `tabIndex={0}`, `aria-pressed`), keyboard navigation (`Enter`/`Space` with `preventDefault`), nested action isolation (`e.stopPropagation()`), explicit focus rings (`focus:ring-2`).
+- **UI/Component Standards**:
+  - *Interaction Models*: Full-card click targets (`w-full`, `text-left`), semantic accessibility (`role="button"`, `tabIndex={0}`, `aria-pressed`), keyboard navigation (`Enter`/`Space` with `preventDefault`), nested action isolation (`e.stopPropagation()`), explicit focus rings (`focus:ring-2`).
+  - *Admin Navigation*: `NavItem` interface with `comingSoon` boolean; non-interactive items render as `<button>` with `opacity-50`, `cursor-default`, and `Soon` badge to prevent broken link navigation and provide clear state.
 - **Build & Orchestration**: Multi-stage Docker (`deps` → `builder` → `runner`). Local dev via `start.sh` (port 5077). CI/CD driven by `deploy.sh` (ADC auth, Docker Buildx, versioned tagging, Cloud Run rollout).
 - **Key Decisions**:
   - Deterministic dependency resolution via `npm ci` in `deps` stage.
@@ -20,8 +22,8 @@
   - *Action*: Refactored `Dockerfile` (`npm install` → `npm ci`), expanded `.dockerignore`, and completely rewrote `deploy.sh`.
   - *Outcome*: Deterministic builds, reduced context size, successful Turbopack compilation (35 static pages, 662 packages). `deploy.sh` now supports ADC authentication, Docker Buildx (multi-arch, provenance, cache), dedicated versioned artifact repo, and CLI flags (`--version`, `--dry-run`). Pipeline stabilized for Cloud Run deployment.
 - **2026-06-09 | Admin UI & Accessibility Refactor**:
-  - *Action*: Refactored `src/components/admin/AdminListTile.tsx` to enforce full-card interaction models and WCAG compliance.
-  - *Outcome*: Implemented unified click targets, semantic ARIA states, keyboard event handling, and nested button isolation. Eliminated hover/focus ambiguity and scroll-jacking on `Space` key. Standardized pattern for all admin list components.
+  - *Action*: Refactored `src/components/admin/AdminListTile.tsx` to enforce full-card interaction models and WCAG compliance. Updated `AdminSidebar.tsx` to implement typed navigation data and `comingSoon` state handling.
+  - *Outcome*: Implemented unified click targets, semantic ARIA states, keyboard event handling, and nested button isolation. Eliminated hover/focus ambiguity and scroll-jacking on `Space` key. Standardized pattern for all admin list components. Admin sidebar now uses `NavItem` interface with `comingSoon` flag, rendering non-interactive items as buttons with opacity/badge styling to prevent broken navigation and improve UX.
 
 ## 3. Failure Post-Mortems & Anti-Patterns
 - **Non-Deterministic Dependency Resolution**:
