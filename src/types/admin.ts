@@ -1,3 +1,5 @@
+import type { CareerPathwayStep, RelatedCareer } from '@/types/career';
+
 export interface AdminEntity {
   id: string;
   createdAt?: Date;
@@ -43,6 +45,15 @@ export interface GameInstance extends AdminEntity {
 export interface GoodRead extends AdminEntity {
   title: string;
   image: string;
+  domain: string;
+  published: boolean;
+  draft: boolean;
+  inReview: boolean;
+  hyperlink?: string;
+  hyperlinkText?: string;
+  careerRelevance: string[];
+  type: string;
+  content: string;
   publishedAt?: Date;
   publishedUntil?: Date;
 }
@@ -83,6 +94,23 @@ export interface StorySlide {
 }
 
 export type EntityStatus = 'published' | 'draft' | 'inReview' | 'all';
+
+export interface AdminCareerPath extends AdminEntity {
+  userId: string;
+  careerName: string;
+  title?: string;
+  whatYouDo?: string;
+  whyItMatters?: string;
+  matchScore?: number;
+  streamSuggestions?: string[];
+  expectedSalaryRange?: string;
+  matchReasoning?: string;
+  archetypes?: string[];
+  careerPathway?: CareerPathwayStep[];
+  relatedCareers?: RelatedCareer[];
+  strengths?: string[];
+  description?: string;
+}
 
 export interface AdminConfig<T extends AdminEntity> {
   entityName: string;

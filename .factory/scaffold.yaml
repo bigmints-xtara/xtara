@@ -120,7 +120,7 @@ features:
     stories:
       - name: Implement Dream Careers (CareerPath) Management Module
         file: features/dream-careers-management.yaml
-        status: ready-to-build
+        status: failed
         tasks:
           - id: task-implement-dream-careers-careerpath-management-module-default
             title: Implement core requirements for Implement Dream Careers (CareerPath) Management Module
@@ -129,17 +129,17 @@ features:
     progressPercent: 0
   - name: Implement Good Reads Management Module
     description: Feature capability for Implement Good Reads Management Module.
-    status: ready-to-build
+    status: done
     stories:
       - name: Implement Good Reads Management Module
         file: features/good-reads-management.yaml
-        status: ready-to-build
+        status: done
         tasks:
           - id: task-implement-good-reads-management-module-default
             title: Implement core requirements for Implement Good Reads Management Module
-            status: ready-to-build
-        progressPercent: 0
-    progressPercent: 0
+            status: done
+        progressPercent: 100
+    progressPercent: 100
   - name: Implement Automated CI/CD via GitHub Actions
     description: Feature capability for Implement Automated CI/CD via GitHub Actions.
     status: ready-to-build
@@ -245,4 +245,4 @@ features:
         progressPercent: 100
     progressPercent: 100
 status: building
-progressPercent: 47
+progressPercent: 53

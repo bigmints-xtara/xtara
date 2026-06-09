@@ -31,6 +31,9 @@
 - **2026-06-09 | Data Formatting & Label Standardization**:
   - *Action*: Implemented `formatSnakeCaseToTitleCase` utility in `src/lib/utils.ts`. Applied to domain filter dropdowns (`AdminMasterDetail.tsx`) and career cluster/relevance chips (`StoryEditor.tsx`).
   - *Outcome*: Consistent UI label formatting without mutating Firestore schema or API payloads. Zero TypeScript/ESLint regressions. Preserves `snake_case` as the source-of-truth for DB queries and API serialization.
+- **2026-06-09 | Admin CMS Expansion (Good Reads, Challenges, Dream Careers)**:
+  - *Action*: Scaled admin entity management architecture. Completed `GoodReads` module (interface, config, editor, page). Initiated `Challenges` and `Dream Careers` modules.
+  - *Outcome*: `GoodReads` fully operational with 3-state status logic, timestamp conversion, and chip-based relevance inputs. `Challenges` and `Dream Careers` scaffolding initiated; pending final integration and timeout resolution. Standardized `AdminMasterDetail<T>` pattern enables rapid entity onboarding with minimal boilerplate.
 
 ## 3. Failure Post-Mortems & Anti-Patterns
 - **Non-Deterministic Dependency Resolution**:
@@ -57,4 +60,4 @@
   - *What Failed*: `StoryEditor.tsx` `useEffect` only handled `story` population, lacking explicit reset logic for `story === null` transitions.
   - *Symptom*: Clicking "New" after viewing an existing record retained stale data from the previous selection, causing incorrect defaults and cross-record contamination.
   - *Fix*: Added explicit reset branch in `useEffect` to clear `formData`, `clusterInput`, and `relevanceInput` to baseline defaults when `story` is `null`. Ensures clean state isolation for creation vs. editing workflows.
-- **Status**: Optimization phase resolved structural anti-patterns; CI/CD pipeline stabilized with deterministic builds, multi-arch support, versioned deployment strategy, standardized UI interaction models, idempotent state management, isolated form state handling, and schema-preserving label formatting.
+- **Status**: Optimization phase resolved structural anti-patterns; CI/CD pipeline stabilized with deterministic builds, multi-arch support, versioned deployment strategy, standardized UI interaction models, idempotent state management, isolated form state handling, and schema-preserving label formatting. Admin CMS expansion is actively scaling entity management modules.

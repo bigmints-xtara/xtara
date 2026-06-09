@@ -1,0 +1,435 @@
+name: "Fix: dream-careers-management"
+description: |-
+  Automated fix task created by Factory TPM.
+
+  Original story: /home/bigmints/projects/xtara/xtara-web/.factory/stories/features/dream-careers-management.yaml
+  Issue: CLI engineer stalled twice when attempting to build the Dream Careers Management Module. The CLI gets stuck on initial file listing and doesn't proceed to read files or write code. The story requires: (1) Adding AdminCareerPath interface to src/types/admin.ts, (2) Creating dreamCareersConfig.ts, (3) Creating CareerPathEditor.tsx, (4) Replacing the dream-careers page.tsx.
+status: ready-to-build
+feature:
+  name: Fix
+  slug: fix
+target: {}
+stack: {}
+acceptance_criteria: []
+fix_instructions: >-
+  # Dream Careers Management Module - Focused Implementation
+
+
+  Work through these steps ONE AT A TIME. After each step, verify it compiles
+  before moving on.
+
+
+  ## STEP 1: Read existing files
+
+  Run these commands to understand the existing patterns:
+
+  ```bash
+
+  cat src/types/admin.ts
+
+  cat src/lib/admin/configs/challengesConfig.ts
+
+  cat src/components/admin/AdminMasterDetail.tsx
+
+  cat src/types/career.ts
+
+  ```
+
+
+  ## STEP 2: Add AdminCareerPath to src/types/admin.ts
+
+  Append this to the END of src/types/admin.ts (add import at top if needed):
+
+  ```typescript
+
+  import type { CareerPathwayStep, RelatedCareer } from '@/types/career';
+
+
+  export interface AdminCareerPath extends AdminEntity {
+    userId: string;
+    careerName: string;
+    title?: string;
+    whatYouDo?: string;
+    whyItMatters?: string;
+    matchScore?: number;
+    streamSuggestions?: string[];
+    expectedSalaryRange?: string;
+    matchReasoning?: string;
+    archetypes?: string[];
+    careerPathway?: CareerPathwayStep[];
+    relatedCareers?: RelatedCareer[];
+    strengths?: string[];
+    description?: string;
+  }
+
+  ```
+
+
+  Verify: `npx tsc --noEmit`
+
+
+  ## STEP 3: Create src/lib/admin/configs/dreamCareersConfig.ts
+
+  Create this file following the exact pattern from challengesConfig.ts:
+
+  ```typescript
+
+  import type { AdminConfig, AdminEntity } from '@/types/admin';
+
+  import type { AdminCareerPath } from '@/types/admin';
+
+  import { collection, onSnapshot } from 'firebase/firestore';
+
+  import { db } from '@/lib/firebase/firebase';
+
+
+  export const dreamCareersConfig: AdminConfig<AdminCareerPath> = {
+    entityName: 'Career Path',
+    entityNamePlural: 'Career Paths',
+    collectionName: 'career_paths',
+
+    createEmpty(): AdminCareerPath {
+      return {
+        id: '',
+        userId: '',
+        careerName: '',
+        createdAt: new Date(),
+      };
+    },
+
+    getTitle(entity: AdminCareerPath): string {
+      return entity.careerName || entity.title || 'Untitled';
+    },
+
+    getSubtitle(entity: AdminCareerPath): string {
+      return entity.userId;
+    },
+
+    getStatus(_entity: AdminCareerPath): string {
+      return 'published';
+    },
+
+    getDomain(entity: AdminCareerPath): string {
+      return entity.archetypes?.[0] || 'General';
+    },
+
+    getSearchText(entity: AdminCareerPath): string {
+      return `${entity.careerName} ${entity.userId}`.toLowerCase();
+    },
+
+    availableStatuses: ['all'],
+
+    getAvailableDomains(entities: AdminCareerPath[]): string[] {
+      const domains = entities.map(e => e.archetypes?.[0]).filter(Boolean) as string[];
+      return [...new Set(domains)];
+    },
+
+    toFirestore(entity: AdminCareerPath): Omit<AdminCareerPath, 'id'> {
+      const { id, ...rest } = entity;
+      return {
+        ...rest,
+        updatedAt: new Date(),
+      };
+    },
+
+    fromFirestore(data: Record<string, any>, id: string): AdminCareerPath {
+      return {
+        id,
+        ...data,
+        createdAt: data.createdAt?.toDate?.() || new Date(),
+      } as AdminCareerPath;
+    },
+
+    streamAll(callback: (entities: AdminCareerPath[]) => void) {
+      const ref = collection(db, 'career_paths');
+      return onSnapshot(ref, (snapshot) => {
+        const entities: AdminCareerPath[] = [];
+        snapshot.forEach((doc) => {
+          entities.push(this.fromFirestore(doc.data(), doc.id));
+        });
+        // Deduplicate by id (handles React Strict Mode double-mounting)
+        const deduped = Object.values(
+          entities.reduce((acc, entity) => {
+            acc[entity.id] = entity;
+            return acc;
+          }, {} as Record<string, AdminCareerPath>)
+        );
+        callback(deduped);
+      });
+    },
+  };
+
+  ```
+
+
+  Verify: `npx tsc --noEmit`
+
+
+  ## STEP 4: Create src/components/admin/editors/CareerPathEditor.tsx
+
+  Create this file with a read-mostly editor:
+
+  ```typescript
+
+  'use client';
+
+
+  import { useState, useEffect } from 'react';
+
+  import type { AdminCareerPath } from '@/types/admin';
+
+
+  interface CareerPathEditorProps {
+    careerPath: AdminCareerPath | null;
+    onSave: (data: Partial<AdminCareerPath>) => Promise<void>;
+    onCancel: () => void;
+  }
+
+
+  export default function CareerPathEditor({ careerPath, onSave, onCancel }:
+  CareerPathEditorProps) {
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [whatYouDo, setWhatYouDo] = useState('');
+    const [whyItMatters, setWhyItMatters] = useState('');
+    const [matchReasoning, setMatchReasoning] = useState('');
+
+    useEffect(() => {
+      if (careerPath) {
+        setTitle(careerPath.title || '');
+        setDescription(careerPath.description || '');
+        setWhatYouDo(careerPath.whatYouDo || '');
+        setWhyItMatters(careerPath.whyItMatters || '');
+        setMatchReasoning(careerPath.matchReasoning || '');
+      } else {
+        setTitle('');
+        setDescription('');
+        setWhatYouDo('');
+        setWhyItMatters('');
+        setMatchReasoning('');
+      }
+    }, [careerPath]);
+
+    const handleSave = async () => {
+      await onSave({
+        title,
+        description,
+        whatYouDo,
+        whyItMatters,
+        matchReasoning,
+      });
+    };
+
+    if (!careerPath) {
+      return <div className="p-4 text-gray-500">Select a career path to view details.</div>;
+    }
+
+    return (
+      <div className="p-4 space-y-6 max-h-full overflow-y-auto">
+        {/* Overview - Read Only */}
+        <section className="border-b pb-4">
+          <h3 className="text-lg font-semibold mb-3">Overview</h3>
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            <div><span className="font-medium">User ID:</span> {careerPath.userId}</div>
+            <div><span className="font-medium">Career:</span> {careerPath.careerName}</div>
+            <div><span className="font-medium">Match Score:</span> {careerPath.matchScore}</div>
+            <div><span className="font-medium">Salary Range:</span> {careerPath.expectedSalaryRange || 'N/A'}</div>
+          </div>
+        </section>
+
+        {/* Editable Fields */}
+        <section className="border-b pb-4">
+          <h3 className="text-lg font-semibold mb-3">Editable Fields</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Title</label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full border rounded px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Description</label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+                className="w-full border rounded px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">What You Do</label>
+              <textarea
+                value={whatYouDo}
+                onChange={(e) => setWhatYouDo(e.target.value)}
+                rows={3}
+                className="w-full border rounded px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Why It Matters</label>
+              <textarea
+                value={whyItMatters}
+                onChange={(e) => setWhyItMatters(e.target.value)}
+                rows={3}
+                className="w-full border rounded px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Match Reasoning</label>
+              <textarea
+                value={matchReasoning}
+                onChange={(e) => setMatchReasoning(e.target.value)}
+                rows={3}
+                className="w-full border rounded px-3 py-2 text-sm"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Read-Only Lists */}
+        <section className="border-b pb-4">
+          <h3 className="text-lg font-semibold mb-3">AI-Generated Data</h3>
+          
+          {careerPath.strengths?.length && (
+            <div className="mb-3">
+              <span className="font-medium text-sm">Strengths:</span>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {careerPath.strengths.map((s, i) => (
+                  <span key={i} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">{s}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {careerPath.archetypes?.length && (
+            <div className="mb-3">
+              <span className="font-medium text-sm">Archetypes:</span>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {careerPath.archetypes.map((a, i) => (
+                  <span key={i} className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">{a}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {careerPath.streamSuggestions?.length && (
+            <div className="mb-3">
+              <span className="font-medium text-sm">Stream Suggestions:</span>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {careerPath.streamSuggestions.map((s, i) => (
+                  <span key={i} className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">{s}</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* Career Pathway - Read Only */}
+        {careerPath.careerPathway?.length && (
+          <section className="border-b pb-4">
+            <h3 className="text-lg font-semibold mb-3">Career Pathway</h3>
+            <ul className="space-y-2">
+              {careerPath.careerPathway.map((step, i) => (
+                <li key={i} className="text-sm">
+                  <span className="font-medium">{step.title}</span> — {step.duration}
+                  {step.note && <span className="text-gray-500"> ({step.note})</span>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* Related Careers - Read Only */}
+        {careerPath.relatedCareers?.length && (
+          <section className="border-b pb-4">
+            <h3 className="text-lg font-semibold mb-3">Related Careers</h3>
+            <ul className="space-y-2">
+              {careerPath.relatedCareers.map((rc, i) => (
+                <li key={i} className="text-sm">
+                  <span className="font-medium">{rc.title}:</span> {rc.reason}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* Actions */}
+        <div className="flex gap-2">
+          <button
+            onClick={handleSave}
+            className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700"
+          >
+            Save
+          </button>
+          <button
+            onClick={onCancel}
+            className="border px-4 py-2 rounded text-sm hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  ```
+
+
+  Verify: `npx tsc --noEmit`
+
+
+  ## STEP 5: Replace src/app/admin/dream-careers/page.tsx
+
+  Replace the entire file with:
+
+  ```tsx
+
+  'use client';
+
+  import AdminMasterDetail from '@/components/admin/AdminMasterDetail';
+
+  import CareerPathEditor from '@/components/admin/editors/CareerPathEditor';
+
+  import { dreamCareersConfig } from '@/lib/admin/configs/dreamCareersConfig';
+
+  import type { AdminCareerPath } from '@/types/admin';
+
+
+  export default function AdminDreamCareersPage() {
+    return (
+      <div className="h-full">
+        <AdminMasterDetail<AdminCareerPath>
+          config={dreamCareersConfig}
+          renderEditor={(careerPath, onSave, onCancel) => (
+            <CareerPathEditor careerPath={careerPath} onSave={onSave} onCancel={onCancel} />
+          )}
+        />
+      </div>
+    );
+  }
+
+  ```
+
+
+  ## STEP 6: Final Verification
+
+  Run:
+
+  ```bash
+
+  npx tsc --noEmit
+
+  npm run build
+
+  ```
+
+
+  Print "DELIVERY COMPLETE" when all steps pass.
+original_story: /home/bigmints/projects/xtara/xtara-web/.factory/stories/features/dream-careers-management.yaml
+phase: 0
+dependsOn: []
+createdBy: factory-tpm
+createdAt: 2026-06-09T09:56:42.788Z
