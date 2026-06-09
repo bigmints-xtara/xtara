@@ -47,9 +47,28 @@ export interface GoodRead extends AdminEntity {
   publishedUntil?: Date;
 }
 
+export interface ChallengeQuestion {
+  title: string;
+  options: string[];
+  correctAnswer: number;
+  explanation: string;
+}
+
 export interface Challenge extends AdminEntity {
   title: string;
   image: string;
+  domain: string;
+  published: boolean;
+  draft: boolean;
+  inReview: boolean;
+  hyperlink?: string;
+  hyperlinkText?: string;
+  callToAction?: string;
+  careerRelevance: string[];
+  type: string;
+  rewardPerQuestion: number;
+  instructions: string;
+  questions: ChallengeQuestion[];
   publishedAt?: Date;
   publishedUntil?: Date;
 }
