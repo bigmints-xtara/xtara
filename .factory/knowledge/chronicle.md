@@ -9,7 +9,9 @@
 - **UI/Component Standards**:
   - *Interaction Models*: Full-card click targets (`w-full`, `text-left`), semantic accessibility (`role="button"`, `tabIndex={0}`, `aria-pressed`), keyboard navigation (`Enter`/`Space` with `preventDefault`), nested action isolation (`e.stopPropagation()`), explicit focus rings (`focus:ring-2`).
   - *Admin Navigation*: `NavItem` interface with `comingSoon` boolean; non-interactive items render as `<button>` with `opacity-50`, `cursor-default`, and `Soon` badge to prevent broken link navigation and provide clear state.
-- **State Management Patterns**: Firebase `onSnapshot` listeners require idempotent state reduction (`reduce` + `Object.values` by `id`) to handle React 18+ Strict Mode double-mounting.
+- **State Management Patterns**: 
+  - Firebase `onSnapshot` listeners require idempotent state reduction (`reduce` + `Object.values` by `id`) to handle React 18+ Strict Mode double-mounting.
+  - Form State Isolation: `useEffect` watchers for entity selection must explicitly reset form state to defaults when transitioning to a `null`/`New` entity to prevent stale data bleed across editor views.
 - **Build & Orchestration**: Multi-stage Docker (`deps` → `builder` → `runner`). Local dev via `start.sh` (port 5077). CI/CD driven by `deploy.sh` (ADC auth, Docker Buildx, versioned tagging, Cloud Run rollout).
 - **Key Decisions**:
   - Deterministic dependency resolution via `npm ci` in `deps` stage.
@@ -22,9 +24,9 @@
 - **2026-06-08 | Orchestration & Docker Optimization**:
   - *Action*: Refactored `Dockerfile` (`npm install` → `npm ci`), expanded `.dockerignore`, and completely rewrote `deploy.sh`.
   - *Outcome*: Deterministic builds, reduced context size, successful Turbopack compilation (35 static pages, 662 packages). `deploy.sh` now supports ADC authentication, Docker Buildx (multi-arch, provenance, cache), dedicated versioned artifact repo, and CLI flags (`--version`, `--dry-run`). Pipeline stabilized for Cloud Run deployment.
-- **2026-06-09 | Admin UI, Accessibility & State Management**:
-  - *Action*: Refactored `AdminListTile.tsx` to enforce full-card interaction models and WCAG compliance. Updated `AdminSidebar.tsx` to implement typed navigation data and `comingSoon` state handling. Resolved React Strict Mode double-mounting causing duplicate Firebase snapshot updates in `AdminMasterDetail.tsx` via idempotent state reduction.
-  - *Outcome*: Implemented unified click targets, semantic ARIA states, keyboard event handling, and nested button isolation. Standardized pattern for all admin list components. Admin sidebar uses `NavItem` interface with `comingSoon` flag, rendering non-interactive items as buttons with opacity/badge styling. Eliminated state duplication across all entity types.
+- **2026-06-09 | Admin UI, Accessibility, State Management & Form Isolation**:
+  - *Action*: Refactored `AdminListTile.tsx` to enforce full-card interaction models and WCAG compliance. Updated `AdminSidebar.tsx` to implement typed navigation data and `comingSoon` state handling. Resolved React Strict Mode double-mounting causing duplicate Firebase snapshot updates in `AdminMasterDetail.tsx` via idempotent state reduction. Fixed `StoryEditor.tsx` form state bleed by resetting `formData`, `clusterInput`, and `relevanceInput` to defaults on `story === null` transitions.
+  - *Outcome*: Implemented unified click targets, semantic ARIA states, keyboard event handling, and nested button isolation. Standardized pattern for all admin list components. Admin sidebar uses `NavItem` interface with `comingSoon` flag, rendering non-interactive items as buttons with opacity/badge styling. Eliminated state duplication across all entity types. Guaranteed clean form initialization for "New" entity creation, preventing cross-record data contamination.
 
 ## 3. Failure Post-Mortems & Anti-Patterns
 - **Non-Deterministic Dependency Resolution**:
@@ -47,4 +49,8 @@
   - *What Failed*: Unmanaged `onSnapshot` listeners in `AdminMasterDetail` under React 18+ Strict Mode.
   - *Symptom*: Left pane displayed duplicate records (14 items for 7 DB records) due to double-mounting triggering concurrent state updates.
   - *Fix*: Implemented idempotent state reduction (`reduce` + `Object.values` by `id`) before `setEntities`. Added service-level doc comments to warn future contributors.
-- **Status**: Optimization phase resolved structural anti-patterns; CI/CD pipeline stabilized with deterministic builds, multi-arch support, versioned deployment strategy, standardized UI interaction models, and idempotent state management.
+- **Form State Bleed on Entity Switch**:
+  - *What Failed*: `StoryEditor.tsx` `useEffect` only handled `story` population, lacking explicit reset logic for `story === null` transitions.
+  - *Symptom*: Clicking "New" after viewing an existing record retained stale data from the previous selection, causing incorrect defaults and cross-record contamination.
+  - *Fix*: Added explicit reset branch in `useEffect` to clear `formData`, `clusterInput`, and `relevanceInput` to baseline defaults when `story` is `null`. Ensures clean state isolation for creation vs. editing workflows.
+- **Status**: Optimization phase resolved structural anti-patterns; CI/CD pipeline stabilized with deterministic builds, multi-arch support, versioned deployment strategy, standardized UI interaction models, idempotent state management, and isolated form state handling.

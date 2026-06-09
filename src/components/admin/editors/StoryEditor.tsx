@@ -34,6 +34,24 @@ export default function StoryEditor({ story, onSave, onCancel }: StoryEditorProp
         if (story) {
             setFormData(story);
             setClusterInput(story.career_clusters[0] || '');
+        } else {
+            // Reset to blank state when creating a new story
+            setFormData({
+                title: '',
+                description: '',
+                image: '',
+                career_clusters: [],
+                careerRelevance: [],
+                slides: [],
+                published: false,
+                draft: true,
+                inReview: false,
+                featured: false,
+                ad: false,
+                byXtara: false,
+            });
+            setClusterInput('');
+            setRelevanceInput('');
         }
     }, [story]);
 

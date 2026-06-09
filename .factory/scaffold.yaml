@@ -64,17 +64,17 @@ features:
     progressPercent: 100
   - name: Fix 'Create New Story' Form State Bleed
     description: Feature capability for Fix 'Create New Story' Form State Bleed.
-    status: ready-to-build
+    status: done
     stories:
       - name: Fix 'Create New Story' Form State Bleed
         file: features/admin-form-state-bleed.yaml
-        status: ready-to-build
+        status: done
         tasks:
           - id: task-fix-create-new-story-form-state-bleed-default
             title: Implement core requirements for Fix 'Create New Story' Form State Bleed
-            status: ready-to-build
-        progressPercent: 0
-    progressPercent: 0
+            status: done
+        progressPercent: 100
+    progressPercent: 100
   - name: Resolve Active Hydration Warnings in Admin Panel
     description: Feature capability for Resolve Active Hydration Warnings in Admin Panel.
     status: ready-to-build
@@ -245,4 +245,4 @@ features:
         progressPercent: 100
     progressPercent: 100
 status: building
-progressPercent: 29
+progressPercent: 35
