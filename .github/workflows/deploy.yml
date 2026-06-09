@@ -1,0 +1,152 @@
+# =============================================================================
+# Xtara Web — GitHub Actions CI/CD Pipeline
+# =============================================================================
+# Automated deployment to Google Cloud Run via OIDC (keyless auth).
+#
+# Trigger: Push to `main` branch
+# Pipeline:
+#   1. Checkout code
+#   2. Authenticate with GCP via OIDC Workload Identity Federation
+#   3. Build & push Docker image to Artifact Registry
+#   4. Deploy to Cloud Run
+#
+# OIDC Setup (one-time, in GCP):
+#   1. Create a Workload Identity Pool in IAM:
+#        gcloud iam workload-identity-pools create "github-pool" \
+#          --project="bigmints-xtara" \
+#          --display-name="GitHub Actions Pool"
+#
+#   2. Create a Provider linked to the GitHub repository:
+#        gcloud iam workload-identity-pools providers create-iam "github-provider" \
+#          --project="bigmints-xtara" \
+#          --pool="github-pool" \
+#          --display-name="GitHub Actions Provider" \
+#          --attribute-mapping="google.subject=assertion.sub,
+#                               attribute.actor=assertion.actor,
+#                               attribute.repository=assertion.repository,
+#                               attribute.ref=assertion.ref" \
+#          --issuer="https://token.actions.githubusercontent.com"
+#
+#   3. Grant the Provider's principal to the Cloud Run service account:
+#        gcloud iam service-accounts add-iam-policy-binding \
+#          "firebase-adminsdk-fbsvc@bigmints-xtara.iam.gserviceaccount.com" \
+#          --project="bigmints-xtara" \
+#          --role="roles/iam.workload-identity-user" \
+#          --member="principalSet://iam.gserviceaccount.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/providers/github-provider/attribute.repository/xtara/xtara-web"
+#
+#   4. Replace `<PROJECT_NUMBER>` in the `workload_identity_provider` field
+#      below with your actual GCP project number (found in GCP Console > Settings).
+#
+# =============================================================================
+
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches: [main]
+
+env:
+  PROJECT_ID: "bigmints-xtara"
+  REGION: "us-central1"
+  SERVICE_NAME: "xtara-web"
+  ARTIFACT_REPO: "us-docker.pkg.dev/bigminstxtara/xtara-web-artifacts"
+  IMAGE_NAME: "us-docker.pkg.dev/bigminstxtara/xtara-web-artifacts/xtara-web"
+
+permissions:
+  # Required for OIDC token request
+  contents: read
+  # Required for Buildx cache to persist across runs
+  pull-requests: write
+
+jobs:
+  deploy:
+    name: Build & Deploy to Cloud Run
+    runs-on: ubuntu-latest
+    steps:
+      # -----------------------------------------------------------------------
+      # 1. Checkout source code
+      # -----------------------------------------------------------------------
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # -----------------------------------------------------------------------
+      # 2. Compute version tag (git short SHA + timestamp)
+      # -----------------------------------------------------------------------
+      - name: Compute version tag
+        id: version
+        run: |
+          GIT_HASH=$(git rev-parse --short HEAD)
+          TIMESTAMP=$(date -u +%Y%m%d-%H%M%S)
+          VERSION_TAG="${GIT_HASH}-${TIMESTAMP}"
+          echo "version_tag=${VERSION_TAG}" >> "$GITHUB_OUTPUT"
+          echo "Image version: ${VERSION_TAG}"
+
+      # -----------------------------------------------------------------------
+      # 3. Authenticate with GCP via OIDC (Workload Identity Federation)
+      # -----------------------------------------------------------------------
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          # TODO: Replace <PROJECT_NUMBER> with your actual GCP Project Number.
+          #        Find it at: https://console.cloud.google.com/project
+          #        or run: gcloud projects describe bigmints-xtara --format='value(project_number)'
+          workload_identity_provider: "projects/<PROJECT_NUMBER>/locations/global/workloadIdentityPools/github-pool/providers/github-provider"
+
+      # -----------------------------------------------------------------------
+      # 4. Configure Docker to use gcloud credential helper for Artifact Registry
+      # -----------------------------------------------------------------------
+      - name: Configure Docker
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          export_default_credentials: true
+        env:
+          CLOUDSDK_AUTH_PROJECT: ${{ env.PROJECT_ID }}
+
+      # -----------------------------------------------------------------------
+      # 5. Build and push Docker image using Buildx
+      # -----------------------------------------------------------------------
+      - name: Login to Artifact Registry
+        run: gcloud auth configure-docker us-docker.pkg.dev --quiet
+
+      - name: Docker Buildx Build & Push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version_tag }}
+            ${{ env.IMAGE_NAME }}:latest
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cache
+          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:cache,mode=max
+          provenance: max
+
+      # -----------------------------------------------------------------------
+      # 6. Deploy to Google Cloud Run
+      # -----------------------------------------------------------------------
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          region: ${{ env.REGION }}
+          service: ${{ env.SERVICE_NAME }}
+          image_url: "${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version_tag }}"
+          env_vars: |
+            NODE_ENV=production
+            NEXT_TELEMETRY_DISABLED=1
+            PORT=8080
+
+      # -----------------------------------------------------------------------
+      # 7. Output deployment URL
+      # -----------------------------------------------------------------------
+      - name: Show Deployment URL
+        run: |
+          URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} \
+            --region ${{ env.REGION }} \
+            --format='value(status.url)' \
+            --project ${{ env.PROJECT_ID }})
+          echo "Service URL: ${URL}"
+          echo "Version: ${{ steps.version.outputs.version_tag }}"

@@ -142,17 +142,17 @@ features:
     progressPercent: 100
   - name: Implement Automated CI/CD via GitHub Actions
     description: Feature capability for Implement Automated CI/CD via GitHub Actions.
-    status: ready-to-build
+    status: done
     stories:
       - name: Implement Automated CI/CD via GitHub Actions
         file: features/orchestration-ci-cd-actions.yaml
-        status: ready-to-build
+        status: done
         tasks:
           - id: task-implement-automated-ci-cd-via-github-actions-default
             title: Implement core requirements for Implement Automated CI/CD via GitHub Actions
-            status: ready-to-build
-        progressPercent: 0
-    progressPercent: 0
+            status: done
+        progressPercent: 100
+    progressPercent: 100
   - name: Migrate Environment Variables to Secret Manager
     description: Feature capability for Migrate Environment Variables to Secret Manager.
     status: ready-to-build
@@ -245,4 +245,4 @@ features:
         progressPercent: 100
     progressPercent: 100
 status: building
-progressPercent: 53
+progressPercent: 59

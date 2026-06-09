@@ -2,7 +2,7 @@
 ## 1. Architectural Context & Key ADR Highlights
 - **Application Domain**: Xtara — AI-powered career discovery platform for Indian students (Grades 10–12). Core journeys: Anonymous Assessment → AI Career Path → Resource Exploration → Profile/Progress Tracking → Admin CMS.
 - **Core Stack**: Next.js (Turbopack, Standalone Output), Node 20 (Alpine), Firebase (Auth/Storage/Analytics), NextAuth, Algolia.
-- **Deployment Target**: Google Cloud Run (`us-central1`) via Artifact Registry (`us-docker.pkg.dev/.../xtara-web-artifacts`).
+- **Deployment Target**: Google Cloud Run (`us-central1`) via Artifact Registry (`us-docker.pkg.dev/bigminstxtara/xtara-web-artifacts`).
 - **Environment Scoping**:
   - *Client (`NEXT_PUBLIC_*`)*: Firebase config, Algolia search keys, FCM sender ID, Analytics ID.
   - *Server*: `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `NODE_ENV` (production), `FIREBASE_ADMIN_CREDENTIALS`.
@@ -13,12 +13,12 @@
   - Firebase `onSnapshot` listeners require idempotent state reduction (`reduce` + `Object.values` by `id`) to handle React 18+ Strict Mode double-mounting.
   - Form State Isolation: `useEffect` watchers for entity selection must explicitly reset form state to defaults when transitioning to a `null`/`New` entity to prevent stale data bleed across editor views.
 - **Data Formatting Standards**: Firestore/API payloads use `snake_case` strings. UI display uses `formatSnakeCaseToTitleCase()` utility (`src/lib/utils.ts`) to transform labels/chips without mutating underlying schema.
-- **Build & Orchestration**: Multi-stage Docker (`deps` → `builder` → `runner`). Local dev via `start.sh` (port 5077). CI/CD driven by `deploy.sh` (ADC auth, Docker Buildx, versioned tagging, Cloud Run rollout).
+- **Build & Orchestration**: Multi-stage Docker (`deps` → `builder` → `runner`). Local dev via `start.sh` (port 5077). CI/CD driven by `deploy.sh` (ADC auth, Docker Buildx, versioned tagging, Cloud Run rollout) and GitHub Actions workflow (OIDC keyless auth, automated build/push/deploy).
 - **Key Decisions**:
   - Deterministic dependency resolution via `npm ci` in `deps` stage.
   - Aggressive `.dockerignore` strategy (~40 rules) to minimize build context.
   - Next.js standalone output to strip `node_modules` bloat in final runner stage.
-  - Authentication: Workload Identity Federation (ADC) over legacy service account keys.
+  - Authentication: Workload Identity Federation (ADC/OIDC) over legacy service account keys.
   - Artifact Management: Dedicated versioned repo (`xtara-web-artifacts`) with `<git-hash>-<YYYYMMDD-HHMMSS>` tagging to prevent Cloud Run race conditions.
 
 ## 2. Chronology of Major Milestones & What Worked
@@ -34,6 +34,9 @@
 - **2026-06-09 | Admin CMS Expansion (Good Reads, Challenges, Dream Careers)**:
   - *Action*: Scaled admin entity management architecture. Completed `GoodReads` module (interface, config, editor, page). Initiated `Challenges` and `Dream Careers` modules.
   - *Outcome*: `GoodReads` fully operational with 3-state status logic, timestamp conversion, and chip-based relevance inputs. `Challenges` and `Dream Careers` scaffolding initiated; pending final integration and timeout resolution. Standardized `AdminMasterDetail<T>` pattern enables rapid entity onboarding with minimal boilerplate.
+- **2026-06-09 | CI/CD Pipeline Automation**:
+  - *Action*: Created `.github/workflows/deploy.yml` implementing full GitHub Actions pipeline.
+  - *Outcome*: Automated OIDC Workload Identity Federation authentication, Docker Buildx multi-arch builds, versioned artifact pushing, and Cloud Run deployment. Eliminates manual `deploy.sh` friction for `main` branch pushes. Keyless auth reduces credential rotation overhead.
 
 ## 3. Failure Post-Mortems & Anti-Patterns
 - **Non-Deterministic Dependency Resolution**:
