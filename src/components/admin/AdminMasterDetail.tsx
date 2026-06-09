@@ -36,7 +36,18 @@ export default function AdminMasterDetail<T extends AdminEntity>({
     // Load entities
     useEffect(() => {
         const unsubscribe = service.streamAll((loadedEntities) => {
-            setEntities(loadedEntities);
+            // Deduplicate by ID to prevent React Strict Mode double-mounting issues.
+            // In dev, Strict Mode unmounts/remounts the component, which can cause
+            // multiple onSnapshot listeners to fire concurrently, potentially producing
+            // duplicate entries if the same snapshot is processed twice before React
+            // reconciles state.
+            const uniqueEntities = Object.values(
+                loadedEntities.reduce((acc, entity) => {
+                    acc[entity.id] = entity;
+                    return acc;
+                }, {} as Record<string, T>)
+            ) as T[];
+            setEntities(uniqueEntities);
             setIsLoading(false);
         });
 

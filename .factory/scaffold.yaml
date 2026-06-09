@@ -51,17 +51,17 @@ features:
     progressPercent: 100
   - name: Fix Duplicate Data in Story List
     description: Feature capability for Fix Duplicate Data in Story List.
-    status: ready-to-build
+    status: done
     stories:
       - name: Fix Duplicate Data in Story List
         file: features/admin-duplicate-list.yaml
-        status: ready-to-build
+        status: done
         tasks:
           - id: task-fix-duplicate-data-in-story-list-default
             title: Implement core requirements for Fix Duplicate Data in Story List
-            status: ready-to-build
-        progressPercent: 0
-    progressPercent: 0
+            status: done
+        progressPercent: 100
+    progressPercent: 100
   - name: Fix 'Create New Story' Form State Bleed
     description: Feature capability for Fix 'Create New Story' Form State Bleed.
     status: ready-to-build
@@ -245,4 +245,4 @@ features:
         progressPercent: 100
     progressPercent: 100
 status: building
-progressPercent: 24
+progressPercent: 29

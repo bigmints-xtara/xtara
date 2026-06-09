@@ -42,7 +42,12 @@ export class AdminService<T extends AdminEntity> {
     }
 
     /**
-     * Stream entities in real-time
+     * Stream entities in real-time using Firestore onSnapshot.
+     *
+     * Note: The returned callback is invoked once per snapshot. In React Strict Mode
+     * (development), the component's useEffect may mount/unmount/mount, creating
+     * two concurrent listeners. Both will fire the callback for the same snapshot,
+     * so the consumer should deduplicate entities by ID before rendering.
      */
     streamAll(callback: (entities: T[]) => void): Unsubscribe {
         const collectionRef = collection(db, this.config.collectionName);
