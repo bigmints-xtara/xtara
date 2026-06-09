@@ -22,4 +22,4 @@ behavior:
   - Reduced Firestore read costs for career path polling (from ~30 reads to ~6 reads).
   - Faster detection of career path results during peak polling windows.
 config: {}
-status: draft
+status: ready-to-build

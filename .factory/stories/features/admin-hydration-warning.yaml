@@ -16,4 +16,4 @@ behavior:
   - The admin panel loads cleanly without the Next.js "Issues" badge appearing in development.
   - No hydration mismatch or unhandled warnings appear in the browser console upon initial page load.
 config: {}
-status: draft
+status: ready-to-build

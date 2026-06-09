@@ -22,4 +22,4 @@ behavior:
   - All career clusters and domains visible to the admin are formatted into readable Title Case strings.
   - The underlying data sent to the API/database remains the original snake_case format.
 config: {}
-status: draft
+status: ready-to-build

@@ -112,4 +112,4 @@ behavior:
   - "When an admin fills in title and type, then saves, a new document is created in the 'sparks' collection with createdAt, updatedAt Timestamps and draft=true."
   - "When an admin selects an existing Spark and changes its status to Published, the document is updated with published=true, draft=false, inReview=false."
 config: {}
-status: draft
+status: ready-to-build

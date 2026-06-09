@@ -32,4 +32,4 @@ behavior:
   - User profile is cached and revalidated on auth state changes.
   - Network reads reduced by ~60% for typical user sessions.
 config: {}
-status: draft
+status: ready-to-build

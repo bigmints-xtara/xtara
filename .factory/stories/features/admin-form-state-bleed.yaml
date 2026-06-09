@@ -20,4 +20,4 @@ behavior:
   - Submitting the "New" form creates a brand new record.
   - Canceling the "New" action restores the UI appropriately without breaking selection state.
 config: {}
-status: draft
+status: ready-to-build

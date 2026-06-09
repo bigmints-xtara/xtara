@@ -146,4 +146,4 @@ behavior:
   - "When an admin creates a new Good Read with title, type, content and saves it, a document is written to 'good_reads' with draft=true, createdAt and updatedAt Timestamps."
   - "When an admin sets publishedAt and publishedUntil and saves, the values are stored as Firestore Timestamps (not strings)."
 config: {}
-status: draft
+status: ready-to-build

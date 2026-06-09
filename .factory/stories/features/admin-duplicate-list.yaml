@@ -20,4 +20,4 @@ behavior:
   - The counter accurately reflects the unique count.
   - No single story appears twice in the UI.
 config: {}
-status: draft
+status: ready-to-build

@@ -28,4 +28,4 @@ behavior:
   - TypeScript compiler catches mismatched fields across the codebase.
   - Nested types (CareerPathwayStep, PrimaryCareer, RagOutput) are explicitly typed.
 config: {}
-status: draft
+status: ready-to-build

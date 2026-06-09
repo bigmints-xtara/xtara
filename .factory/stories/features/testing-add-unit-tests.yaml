@@ -35,4 +35,4 @@ behavior:
   - CI pipeline runs `npm test` as a pre-deploy gate.
   - Minimum 70% coverage on `src/lib/firebase/` directory.
 config: {}
-status: draft
+status: ready-to-build

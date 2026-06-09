@@ -17,4 +17,4 @@ behavior:
   - A small "Soon" badge indicates status.
   - Clicking them does not navigate away from the current functional page.
 config: {}
-status: draft
+status: ready-to-build

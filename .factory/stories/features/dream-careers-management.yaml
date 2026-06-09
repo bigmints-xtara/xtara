@@ -159,4 +159,4 @@ behavior:
   - "When an admin selects a career path, they see a read-mostly detail view showing AI-generated content and a few editable fields."
   - "When an admin edits the description field and saves, only the modified editable fields are written back to Firestore."
 config: {}
-status: draft
+status: ready-to-build

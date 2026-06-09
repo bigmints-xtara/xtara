@@ -167,4 +167,4 @@ behavior:
   - "When an admin adds a question, fills in title, 4 options, sets correctAnswer to 2, and saves — the questions array is persisted as a subcollection-style array in the Firestore document."
   - "When an admin sets rewardPerQuestion to a negative number, the form blocks saving with an inline validation error."
 config: {}
-status: draft
+status: ready-to-build

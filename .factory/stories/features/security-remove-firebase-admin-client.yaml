@@ -25,4 +25,4 @@ behavior:
   - Bundle size is reduced by the firebase-admin package (~300KB Gzip).
   - No service account tokens are exposed to the browser.
 config: {}
-status: draft
+status: ready-to-build

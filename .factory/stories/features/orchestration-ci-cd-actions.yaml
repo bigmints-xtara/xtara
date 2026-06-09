@@ -18,4 +18,4 @@ behavior:
   - Pushes image to Artifact Registry.
   - Authenticates via GitHub OIDC without stored keys.
 config: {}
-status: draft
+status: ready-to-build

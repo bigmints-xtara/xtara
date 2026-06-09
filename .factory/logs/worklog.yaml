@@ -22,3 +22,6 @@
 - No Firestore security rules in repo (data leakage risk)
 - No tests (207 files, 0 test files)
 - No CI/CD pipeline (manual deployment)
+- task: admin-click-target-area
+  date: "2026-06-09"
+  summary: Refactored AdminListTile for full card click target, keyboard accessibility, and improved hover styles

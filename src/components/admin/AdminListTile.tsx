@@ -24,16 +24,28 @@ export default function AdminListTile({
     const statusColors: Record<string, string> = {
         published: 'bg-green-100 text-green-800',
         draft: 'bg-orange-100 text-orange-800',
-        inReview: 'bg-blue-100 text-blue-800',
+        inreview: 'bg-blue-100 text-blue-800',
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onTap();
+        }
     };
 
     return (
         <div
+            role="button"
+            tabIndex={0}
+            aria-pressed={isSelected}
             onClick={onTap}
-            className={`p-4 border-b cursor-pointer transition-all ${isSelected
+            onKeyDown={handleKeyDown}
+            className={`w-full text-left p-4 border-b cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${
+                isSelected
                     ? 'bg-blue-50 border-l-4 border-l-blue-600'
-                    : 'hover:bg-gray-50'
-                }`}
+                    : 'hover:bg-gray-50 hover:border-l-4 hover:border-l-gray-300'
+            }`}
         >
             <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
@@ -48,8 +60,9 @@ export default function AdminListTile({
 
                 <div className="flex items-center gap-2 ml-4">
                     <span
-                        className={`px-2 py-1 text-xs rounded font-medium ${statusColors[status.toLowerCase()] || 'bg-gray-100 text-gray-800'
-                            }`}
+                        className={`px-2 py-1 text-xs rounded font-medium ${
+                            statusColors[status.toLowerCase()] || 'bg-gray-100 text-gray-800'
+                        }`}
                     >
                         {status}
                     </span>
@@ -64,7 +77,7 @@ export default function AdminListTile({
                             <MoreVertical size={18} />
                         </button>
 
-                        <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg  border hidden group-hover:block z-10">
+                        <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg border hidden group-hover:block z-10">
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();

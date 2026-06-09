@@ -1,1 +1,16 @@
-[]
+- addedAt: 2026-06-08 22:44:56.201000+00:00
+  completedAt: null
+  dependsOn: []
+  durationMs: null
+  engine: factory
+  error: null
+  errorCategory: null
+  id: q_1780958696201_pzu9dg
+  kind: FeatureStory
+  output: ''
+  phase: 1
+  priority: 0
+  startedAt: null
+  status: ready-to-build
+  storyFile: features/admin-click-target-area.yaml
+  targetApp: xtara-web
