@@ -82,6 +82,7 @@ compute_version() {
 VERSION_TAG=""
 DRY_RUN="false"
 SHOW_VERSION_ONLY="false"
+USE_SECRETS="false"
 
 for arg in "$@"; do
     case "$arg" in
@@ -91,12 +92,15 @@ for arg in "$@"; do
         --version)
             SHOW_VERSION_ONLY="true"
             ;;
+        --use-secrets)
+            USE_SECRETS="true"
+            ;;
         --)
             # Stop processing flags
             ;;
         -*)
             print_error "Unknown option: $arg"
-            echo "Usage: ./deploy.sh [version_tag] [--dry-run] [--version]"
+            echo "Usage: ./deploy.sh [version_tag] [--dry-run] [--version] [--use-secrets]"
             exit 1
             ;;
         *)
@@ -264,6 +268,43 @@ print_info "  $IMAGE_NAME:$VERSION_TAG"
 print_info "  $IMAGE_NAME:latest"
 print_success "Images pushed to Artifact Registry"
 
+# Build --update-secrets flags for Cloud Run deployment.
+# Called when --use-secrets is passed to deploy.sh
+build_secret_flags() {
+    local prefix="xtara-web"
+    local secret_map=(
+        "NEXT_PUBLIC_FIREBASE_API_KEY=${prefix}/firebase-api-key"
+        "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${prefix}/firebase-auth-domain"
+        "NEXT_PUBLIC_FIREBASE_PROJECT_ID=${prefix}/firebase-project-id"
+        "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=${prefix}/firebase-storage-bucket"
+        "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=${prefix}/firebase-messaging-sender-id"
+        "NEXT_PUBLIC_FIREBASE_APP_ID=${prefix}/firebase-app-id"
+        "NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=${prefix}/firebase-measurement-id"
+        "NEXT_PUBLIC_ALGOLIA_APP_ID=${prefix}/algolia-app-id"
+        "NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${prefix}/algolia-search-api-key"
+        "NEXTAUTH_URL=${prefix}/nextauth-url"
+        "NEXTAUTH_SECRET=${prefix}/nextauth-secret"
+    )
+
+    local flags=""
+
+    for entry in "${secret_map[@]}"; do
+        local env_key="${entry%%=*}"
+        local secret_name="${entry#*=}"
+
+        if gcloud secrets describe "$secret_name" --project "$PROJECT_ID" --format=json > /dev/null 2>&1; then
+            local secret_ref="projects/${PROJECT_ID}/secrets/${secret_name}/versions/latest"
+            if [[ -n "$flags" ]]; then
+                flags="$flags ${env_key}=${secret_ref}"
+            else
+                flags="${env_key}=${secret_ref}"
+            fi
+        fi
+    done
+
+    echo "$flags"
+}
+
 # =============================================================================
 # First-time Artifact Registry setup (if the repo does not exist yet):
 #
@@ -276,6 +317,22 @@ print_success "Images pushed to Artifact Registry"
 # Or use --create-repo when deploying via gcloud run deploy:
 #   gcloud run deploy ... --create-repo ...
 # =============================================================================
+
+# ===========================
+# SECRETS (optional)
+# ===========================
+
+SECRET_DEPLOY_FLAGS=""
+if [[ "$USE_SECRETS" == "true" ]]; then
+    print_info "Mounting secrets from GCP Secret Manager..."
+    SECRET_DEPLOY_FLAGS=$(build_secret_flags)
+    if [[ -n "$SECRET_DEPLOY_FLAGS" ]]; then
+        secret_count=$(echo "$SECRET_DEPLOY_FLAGS" | grep -o "projects/" | wc -l)
+        print_info "Will mount ${secret_count} secrets from Secret Manager"
+    else
+        print_warning "No secrets found in Secret Manager. Run './scripts/manage-secrets.sh init' first."
+    fi
+fi
 
 # ===========================
 # DEPLOY
@@ -302,21 +359,41 @@ if [[ "$DRY_RUN" == "true" ]]; then
     print_info "  --max-instances 10 \\"
     print_info "  --timeout 60s \\"
     print_info "  --service-account firebase-adminsdk-fbsvc@${PROJECT_ID}.iam.gserviceaccount.com \\"
+    if [[ "$USE_SECRETS" == "true" && -n "$SECRET_DEPLOY_FLAGS" ]]; then
+        print_info "  --update-secrets $(echo $SECRET_DEPLOY_FLAGS | xargs | sed 's/ /\\ /g') \\"
+    fi
     print_info "  --project $PROJECT_ID"
 else
-    gcloud run deploy "$SERVICE_NAME" \
-        --image "${IMAGE_NAME}:${VERSION_TAG}" \
-        --platform "$PLATFORM" \
-        --region "$REGION" \
-        --allow-unauthenticated \
-        --port 8080 \
-        --memory 512Mi \
-        --cpu 1 \
-        --min-instances 0 \
-        --max-instances 10 \
-        --timeout 60s \
-        --service-account "firebase-adminsdk-fbsvc@${PROJECT_ID}.iam.gserviceaccount.com" \
-        --project "$PROJECT_ID"
+    if [[ "$USE_SECRETS" == "true" && -n "$SECRET_DEPLOY_FLAGS" ]]; then
+        gcloud run deploy "$SERVICE_NAME" \
+            --image "${IMAGE_NAME}:${VERSION_TAG}" \
+            --platform "$PLATFORM" \
+            --region "$REGION" \
+            --allow-unauthenticated \
+            --port 8080 \
+            --memory 512Mi \
+            --cpu 1 \
+            --min-instances 0 \
+            --max-instances 10 \
+            --timeout 60s \
+            --service-account "firebase-adminsdk-fbsvc@${PROJECT_ID}.iam.gserviceaccount.com" \
+            --update-secrets $SECRET_DEPLOY_FLAGS \
+            --project "$PROJECT_ID"
+    else
+        gcloud run deploy "$SERVICE_NAME" \
+            --image "${IMAGE_NAME}:${VERSION_TAG}" \
+            --platform "$PLATFORM" \
+            --region "$REGION" \
+            --allow-unauthenticated \
+            --port 8080 \
+            --memory 512Mi \
+            --cpu 1 \
+            --min-instances 0 \
+            --max-instances 10 \
+            --timeout 60s \
+            --service-account "firebase-adminsdk-fbsvc@${PROJECT_ID}.iam.gserviceaccount.com" \
+            --project "$PROJECT_ID"
+    fi
 fi
 
 print_success "Deployment completed!"

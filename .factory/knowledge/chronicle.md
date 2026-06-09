@@ -3,9 +3,10 @@
 - **Application Domain**: Xtara — AI-powered career discovery platform for Indian students (Grades 10–12). Core journeys: Anonymous Assessment → AI Career Path → Resource Exploration → Profile/Progress Tracking → Admin CMS.
 - **Core Stack**: Next.js (Turbopack, Standalone Output), Node 20 (Alpine), Firebase (Auth/Storage/Analytics), NextAuth, Algolia.
 - **Deployment Target**: Google Cloud Run (`us-central1`) via Artifact Registry (`us-docker.pkg.dev/bigminstxtara/xtara-web-artifacts`).
-- **Environment Scoping**:
+- **Environment & Secrets Management**:
   - *Client (`NEXT_PUBLIC_*`)*: Firebase config, Algolia search keys, FCM sender ID, Analytics ID.
-  - *Server*: `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `NODE_ENV` (production), `FIREBASE_ADMIN_CREDENTIALS`.
+  - *Server*: `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `NODE_ENV`, `FIREBASE_ADMIN_CREDENTIALS`.
+  - *Secrets Integration*: Migrated to GCP Secret Manager via `scripts/manage-secrets.sh`. `deploy.sh` supports `--use-secrets` flag to mount runtime variables, reducing `.env` drift. `SECRETS.md` documents IAM roles, migration, and rollback procedures.
 - **UI/Component Standards**:
   - *Interaction Models*: Full-card click targets (`w-full`, `text-left`), semantic accessibility (`role="button"`, `tabIndex={0}`, `aria-pressed`), keyboard navigation (`Enter`/`Space` with `preventDefault`), nested action isolation (`e.stopPropagation()`), explicit focus rings (`focus:ring-2`).
   - *Admin Navigation*: `NavItem` interface with `comingSoon` boolean; non-interactive items render as `<button>` with `opacity-50`, `cursor-default`, and `Soon` badge to prevent broken link navigation and provide clear state.
@@ -20,6 +21,7 @@
   - Next.js standalone output to strip `node_modules` bloat in final runner stage.
   - Authentication: Workload Identity Federation (ADC/OIDC) over legacy service account keys.
   - Artifact Management: Dedicated versioned repo (`xtara-web-artifacts`) with `<git-hash>-<YYYYMMDD-HHMMSS>` tagging to prevent Cloud Run race conditions.
+  - Secret Management: Centralized GCP Secret Manager integration with CLI migration tooling to eliminate environment variable fragmentation.
 
 ## 2. Chronology of Major Milestones & What Worked
 - **2026-06-08 | Orchestration & Docker Optimization**:
@@ -37,6 +39,9 @@
 - **2026-06-09 | CI/CD Pipeline Automation**:
   - *Action*: Created `.github/workflows/deploy.yml` implementing full GitHub Actions pipeline.
   - *Outcome*: Automated OIDC Workload Identity Federation authentication, Docker Buildx multi-arch builds, versioned artifact pushing, and Cloud Run deployment. Eliminates manual `deploy.sh` friction for `main` branch pushes. Keyless auth reduces credential rotation overhead.
+- **2026-06-09 | Secret Manager Integration & Environment Migration**:
+  - *Action*: Integrated GCP Secret Manager into deployment workflow. Created `scripts/manage-secrets.sh` for initialization, listing, and deployment. Updated `deploy.sh` with `--use-secrets` flag and `build_secret_flags()` logic. Rewrote `.env.example` with `[SECRET]` annotations and created `SECRETS.md`.
+  - *Outcome*: Centralized secret management eliminates `.env` drift across environments. CLI tooling enables seamless migration and rollback. Zero build regressions; `bash -n` and `npm run build` pass cleanly.
 
 ## 3. Failure Post-Mortems & Anti-Patterns
 - **Non-Deterministic Dependency Resolution**:
@@ -63,4 +68,12 @@
   - *What Failed*: `StoryEditor.tsx` `useEffect` only handled `story` population, lacking explicit reset logic for `story === null` transitions.
   - *Symptom*: Clicking "New" after viewing an existing record retained stale data from the previous selection, causing incorrect defaults and cross-record contamination.
   - *Fix*: Added explicit reset branch in `useEffect` to clear `formData`, `clusterInput`, and `relevanceInput` to baseline defaults when `story` is `null`. Ensures clean state isolation for creation vs. editing workflows.
-- **Status**: Optimization phase resolved structural anti-patterns; CI/CD pipeline stabilized with deterministic builds, multi-arch support, versioned deployment strategy, standardized UI interaction models, idempotent state management, isolated form state handling, and schema-preserving label formatting. Admin CMS expansion is actively scaling entity management modules.
+- **CLI Execution Timeouts & Context Limits**:
+  - *What Failed*: Complex multi-file scaffolding tasks (`challenges-management`, `dream-careers-management`) triggered CLI agent timeouts (`exit code null`).
+  - *Symptom*: Incomplete file generation, partial TypeScript compilation, and fragmented state requiring manual reconciliation.
+  - *Fix*: Decompose large scaffolding tasks into atomic sub-stories (types → config → editor → page). Enforce strict file-scoped diffs and incremental verification (`npx tsc --noEmit`) before final commit.
+- **Next.js Hydration Mismatches (Pending)**:
+  - *What Failed*: Server/Client state divergence on initial render.
+  - *Symptom*: Console warnings regarding text content mismatch during hydration.
+  - *Fix*: Isolate dynamic rendering behind `useEffect` or `useClient` wrappers; ensure initial server-rendered DOM matches client-side state. Awaiting targeted fix in `admin-hydration-warning` sprint.
+- **Status**: Optimization phase resolved structural anti-patterns; CI/CD pipeline stabilized with deterministic builds, multi-arch support, versioned deployment strategy, standardized UI interaction models, idempotent state management, isolated form state handling, schema-preserving label formatting, and centralized secret management. Admin CMS expansion is actively scaling entity management modules. CLI timeout mitigation requires task decomposition for future scaffolding.
