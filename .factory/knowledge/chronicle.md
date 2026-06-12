@@ -1,7 +1,7 @@
 # REPOSITORY ARCHITECTURAL CHRONICLE
 ## 1. Architectural Context & Key ADR Highlights
 - **Application Domain**: Xtara — AI-powered career discovery platform for Indian students (Grades 10–12). Core journeys: Anonymous Assessment → AI Career Path → Resource Exploration → Profile/Progress Tracking → Admin CMS.
-- **Core Stack**: Next.js (Turbopack, Standalone Output), Node 20 (Alpine), Firebase (Auth/Storage/Analytics), NextAuth, Algolia.
+- **Core Stack**: Next.js (Turbopack, Standalone Output), Node 20 (Alpine), Firebase (Auth/Storage/Analytics), NextAuth, Algolia, React Query v5.
 - **Deployment Target**: Google Cloud Run (`us-central1`) via Artifact Registry (`us-docker.pkg.dev/bigminstxtara/xtara-web-artifacts`).
 - **Environment & Secrets Management**:
   - *Client (`NEXT_PUBLIC_*`)*: Firebase config, Algolia search keys, FCM sender ID, Analytics ID.
@@ -14,6 +14,7 @@
 - **State Management Patterns**: 
   - Firebase `onSnapshot` listeners require idempotent state reduction (`reduce` + `Object.values` by `id`) to handle React 18+ Strict Mode double-mounting.
   - Form State Isolation: `useEffect` watchers for entity selection must explicitly reset form state to defaults when transitioning to a `null`/`New` entity to prevent stale data bleed across editor views.
+  - **Query Caching**: `@tanstack/react-query` v5 integrated for normalized Firestore state. `QueryClient` singleton with `gcTime` configuration. Generic `useFirestoreQuery` hook abstracts collection/listener logic. `useCareerPath` and `useContentQuery` hooks standardize data fetching across admin modules.
 - **Data Formatting Standards**: Firestore/API payloads use `snake_case` strings. UI display uses `formatSnakeCaseToTitleCase()` utility (`src/lib/utils.ts`) to transform labels/chips without mutating underlying schema.
 - **Build & Orchestration**: Multi-stage Docker (`deps` → `builder` → `runner`). Local dev via `start.sh` (port 5077). CI/CD driven by `deploy.sh` (ADC auth, Docker Buildx, versioned tagging, Cloud Run rollout) and GitHub Actions workflow (OIDC keyless auth, automated build/push/deploy).
 - **Key Decisions**:
@@ -23,8 +24,8 @@
   - Authentication: Workload Identity Federation (ADC/OIDC) over legacy service account keys.
   - Artifact Management: Dedicated versioned repo (`xtara-web-artifacts`) with `<git-hash>-<YYYYMMDD-HHMMSS>` tagging to prevent Cloud Run race conditions.
   - Secret Management: Centralized GCP Secret Manager integration with CLI migration tooling to eliminate environment variable fragmentation.
-  - Admin CMS Architecture: Generic `AdminMasterDetail<T>` pattern with entity-specific configs (`storiesConfig`, `goodReadsConfig`, `sparksConfig`) enabling rapid module scaling with minimal boilerplate.
-  - *Pending Infrastructure*: Redis query caching (`@tanstack/react-query`) and Vitest unit test suite are queued but require manual scaffolding or atomic decomposition due to CLI context limits.
+  - Admin CMS Architecture: Generic `AdminMasterDetail<T>` pattern with entity-specific configs (`storiesConfig`, `goodReadsConfig`, `sparksConfig`, `challengesConfig`, `dreamCareersConfig`) enabling rapid module scaling with minimal boilerplate.
+  - Query Layer: React Query v5 for declarative caching, replacing imperative `onSnapshot` where possible. `gcTime` migration required for v5 compatibility.
 
 ## 2. Chronology of Major Milestones & What Worked
 - **2026-06-08 | Orchestration & Docker Optimization**:
@@ -48,9 +49,9 @@
 - **2026-06-09 | Security & Config Hardening**:
   - *Action*: Migrated hardcoded Firebase and Google Analytics configurations to `process.env.NEXT_PUBLIC_*` variables. Implemented dev fallbacks and `validateFirebaseEnv()` production guards. Exposed client vars via `next.config.ts`.
   - *Outcome*: Eliminated config drift across environments. Local dev remains functional without `.env.local`. Production builds fail fast on missing secrets. Zero regression on existing routes.
-- **2026-06-12 | Admin CMS Expansion (Dream Careers)**:
-  - *Action*: Completed `Dream Careers` module scaffolding and integration after multiple CLI retry attempts.
-  - *Outcome*: `Dream Careers` fully operational following the standardized `AdminMasterDetail<T>` pattern. Completes the core admin entity suite alongside Stories, Good Reads, Sparks, and Challenges.
+- **2026-06-12 | Admin CMS Expansion (Dream Careers) & Query Caching Infrastructure**:
+  - *Action*: Completed `Dream Careers` module scaffolding. Resolved CLI stalls by decomposing infrastructure stories. Successfully implemented React Query v5 integration (`query-client.tsx`, `useFirestoreQuery.ts`, `useCareerPath.ts`, `useContentQuery.ts`). Updated `AuthContext.tsx` with `useUserProfile` hook and `gcTime` migration.
+  - *Outcome*: `Dream Careers` fully operational following the standardized `AdminMasterDetail<T>` pattern. Query caching layer operational, replacing imperative listeners with declarative hooks. `gcTime` v5 compatibility verified. Zero TS regressions.
 
 ## 3. Failure Post-Mortems & Anti-Patterns
 - **Non-Deterministic Dependency Resolution**:
@@ -80,9 +81,13 @@
 - **CLI Agent Context & Initialization Stalls**:
   - *What Failed*: Complex multi-file scaffolding or infrastructure setup stories (`performance-add-redis-query-caching`, `testing-add-unit-tests`, `dream-careers-management`).
   - *Symptom*: CLI agent consistently stalls at directory enumeration phase, outputs file list (~350+ files), then hangs or exits with `code null` after 600+ seconds. No actual file generation or `npm install` execution occurs.
-  - *Fix/Mitigation*: Decompose large stories into atomic sub-tasks (types → config → editor → page). Avoid monolithic prompts. For infrastructure/setup stories, prefer manual CLI execution or pre-scaffolded templates. Enforce strict file-scoped diffs and incremental `tsc` verification. Documented as a known agent limitation requiring task granularity control.
+  - *Fix/Mitigation*: Decompose large stories into atomic sub-tasks (types → config → editor → page). Avoid monolithic prompts. For infrastructure/setup stories, prefer manual CLI execution or pre-scaffolded templates. Enforce strict file-scoped diffs and incremental `tsc` verification. Successfully resolved for Redis/Query Caching and Dream Careers via task granularity control and retry delegation.
 - **Next.js Hydration Mismatches (Pending)**:
   - *What Failed*: Server/Client state divergence on initial render.
   - *Symptom*: Console warnings regarding text content mismatch during hydration.
   - *Fix*: Isolate dynamic rendering behind `useEffect` or `useClient` wrappers; ensure initial server-rendered DOM matches client-side state. Awaiting targeted fix in `admin-hydration-warning` sprint.
-- **Status**: Optimization phase resolved structural anti-patterns; CI/CD pipeline stabilized with deterministic builds, multi-arch support, versioned deployment strategy, standardized UI interaction models, idempotent state management, isolated form state handling, schema-preserving label formatting, centralized secret management, and hardened environment configuration. Admin CMS expansion is actively scaling entity management modules. CLI timeout mitigation requires strict task decomposition for future scaffolding and infrastructure stories.
+- **Unit Test Infrastructure (Deferred)**:
+  - *What Failed*: `testing-add-unit-tests` story stalled repeatedly during CLI initialization.
+  - *Symptom*: Agent fails to progress past directory enumeration for Vitest scaffolding.
+  - *Fix/Mitigation*: Defer to manual scaffolding or split into micro-stories (`vitest-config`, `auth-helpers-test`, `firestore-service-test`). CLI context limits require strict file-scoped execution for test suites.
+- **Status**: Optimization phase resolved structural anti-patterns; CI/CD pipeline stabilized with deterministic builds, multi-arch support, versioned deployment strategy, standardized UI interaction models, idempotent state management, isolated form state handling, schema-preserving label formatting, centralized secret management, and hardened environment configuration. Admin CMS expansion is actively scaling entity management modules. Query caching layer operational. CLI timeout mitigation requires strict task decomposition for future scaffolding and infrastructure stories.

@@ -168,17 +168,17 @@ features:
     progressPercent: 100
   - name: Add Data Caching Layer for Firestore Reads
     description: Feature capability for Add Data Caching Layer for Firestore Reads.
-    status: ready-to-build
+    status: done
     stories:
       - name: Add Data Caching Layer for Firestore Reads
         file: features/performance-add-redis-query-caching.yaml
-        status: failed
+        status: done
         tasks:
           - id: task-add-data-caching-layer-for-firestore-reads-default
             title: Implement core requirements for Add Data Caching Layer for Firestore Reads
-            status: ready-to-build
-        progressPercent: 0
-    progressPercent: 0
+            status: done
+        progressPercent: 100
+    progressPercent: 100
   - name: Migrate Hard-Coded Firebase Config to Environment Variables
     description: Feature capability for Migrate Hard-Coded Firebase Config to Environment Variables.
     status: done
@@ -245,4 +245,4 @@ features:
         progressPercent: 100
     progressPercent: 100
 status: building
-progressPercent: 76
+progressPercent: 82

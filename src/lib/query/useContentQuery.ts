@@ -1,47 +1,49 @@
-"use client";
+import { useFirestoreQuery } from './useFirestoreQuery';
+import { db } from '@/lib/firebase/firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
-import { useQuery } from "@tanstack/react-query";
-import { FirestoreService, Story, GoodRead, Challenge, Spark } from "@/lib/firebase/firestore-service";
+const TWELVE_HOURS = 43200000;
 
-const STALE_TIME_12H = 43_200_000;
-const GC_TIME_24H = 86_400_000;
-
-export function useStories(limit: number = 5) {
-  return useQuery<Story[], Error>({
-    queryKey: ["content", "stories", { limit }],
-    queryFn: () => FirestoreService.getStoriesForHome(limit),
-    staleTime: STALE_TIME_12H,
-    gcTime: GC_TIME_24H,
-    retry: 2,
-  });
+export function useStoriesQuery() {
+  return useFirestoreQuery<any[]>(
+    ['stories'],
+    async () => {
+      const snap = await getDocs(collection(db, 'stories'));
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    },
+    { staleTime: TWELVE_HOURS }
+  );
 }
 
-export function useGoodReads(limit: number = 5) {
-  return useQuery<GoodRead[], Error>({
-    queryKey: ["content", "goodReads", { limit }],
-    queryFn: () => FirestoreService.getGoodReadsForHome(limit),
-    staleTime: STALE_TIME_12H,
-    gcTime: GC_TIME_24H,
-    retry: 2,
-  });
+export function useGoodReadsQuery() {
+  return useFirestoreQuery<any[]>(
+    ['good-reads'],
+    async () => {
+      const snap = await getDocs(collection(db, 'good_reads'));
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    },
+    { staleTime: TWELVE_HOURS }
+  );
 }
 
-export function useChallenges(limit: number = 5) {
-  return useQuery<Challenge[], Error>({
-    queryKey: ["content", "challenges", { limit }],
-    queryFn: () => FirestoreService.getChallengesForHome(limit),
-    staleTime: STALE_TIME_12H,
-    gcTime: GC_TIME_24H,
-    retry: 2,
-  });
+export function useChallengesQuery() {
+  return useFirestoreQuery<any[]>(
+    ['challenges'],
+    async () => {
+      const snap = await getDocs(collection(db, 'challenges'));
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    },
+    { staleTime: TWELVE_HOURS }
+  );
 }
 
-export function useSparks(limit: number = 5) {
-  return useQuery<Spark[], Error>({
-    queryKey: ["content", "sparks", { limit }],
-    queryFn: () => FirestoreService.getSparksForHome(limit),
-    staleTime: STALE_TIME_12H,
-    gcTime: GC_TIME_24H,
-    retry: 2,
-  });
+export function useSparksQuery() {
+  return useFirestoreQuery<any[]>(
+    ['sparks'],
+    async () => {
+      const snap = await getDocs(collection(db, 'sparks'));
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    },
+    { staleTime: TWELVE_HOURS }
+  );
 }

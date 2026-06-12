@@ -1,8 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { auth } from "@/lib/firebase/firebase";
+import React, { createContext, useContext, useEffect } from "react";
+import { auth, db } from "@/lib/firebase/firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { getUserProfile, UserProfile } from "@/lib/firebase/auth-helpers";
@@ -20,10 +21,10 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 // React Query auth hooks — separate from context so they can be used anywhere
-export function useUserProfile(uid: string | null) {
+export function useUserProfileQuery(uid: string | null) {
   return useQuery<UserProfile | null, Error>({
     queryKey: ["auth", "userProfile", uid],
-    queryFn: async () => {
+    queryFn: async (): Promise<UserProfile | null> => {
       if (!uid) return null;
       return getUserProfile(uid);
     },
@@ -34,23 +35,38 @@ export function useUserProfile(uid: string | null) {
   });
 }
 
+export function useUserProfile(uid: string | null) {
+  return useQuery({
+    queryKey: ["user-profile", uid],
+    queryFn: async () => {
+      if (!uid) return null;
+      const snap = await getDoc(doc(db, "users", uid));
+      return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+    },
+    enabled: !!uid,
+    staleTime: 300000,
+  });
+}
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = React.useState<User | null>(null);
+  const [loading, setLoading] = React.useState(true);
   const queryClient = useQueryClient();
 
   // Use React Query for user profile — caches by UID
-  const userProfileQuery = useUserProfile(user?.uid || null);
+  const userProfileQuery = useUserProfileQuery(user?.uid || null);
   const userProfile: UserProfile | null = userProfileQuery.data ?? null;
 
-  useEffect(() =>{
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (authUser) => {
       setUser(authUser);
       setLoading(false);
 
       // Invalidate and refetch the profile query when UID changes
       if (authUser) {
-        queryClient.invalidateQueries({ queryKey: ["auth", "userProfile", authUser.uid] });
+        queryClient.invalidateQueries({
+          queryKey: ["auth", "userProfile", authUser.uid],
+        });
       } else {
         queryClient.invalidateQueries({ queryKey: ["auth", "userProfile"] });
       }
@@ -66,4 +82,4 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = (): AuthContextType => useContext(AuthContext);

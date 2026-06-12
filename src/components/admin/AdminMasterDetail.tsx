@@ -156,6 +156,9 @@ export default function AdminMasterDetail<T extends AdminEntity>({
             published: 'Published',
             draft: 'Draft',
             inReview: 'In Review',
+            created: 'Created',
+            updated: 'Updated',
+            archived: 'Archived',
         };
         return labels[status];
     };

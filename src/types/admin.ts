@@ -95,7 +95,7 @@ export interface StorySlide {
   date?: string;
 }
 
-export type EntityStatus = 'published' | 'draft' | 'inReview' | 'all';
+export type EntityStatus = 'published' | 'draft' | 'inReview' | 'all' | 'created' | 'updated' | 'archived';
 
 export interface AdminCareerPath extends AdminEntity {
   userId: string;
