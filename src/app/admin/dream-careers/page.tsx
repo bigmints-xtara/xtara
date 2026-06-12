@@ -1,20 +1,19 @@
+'use client';
+
+import AdminMasterDetail from '@/components/admin/AdminMasterDetail';
+import CareerPathEditor from '@/components/admin/editors/CareerPathEditor';
+import { dreamCareersConfig } from '@/lib/admin/configs/dreamCareersConfig';
+import type { AdminCareerPath } from '@/types/admin';
+
 export default function AdminDreamCareersPage() {
-    return (
-        <div className="flex items-center justify-center h-full bg-gray-50">
-            <div className="text-center">
-                <div className="bg-yellow-100 text-yellow-800 px-6 py-3 rounded-full inline-block mb-4">
-                    Coming Soon
-                </div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                    Dream Careers Management
-                </h1>
-                <p className="text-gray-600 mb-6">
-                    Manage and vote on dream career entries
-                </p>
-                <p className="text-sm text-gray-500">
-                    This feature will be available soon using the same architecture as Stories.
-                </p>
-            </div>
-        </div>
-    );
+  return (
+    <div className="h-full">
+      <AdminMasterDetail<AdminCareerPath>
+        config={dreamCareersConfig}
+        renderEditor={(careerPath, onSave, onCancel) => (
+          <CareerPathEditor careerPath={careerPath} onSave={onSave} onCancel={onCancel} />
+        )}
+      />
+    </div>
+  );
 }

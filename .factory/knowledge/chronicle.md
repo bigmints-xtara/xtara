@@ -36,9 +36,9 @@
 - **2026-06-09 | Data Formatting & Label Standardization**:
   - *Action*: Implemented `formatSnakeCaseToTitleCase` utility in `src/lib/utils.ts`. Applied to domain filter dropdowns (`AdminMasterDetail.tsx`) and career cluster/relevance chips (`StoryEditor.tsx`).
   - *Outcome*: Consistent UI label formatting without mutating Firestore schema or API payloads. Zero TypeScript/ESLint regressions. Preserves `snake_case` as the source-of-truth for DB queries and API serialization.
-- **2026-06-09 | Admin CMS Expansion (Good Reads, Sparks, Challenges, Dream Careers)**:
-  - *Action*: Scaled admin entity management architecture. Completed `GoodReads` and `Sparks` modules (interfaces, configs, editors, pages). Initiated `Challenges` and `Dream Careers` modules.
-  - *Outcome*: `GoodReads` and `Sparks` fully operational with 3-state status logic, timestamp conversion, and chip-based relevance inputs. `Challenges` and `Dream Careers` scaffolding initiated; pending final integration and timeout resolution. Standardized `AdminMasterDetail<T>` pattern enables rapid entity onboarding with minimal boilerplate.
+- **2026-06-09 | Admin CMS Expansion (Good Reads, Sparks, Challenges)**:
+  - *Action*: Scaled admin entity management architecture. Completed `GoodReads`, `Sparks`, and `Challenges` modules (interfaces, configs, editors, pages).
+  - *Outcome*: All three modules fully operational with 3-state status logic, timestamp conversion, and chip-based relevance inputs. Standardized `AdminMasterDetail<T>` pattern enables rapid entity onboarding with minimal boilerplate.
 - **2026-06-09 | CI/CD Pipeline Automation**:
   - *Action*: Created `.github/workflows/deploy.yml` implementing full GitHub Actions pipeline.
   - *Outcome*: Automated OIDC Workload Identity Federation authentication, Docker Buildx multi-arch builds, versioned artifact pushing, and Cloud Run deployment. Eliminates manual `deploy.sh` friction for `main` branch pushes. Keyless auth reduces credential rotation overhead.
@@ -48,6 +48,9 @@
 - **2026-06-09 | Security & Config Hardening**:
   - *Action*: Migrated hardcoded Firebase and Google Analytics configurations to `process.env.NEXT_PUBLIC_*` variables. Implemented dev fallbacks and `validateFirebaseEnv()` production guards. Exposed client vars via `next.config.ts`.
   - *Outcome*: Eliminated config drift across environments. Local dev remains functional without `.env.local`. Production builds fail fast on missing secrets. Zero regression on existing routes.
+- **2026-06-12 | Admin CMS Expansion (Dream Careers)**:
+  - *Action*: Completed `Dream Careers` module scaffolding and integration after multiple CLI retry attempts.
+  - *Outcome*: `Dream Careers` fully operational following the standardized `AdminMasterDetail<T>` pattern. Completes the core admin entity suite alongside Stories, Good Reads, Sparks, and Challenges.
 
 ## 3. Failure Post-Mortems & Anti-Patterns
 - **Non-Deterministic Dependency Resolution**:
@@ -75,8 +78,8 @@
   - *Symptom*: Clicking "New" after viewing an existing record retained stale data from the previous selection, causing incorrect defaults and cross-record contamination.
   - *Fix*: Added explicit reset branch in `useEffect` to clear `formData`, `clusterInput`, and `relevanceInput` to baseline defaults when `story` is `null`. Ensures clean state isolation for creation vs. editing workflows.
 - **CLI Agent Context & Initialization Stalls**:
-  - *What Failed*: Complex multi-file scaffolding or infrastructure setup stories (`performance-add-redis-query-caching`, `testing-add-unit-tests`, `dream-careers-management`, `admin-hydration-warning`).
-  - *Symptom*: CLI agent stalls at directory enumeration phase, outputs file list, then hangs or exits with `code null` after 600+ seconds. No actual file generation occurs.
+  - *What Failed*: Complex multi-file scaffolding or infrastructure setup stories (`performance-add-redis-query-caching`, `testing-add-unit-tests`, `dream-careers-management`).
+  - *Symptom*: CLI agent consistently stalls at directory enumeration phase, outputs file list (~350+ files), then hangs or exits with `code null` after 600+ seconds. No actual file generation or `npm install` execution occurs.
   - *Fix/Mitigation*: Decompose large stories into atomic sub-tasks (types → config → editor → page). Avoid monolithic prompts. For infrastructure/setup stories, prefer manual CLI execution or pre-scaffolded templates. Enforce strict file-scoped diffs and incremental `tsc` verification. Documented as a known agent limitation requiring task granularity control.
 - **Next.js Hydration Mismatches (Pending)**:
   - *What Failed*: Server/Client state divergence on initial render.

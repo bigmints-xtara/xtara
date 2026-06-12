@@ -139,4 +139,4 @@ behavior:
     editable fields.
   - When an admin edits the description field and saves, only the modified editable fields are written back to Firestore.
 config: {}
-status: failed
+status: done
