@@ -5,7 +5,7 @@ project:
     and React 19. It leverages Firebase for backend services, NextAuth for
     authentication, and a component-driven UI architecture using Radix UI,
     Tailwind CSS v4, and Framer Motion.
-  analyzed: 2026-06-08
+  analyzed: 2026-06-12
 audit:
   completed: 2026-06-08
   total_files: 207
@@ -39,16 +39,17 @@ package:
     - "@radix-ui/react-select"
     - "@radix-ui/react-separator"
     - "@radix-ui/react-slot"
+    - "@tanstack/react-query"
     - "@types/canvas-confetti"
     - algoliasearch
     - canvas-confetti
     - class-variance-authority
     - clsx
-    - firebase
 stack:
   framework: next.js
-  packageManager: npm
+  packageManager: pnpm
   linter: eslint
+  testing: vitest
 user_journeys:
   assessment: Anonymous → Location → Questionnaire → AI Recommendations → Career Path
   career_exploration: Browse → Detail → Learn/Connect/Grow → Slideshow
@@ -59,6 +60,7 @@ structure:
   - 📄 DEPLOYMENT.md
   - 📄 Dockerfile
   - 📄 README.md
+  - 📄 SECRETS.md
   - 📄 components.json
   - 📄 deploy.sh
   - 📄 eslint.config.mjs
@@ -66,6 +68,8 @@ structure:
   - 📄 next.config.ts
   - 📄 package-lock.json
   - 📄 package.json
+  - 📄 pnpm-lock.yaml
+  - 📄 pnpm-workspace.yaml
   - 📄 postcss.config.mjs
   - 📁 public
   - "  📄 file.svg"
@@ -79,6 +83,7 @@ structure:
   - "  📄 window.svg"
   - 📁 scripts
   - "  📄 diagnose-user-data.js"
+  - "  📄 manage-secrets.sh"
   - "  📄 migrate-data.js"
   - 📄 set-env.sh
   - 📁 src
@@ -89,10 +94,13 @@ structure:
   - "  📁 data"
   - "  📁 i18n"
   - "  📁 lib"
+  - "  📄 setup-tests.ts"
   - "  📁 types"
   - "  📄 utils.tsx"
   - 📄 start.sh
   - 📄 tsconfig.json
+  - 📄 tsconfig.tsbuildinfo
+  - 📄 vitest.config.ts
 conventions:
   - TypeScript
 key_decisions: []
