@@ -1,0 +1,36 @@
+# 🚨 CRITICAL DATA MODEL RULES
+
+## Always Read Existing Data Models First
+- **NEVER** add new fields without reading the existing data model schemas
+- **NEVER** invent field names - use the exact names from the data model
+- **NEVER** assume field types or naming conventions
+- **ALWAYS** check `data_models/` folder for the canonical schema
+
+## Field Addition Rules
+- **ONLY** add fields that are explicitly defined in the data model
+- **ONLY** use the exact field names from the schema (case-sensitive)
+- **ONLY** use the exact field types from the schema
+- **NEVER** create variations like `isPublished` when `published` exists
+
+## Data Model Compliance
+- **100% compliance** required with existing schemas
+- **No field name variations** allowed
+- **No unnecessary fields** should be added
+- **Test against actual data models** before implementing
+
+## Before Making Changes
+1. **Read** the existing data model file first
+2. **Verify** field names and types match exactly
+3. **Follow** established naming conventions
+4. **Test** changes against the actual schema
+
+Always read the rules before starting any work.
+
+
+
+
+
+
+
+
+

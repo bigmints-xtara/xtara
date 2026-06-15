@@ -1,0 +1,508 @@
+---
+description: Software Architecture Principles - DRY, Reusability, Modularity, and Best Practices
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Software Architecture Principles
+
+## 🎯 **Purpose**
+This file defines the **core software architecture principles** that should be followed across all projects and platforms.
+**Rule Hierarchy:** `architecture-principles.mdc` → Platform Rules → Project Rules
+
+## 🔄 DRY (Don't Repeat Yourself)
+
+### **Core Principle**
+**NEVER** duplicate code, logic, or functionality. **ALWAYS** create reusable components, services, and utilities.
+
+**✅ DO - Use GetX for state management:**
+
+- All data must be retrieved and referenced using GetX. 
+- No direct access to Firebase Firestore.
+- Always update GetX values after any firestore data operations.
+
+### **Implementation Rules:**
+
+
+**✅ DO - Create Reusable Components:**
+```dart
+// ✅ CORRECT - Reusable service
+class CareerPathService {
+  Future<List<CareerPath>> getCareerPaths() async {
+    // Single implementation used everywhere
+  }
+  
+  Future<void> switchPursuingCareer({required String userId, required String careerPathId}) async {
+    // Single implementation for career switching
+  }
+}
+
+// ✅ CORRECT - Reusable widget
+class BaseCard extends StatelessWidget {
+  final Widget? header;
+  final Widget? body;
+  final List<Widget>? listGroup;
+  final Widget? footer;
+  
+  // Single card implementation used across the app
+}
+```
+
+**❌ DON'T - Duplicate Logic:**
+```dart
+// ❌ WRONG - Duplicated career switching logic
+class CareerPathController {
+  Future<void> switchCareer() async {
+    // Duplicated logic here
+  }
+}
+
+class HomeController {
+  Future<void> switchCareer() async {
+    // Same logic duplicated here
+  }
+}
+```
+
+### **DRY Violations to Avoid:**
+- ❌ **Duplicate API calls** - Use centralized services
+- ❌ **Duplicate UI components** - Use shared widgets
+- ❌ **Duplicate validation logic** - Use shared validators
+- ❌ **Duplicate error handling** - Use centralized error handling
+- ❌ **Duplicate business logic** - Use shared services
+
+## 🔧 Reusability
+
+### **Component Reusability**
+
+**✅ DO - Design for Reuse:**
+```dart
+// ✅ CORRECT - Highly reusable component
+class PrimaryButton extends StatelessWidget {
+  final String text;
+  final VoidCallback? onPressed;
+  final IconData? icon;
+  final bool isFullWidth;
+  final bool isLoading;
+  
+  // Configurable for different use cases
+  const PrimaryButton({
+    required this.text,
+    this.onPressed,
+    this.icon,
+    this.isFullWidth = false,
+    this.isLoading = false,
+  });
+}
+```
+
+**❌ DON'T - Hardcoded Components:**
+```dart
+// ❌ WRONG - Not reusable
+class SaveButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => saveData(), // Hardcoded logic
+      child: Text('Save'), // Hardcoded text
+    );
+  }
+}
+```
+
+### **Service Reusability**
+
+**✅ DO - Generic Services:**
+```dart
+// ✅ CORRECT - Reusable service
+class ApiService {
+  Future<T> get<T>(String endpoint) async {
+    // Generic GET method used by all services
+  }
+  
+  Future<T> post<T>(String endpoint, Map<String, dynamic> data) async {
+    // Generic POST method used by all services
+  }
+}
+
+class CareerPathService {
+  final ApiService _apiService;
+  
+  Future<List<CareerPath>> getCareerPaths() async {
+    return await _apiService.get<List<CareerPath>>('/career-paths');
+  }
+}
+```
+
+## 🧩 Modularity
+
+### **Feature-Based Architecture**
+
+**✅ DO - Organize by Features:**
+```
+lib/
+├── features/
+│   ├── authentication/
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── screens/
+│   │   └── widgets/
+│   ├── career_paths/
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── screens/
+│   │   └── widgets/
+│   └── home/
+│       ├── controllers/
+│       ├── services/
+│       ├── screens/
+│       └── widgets/
+├── core/
+│   ├── services/
+│   ├── widgets/
+│   └── utils/
+└── shared/
+    ├── models/
+    ├── constants/
+    └── helpers/
+```
+
+**❌ DON'T - Monolithic Structure:**
+```
+lib/
+├── controllers/     // ❌ All controllers mixed together
+├── services/        // ❌ All services mixed together
+├── screens/         // ❌ All screens mixed together
+└── widgets/         // ❌ All widgets mixed together
+```
+
+### **Dependency Injection**
+
+**✅ DO - Use GetX Dependency Injection:**
+```dart
+// ✅ CORRECT - Proper dependency injection
+class CareerPathController extends GetxController {
+  final CareerPathService _careerPathService;
+  final UserController _userController;
+  
+  CareerPathController({
+    required CareerPathService careerPathService,
+    required UserController userController,
+  }) : _careerPathService = careerPathService,
+       _userController = userController;
+}
+
+// Register dependencies
+void main() {
+  Get.put(CareerPathService());
+  Get.put(UserController());
+  Get.put(CareerPathController(
+    careerPathService: Get.find(),
+    userController: Get.find(),
+  ));
+}
+```
+
+**❌ DON'T - Direct Instantiation:**
+```dart
+// ❌ WRONG - Direct instantiation
+class CareerPathController extends GetxController {
+  final CareerPathService _careerPathService = CareerPathService(); // ❌ Hardcoded dependency
+}
+```
+
+## 🏗️ Separation of Concerns
+
+### **Layer Separation**
+
+**✅ DO - Clear Layer Separation:**
+```dart
+// ✅ CORRECT - Clear separation
+// 1. UI Layer (Screens/Widgets)
+class CareerPathScreen extends StatelessWidget {
+  final controller = Get.find<CareerPathController>();
+  
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() => _buildUI());
+  }
+}
+
+// 2. Business Logic Layer (Controllers)
+class CareerPathController extends GetxController {
+  final CareerPathService _service;
+  
+  Future<void> loadCareerPaths() async {
+    // Business logic here
+  }
+}
+
+// 3. Data Layer (Services)
+class CareerPathService {
+  final FirebaseService _firebaseService;
+  
+  Future<List<CareerPath>> getCareerPaths() async {
+    // Data access logic here
+  }
+}
+```
+
+**❌ DON'T - Mixed Concerns:**
+```dart
+// ❌ WRONG - Mixed concerns
+class CareerPathScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: FirebaseFirestore.instance.collection('careers').get(), // ❌ Direct data access in UI
+      builder: (context, snapshot) {
+        // UI logic mixed with data access
+      },
+    );
+  }
+}
+```
+
+## 🔄 Single Responsibility Principle
+
+### **Component Responsibility**
+
+**✅ DO - Single Responsibility:**
+```dart
+// ✅ CORRECT - Each class has one responsibility
+class CareerPathService {
+  // Only responsible for career path data operations
+  Future<List<CareerPath>> getCareerPaths() async { /* ... */ }
+  Future<void> switchPursuingCareer({required String userId, required String careerPathId}) async { /* ... */ }
+}
+
+class UserService {
+  // Only responsible for user data operations
+  Future<User> getUser(String userId) async { /* ... */ }
+  Future<void> updateUser(String userId, Map<String, dynamic> data) async { /* ... */ }
+}
+
+class AnalyticsService {
+  // Only responsible for analytics
+  Future<void> trackEvent(String eventName, Map<String, dynamic> parameters) async { /* ... */ }
+}
+```
+
+**❌ DON'T - Multiple Responsibilities:**
+```dart
+// ❌ WRONG - Multiple responsibilities
+class CareerPathService {
+  // ❌ Handles career paths, users, AND analytics
+  Future<List<CareerPath>> getCareerPaths() async { /* ... */ }
+  Future<User> getUser(String userId) async { /* ... */ }
+  Future<void> trackEvent(String eventName) async { /* ... */ }
+}
+```
+
+## 🔗 Loose Coupling
+
+### **Dependency Inversion**
+
+**✅ DO - Depend on Abstractions:**
+```dart
+// ✅ CORRECT - Interface-based design
+abstract class ICareerPathService {
+  Future<List<CareerPath>> getCareerPaths();
+  Future<void> switchPursuingCareer({required String userId, required String careerPathId});
+}
+
+class CareerPathService implements ICareerPathService {
+  @override
+  Future<List<CareerPath>> getCareerPaths() async { /* ... */ }
+  
+  @override
+  Future<void> switchPursuingCareer({required String userId, required String careerPathId}) async { /* ... */ }
+}
+
+class CareerPathController extends GetxController {
+  final ICareerPathService _service; // Depends on interface, not implementation
+  
+  CareerPathController(this._service);
+}
+```
+
+**❌ DON'T - Tight Coupling:**
+```dart
+// ❌ WRONG - Tight coupling to specific implementation
+class CareerPathController extends GetxController {
+  final CareerPathService _service; // ❌ Tightly coupled to specific class
+}
+```
+
+## 📦 Composition Over Inheritance
+
+### **Widget Composition**
+
+**✅ DO - Use Composition:**
+```dart
+// ✅ CORRECT - Composition-based design
+class CareerPathCard extends StatelessWidget {
+  final CareerPath careerPath;
+  
+  @override
+  Widget build(BuildContext context) {
+    return BaseCard(
+      header: CardHeader(
+        title: Text(careerPath.title),
+        leading: Icon(Icons.work),
+      ),
+      body: CardBody(
+        child: Text(careerPath.description),
+      ),
+      footer: CardFooter(
+        child: PrimaryButton(
+          text: 'View Details',
+          onPressed: () => _viewDetails(),
+        ),
+      ),
+    );
+  }
+}
+```
+
+**❌ DON'T - Deep Inheritance:**
+```dart
+// ❌ WRONG - Deep inheritance hierarchy
+class BaseCard extends StatelessWidget { /* ... */ }
+class CareerCard extends BaseCard { /* ... */ }
+class CareerPathCard extends CareerCard { /* ... */ }
+class DetailedCareerPathCard extends CareerPathCard { /* ... */ }
+```
+
+## 🎯 Interface Segregation
+
+### **Service Interfaces**
+
+**✅ DO - Small, Focused Interfaces:**
+```dart
+// ✅ CORRECT - Segregated interfaces
+abstract class ICareerPathReader {
+  Future<List<CareerPath>> getCareerPaths();
+  Future<CareerPath?> getCareerPath(String id);
+}
+
+abstract class ICareerPathWriter {
+  Future<void> createCareerPath(CareerPath careerPath);
+  Future<void> updateCareerPath(String id, CareerPath careerPath);
+  Future<void> deleteCareerPath(String id);
+}
+
+// Services can implement only what they need
+class CareerPathService implements ICareerPathReader, ICareerPathWriter {
+  // Implements both reading and writing
+}
+
+class CareerPathViewService implements ICareerPathReader {
+  // Only implements reading
+}
+```
+
+**❌ DON'T - Large, Monolithic Interfaces:**
+```dart
+// ❌ WRONG - Large interface forcing unnecessary implementations
+abstract class ICareerPathService {
+  Future<List<CareerPath>> getCareerPaths();
+  Future<CareerPath?> getCareerPath(String id);
+  Future<void> createCareerPath(CareerPath careerPath);
+  Future<void> updateCareerPath(String id, CareerPath careerPath);
+  Future<void> deleteCareerPath(String id);
+  Future<void> generateAIRecommendations(); // ❌ Not all services need this
+  Future<void> exportToPDF(); // ❌ Not all services need this
+}
+```
+
+## 🔄 Open/Closed Principle
+
+### **Extensible Design**
+
+**✅ DO - Open for Extension:**
+```dart
+// ✅ CORRECT - Open for extension, closed for modification
+abstract class CareerPathFilter {
+  bool shouldInclude(CareerPath careerPath);
+}
+
+class GradeFilter implements CareerPathFilter {
+  final String grade;
+  GradeFilter(this.grade);
+  
+  @override
+  bool shouldInclude(CareerPath careerPath) {
+    return careerPath.suitableGrades.contains(grade);
+  }
+}
+
+class InterestFilter implements CareerPathFilter {
+  final List<String> interests;
+  InterestFilter(this.interests);
+  
+  @override
+  bool shouldInclude(CareerPath careerPath) {
+    return careerPath.requiredInterests.any((interest) => interests.contains(interest));
+  }
+}
+
+class CareerPathService {
+  List<CareerPath> filterCareerPaths(List<CareerPath> paths, List<CareerPathFilter> filters) {
+    return paths.where((path) => filters.every((filter) => filter.shouldInclude(path))).toList();
+  }
+}
+```
+
+**❌ DON'T - Hardcoded Logic:**
+```dart
+// ❌ WRONG - Hard to extend
+class CareerPathService {
+  List<CareerPath> filterCareerPaths(List<CareerPath> paths, String grade, List<String> interests) {
+    // ❌ Hardcoded filtering logic that's hard to extend
+    return paths.where((path) {
+      bool gradeMatch = path.suitableGrades.contains(grade);
+      bool interestMatch = path.requiredInterests.any((interest) => interests.contains(interest));
+      return gradeMatch && interestMatch;
+    }).toList();
+  }
+}
+```
+
+## 🚨 Critical Architecture Rules
+
+### **ALWAYS Follow These Principles:**
+
+1. **DRY is Law** - Never duplicate code, logic, or functionality
+2. **Single Responsibility** - Each class/component has one clear purpose
+3. **Separation of Concerns** - Keep UI, business logic, and data access separate
+4. **Dependency Injection** - Use GetX for proper dependency management
+5. **Interface Segregation** - Create small, focused interfaces
+6. **Composition Over Inheritance** - Prefer composition for flexibility
+7. **Loose Coupling** - Depend on abstractions, not concrete implementations
+8. **Feature-Based Organization** - Organize code by features, not types
+
+### **NEVER Do These:**
+
+1. ❌ **Duplicate business logic** across controllers or services
+2. ❌ **Mix UI and data access** in the same component
+3. ❌ **Create monolithic services** that handle multiple concerns
+4. ❌ **Use direct instantiation** instead of dependency injection
+5. ❌ **Create deep inheritance hierarchies** for widgets
+6. ❌ **Hardcode dependencies** in components
+7. ❌ **Mix different layers** in a single file
+8. ❌ **Create tightly coupled** components that can't be reused
+
+## 📚 Architecture Documentation
+
+### **Required Documentation:**
+- **Component responsibilities** - What each class/component does
+- **Dependency relationships** - How components depend on each other
+- **Interface contracts** - What each service/component promises to provide
+- **Extension points** - How to add new features without modifying existing code
+
+### **Documentation Standards:**
+- **Clear purpose statements** for each class/component
+- **Usage examples** showing how to use each component
+- **Extension guides** for adding new features
+- **Migration guides** for refactoring existing code

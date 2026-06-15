@@ -1,0 +1,278 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+
+## 🚨 Critical Rules
+
+### **DO:**
+- ✅ **ALWAYS read `career/.cursor/flutter-ds-rules.mdc` before writing any flutter code** 
+- ✅ Use semantic design tokens (defined above)
+- ✅ Maintain consistency across platforms
+- ✅ Follow naming conventions
+- ✅ See platform rules for implementation
+- ✅ **ALWAYS use `Theme.of(context).textTheme` directly without any modifications**
+- ✅ **NEVER use inline TextStyle with hardcoded properties**
+- ✅ **ALWAYS use PlatformAppBar instead of AppBar**
+- ✅ **NEVER use hardcoded colors, values, or properties**
+
+### **DON'T:**
+- ❌ Hardcode any design values
+- ❌ Use platform-specific units directly
+- ❌ Create inconsistent tokens
+- ❌ Skip platform-specific implementation rules
+- ❌ **Use inline TextStyle with fontSize, fontWeight, color, etc.**
+- ❌ **Use `.copyWith()` to override theme properties**
+- ❌ **Override Theme.of(context).textTheme properties in any way**
+- ❌ **Use AppBar instead of PlatformAppBar**
+- ❌ **Use hardcoded colors like kBackgroundColor, kTextColor, etc.**
+
+
+
+### **MUST READ Flutter specific rules here:**
+`career/.cursor/flutter-ds-rules.mdc`
+
+
+### skip below if not working on flutter
+
+
+# Design System Token Rules - Foundation Layer
+
+## 🎯 **Purpose**
+This file defines the **semantic design tokens** that should be used across all platforms. 
+**For implementation details, see platform-specific rules:**
+- **Flutter**: `flutter-ds-rules.mdc`
+
+## 🎨 Color System
+
+### **Primary Color Palette**
+    ```
+    Ocean Navy:    #003763  (Primary - Base dark)
+    Sky Blue:      #61B3E4  (Accent - Primary highlight)
+    Coral Orange:  #EF7521  (Motivational accent)
+    Sun Gold:      #F6B333  (Secondary accent)
+    Ivory White:   #FFFFFF  (Contrast base)
+    Seafoam Teal:  #3CA6A6  (Tertiary accent)
+    Cream Sand:    #F2E3D5  (Card background)
+    ```
+### **Primary Color Palette - Darker shade**
+    ```
+    Ocean Navy:    #12192E  (Primary - Base dark)
+    Sky Blue:      #1C668D  (Accent - Primary highlight)
+    Coral Orange:  #873C0D  (Motivational accent)
+    Sun Gold:      #B1870C  (Secondary accent)
+    Ivory White:   #C0C0C0  (Contrast base)
+    Seafoam Teal:  #1D5454  (Tertiary accent)
+    Cream Sand:    #F2E3D5  (Card background)
+    ```
+
+### **Primary Color Palette - Lighter shade**
+    ```
+    Ocean Navy:    #003763  (Primary - Base dark)
+    Sky Blue:      #61B3E4  (Accent - Primary highlight)
+    Coral Orange:  #EF7521  (Motivational accent)
+    Sun Gold:      #F6B333  (Secondary accent)
+    Ivory White:   #FFFFFF  (Contrast base)
+    Seafoam Teal:  #4EE2E2  (Tertiary accent)
+    Cream Sand:    #FFFCF9  (Card background)
+    ```
+
+
+### **Status Colors**
+```
+Success:       #3CA6A6  (Seafoam Teal)
+Warning:       #F6B333  (Sun Gold)
+Error:         #FD392F  (Red)
+Info:          #61B3E4  (Sky Blue)
+```
+
+## 📏 Spacing System
+
+### **Spacing Scale**
+```
+xs:    4px   (Extra Small)
+sm:    8px   (Small)
+md:    12px  (Medium)
+lg:    16px  (Large)
+xl:    24px  (Extra Large)
+xxl:   32px  (2X Large)
+xxxl:  48px  (3X Large)
+```
+
+## 🎯 Border Radius
+
+### **Radius Scale**
+```
+sm:    8px   (Small)
+md:    12px  (Medium)
+lg:    16px  (Large)
+xl:    24px  (Extra Large)
+```
+
+## 📝 Typography
+
+### **Font Families**
+```
+Headings: Merriweather (serif)
+Body:     Inter (sans-serif)
+```
+
+### **Font Scale**
+```
+xs:    12px  (Extra Small)
+sm:    14px  (Small)
+md:    16px  (Medium)
+lg:    18px  (Large)
+xl:    20px  (Extra Large)
+xxl:    24px (2X Large)
+xxxl:   32px (3X Large)
+display: 48px (Display)
+```
+
+## 🎨 Elevation & Shadows
+
+### **Elevation Scale**
+```
+none:  0px   (No elevation)
+sm:    1px   (Small)
+md:    2px   (Medium)
+lg:    4px   (Large)
+xl:    8px   (Extra Large)
+```
+
+## 🔘 Component Tokens
+
+### **Button Heights**
+```
+sm:    32px  (Small)
+md:    40px  (Medium)
+lg:    48px  (Large)
+xl:    56px  (Extra Large)
+```
+
+### **Input Heights**
+```
+sm:    32px  (Small)
+md:    40px  (Medium)
+lg:    48px  (Large)
+```
+
+### **Card Padding**
+```
+sm:    12px  (Small)
+md:    16px  (Medium)
+lg:    24px  (Large)
+xl:    32px  (Extra Large)
+```
+
+## 🎯 Breakpoints
+
+### **Responsive Breakpoints**
+```
+mobile:    320px   (Mobile devices)
+tablet:    768px   (Tablet devices)
+desktop:   1024px  (Desktop devices)
+wide:      1440px  (Wide screens)
+```
+
+## 🎨 Animation Tokens
+
+### **Duration Scale**
+```
+fast:   150ms  (Fast animations)
+normal: 300ms  (Normal animations)
+slow:   500ms  (Slow animations)
+```
+
+### **Easing Functions**
+```
+ease-in:     cubic-bezier(0.4, 0, 1, 1)
+ease-out:    cubic-bezier(0, 0, 0.2, 1)
+ease-in-out: cubic-bezier(0.4, 0, 0.2, 1)
+```
+
+## 🎯 Icon Sizes
+
+### **Icon Scale**
+```
+sm:    16px  (Small)
+md:    24px  (Medium)
+lg:    32px  (Large)
+xl:    48px  (Extra Large)
+xxl:    64px (2X Large)
+```
+
+## 🎨 Z-Index Scale
+
+### **Z-Index Tokens**
+```
+base:     0    (Base layer)
+card:     1    (Card layer)
+dropdown: 10   (Dropdown layer)
+modal:    100  (Modal layer)
+tooltip:  200  (Tooltip layer)
+toast:    300  (Toast layer)
+```
+
+## 🎯 Semantic Naming Convention
+
+### **Token Categories**
+```
+{category}-{property}-{size}
+Examples:
+- color-primary
+- spacing-lg
+- typography-heading-xl
+- radius-md
+- elevation-lg
+```
+
+## 🚨 Critical Rules
+
+### **DO:**
+- ✅ Use semantic design tokens (defined above)
+- ✅ Maintain consistency across platforms
+- ✅ Follow naming conventions
+- ✅ See platform rules for implementation
+
+### **DON'T:**
+- ❌ Hardcode any design values
+- ❌ Use platform-specific units directly
+- ❌ Create inconsistent tokens
+- ❌ Skip platform-specific implementation rules
+
+## 🔄 Token Updates
+
+### **When to Update Tokens:**
+- New design requirements
+- Brand updates
+- Accessibility improvements
+- Platform-specific needs
+
+### **Update Process:**
+1. **Update** semantic definitions in this file
+2. **Update** all platform implementations
+3. **Test** changes across all platforms
+4. **Document** the changes
+5. **Deploy** the updates
+
+## 📚 Documentation
+
+### **Required Documentation:**
+- Token definitions and values (this file)
+- Platform-specific implementation guides
+- Migration guides for updates
+- Accessibility considerations
+
+### **Documentation Location:**
+- **Foundation**: This file (ds-rules.mdc)
+- **Platform Implementation**: Platform-specific rule files
+- **Project Overview**: workspace-rules.mdc
+
+
+- **Foundation**: This file (ds-rules.mdc)
+- **Platform Implementation**: Platform-specific rule files
+- **Project Overview**: workspace-rules.mdc
+

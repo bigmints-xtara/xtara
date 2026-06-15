@@ -1,0 +1,58 @@
+---
+alwaysApply: true
+---
+
+# 🛠️ Cursor Workspace Rules — Firebase + App Deployment
+
+Deploy only relevant functions to firebase.
+
+## 🚨 STRICT BUILD & DEPLOYMENT POLICY (as of v0.0.1)
+
+### ✅ Always Use These Scripts for Build & Deploy
+- **Web Dev Build:** `./scripts/build_web_dev.sh`
+- **Web Prod Build:** `./scripts/build_web_prod.sh`
+- **All Environments:** `./scripts/build_and_deploy_all.sh`
+- **Firebase Hosting Deploy (Dev):** `../xtara-firebase/deploy-hosting-dev.sh`
+- **Firebase Hosting Deploy (Prod):** `../xtara-firebase/deploy-hosting-prod.sh`
+
+### ✅ Flavor-Based Approach Only
+- **ALWAYS** use the flavor system (`main_dev.dart`, `main_prod.dart`, config files in `assets/config/`)
+- **NEVER** attempt to build or deploy using custom flags, manual file swaps, or alternative entrypoints
+- **NEVER** modify build scripts or deployment logic unless explicitly requested
+- **NEVER** introduce new build/deploy methods or experiment with flags
+- **ALWAYS** use the provided scripts and follow the established workflow
+
+### ✅ Firebase Project Isolation
+- **Dev:** Bundle ID `com.bigmints.xtara.dev`, Firebase project `compass-bigmints`
+- **Prod:** Bundle ID `com.bigmints.xtara`, Firebase project `bigmints-xtara`
+- **ALWAYS** verify correct Firebase config is used for each flavor
+
+### ✅ Documentation & Logging
+- **ALWAYS** update `changes.log` for any codebase change
+- **ALWAYS** update `README.md` if the build/deploy process changes
+- **ALWAYS** document any new scripts or workflow changes
+
+### 🚫 Prohibited Actions
+- **DO NOT** hallucinate or invent new build/deploy steps
+- **DO NOT** use deprecated or experimental Flutter build flags
+- **DO NOT** edit or remove existing scripts unless explicitly instructed
+- **DO NOT** bypass the flavor system for any reason
+
+### 🧠 General Coding Rules (unchanged)
+- Use GetX + RxDart for state and reactivity
+- Place business logic in `lib/services/`, state in `lib/controllers/`
+- Use BaseCard for list-based UI, not CardSection
+- Never hard-code styles; use `lib/theme/colors.dart` & `lib/theme/app_theme.dart`
+- Async ops? Always use LoadingOverlay with user-friendly error + retry
+
+### 📦 Package Management
+- Use the latest stable packages
+- All packages must support iOS, Android, and Web
+
+### 🧾 Commits
+- Always write a clear summary of changes made
+
+---
+
+**Summary:**
+> For all build and deployment tasks, strictly use the provided scripts and flavor-based approach. Do not attempt alternative methods, flags, or manual steps. Always update documentation and logs. Cursor rules must be followed for every request, with no exceptions. 

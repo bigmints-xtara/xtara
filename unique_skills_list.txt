@@ -1,0 +1,75 @@
+Unique Skills & Competencies from career_cluster.json
+============================================================
+ 1. Agile development methodologies
+ 2. Assessment and evaluation
+ 3. Attention to detail
+ 4. Brand development
+ 5. Business strategy and planning
+ 6. Communication and counseling
+ 7. Communication and interpersonal skills
+ 8. Communication and negotiation
+ 9. Communication and presentation
+10. Continuous skill development
+11. Creative experience design
+12. Creative problem-solving
+13. Crisis management and response
+14. Critical thinking and hypothesis testing
+15. Cross-cultural communication
+16. Cultural awareness and adaptability
+17. Curriculum design
+18. Customer service excellence
+19. Data analysis and interpretation
+20. Diagnostic and analytical skills
+21. Digital design tools proficiency
+22. Digital literacy
+23. Environmental science knowledge
+24. Ethical decision-making
+25. Ethical judgment and integrity
+26. Event planning and coordination
+27. Financial management and analysis
+28. Global awareness and cultural sensitivity
+29. Hands-on problem-solving
+30. Innovation and creativity
+31. Laboratory techniques and protocols
+32. Leadership and decision-making
+33. Leadership and team management
+34. Legal and regulatory knowledge
+35. Market analysis and research
+36. Mathematical and analytical thinking
+37. Medical knowledge and expertise
+38. Mentoring and guidance
+39. Negotiation and communication
+40. Patient care and empathy
+41. Pedagogy and teaching methodologies
+42. Physical fitness and endurance
+43. Policy analysis and development
+44. Problem-solving and logical thinking
+45. Problem-solving methodologies
+46. Programming languages proficiency
+47. Project management
+48. Quality assurance and testing
+49. Quality control and precision
+50. Research and analysis
+51. Research and analytical thinking
+52. Research and data interpretation
+53. Research and evidence-based practice
+54. Risk assessment and decision-making
+55. Safety and compliance
+56. Safety protocols and practices
+57. Scientific method and research design
+58. Security protocols and procedures
+59. Software architecture and design
+60. Storytelling and narrative structure
+61. Strategic planning and implementation
+62. Stress management under pressure
+63. Systems thinking
+64. Teamwork and coordination
+65. Technical communication
+66. Technical craftsmanship
+67. Technical design and modeling
+68. Technology trends awareness
+69. Tool and equipment proficiency
+70. User experience principles
+71. Visual design and aesthetics
+
+Total unique skills: 71

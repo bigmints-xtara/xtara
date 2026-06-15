@@ -1,0 +1,14 @@
+---
+alwaysApply: false
+---
+
+Follow DS rules for the game screens.
+
+All Games must follow this rules:
+
+Sequence of the game:
+1. A user selects an available game from games carousel.
+2. If playable, he lands on the game into screen where we show the instructions and points. If user has played the game, show game result screen.
+3. When the user clicks on start button he must see the how to play screen with a start button.
+4. Gameplay screen
+5. Game result screen

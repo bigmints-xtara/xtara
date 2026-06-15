@@ -1,0 +1,249 @@
+---
+alwaysApply: true
+---
+# Firebase Development Rules
+
+## 🔥 XTARA-FIREBASE (Firebase Operations)
+**Location**: `xtara-firebase/`
+**Tech Stack**: Firebase, Cloud Functions, Firestore
+
+## 🚀 Environment Setup
+
+### **Prerequisites:**
+- Node.js 24+ (run `nvm use 24` before any commands)
+- Firebase CLI
+- Google Cloud SDK
+
+### **Initial Setup:**
+```bash
+cd xtara-firebase
+npm run install:all
+firebase login
+firebase use dev  # or prod
+```
+
+## 🌍 Environment Configuration
+
+### **Development Environment (`dev`)**
+- **Firebase Project**: `compass-bigmints`
+- **URL**: https://compass-bigmints.web.app
+- **Max Recommendations**: 5
+- **Bundle ID**: `com.bigmints.xtara.dev`
+
+### **Production Environment (`prod`)**
+- **Firebase Project**: `bigmints-xtara`
+- **URL**: https://bigmints-xtara.web.app
+- **Max Recommendations**: 3
+- **Bundle ID**: `com.bigmints.xtara`
+
+### **Environment Switching:**
+```bash
+# Switch to development
+firebase use dev
+
+# Switch to production
+firebase use prod
+
+# Check current environment
+firebase projects:list
+firebase use
+```
+
+### **Environment-Specific Configuration:**
+- **Service Account Keys**: Separate keys for dev/prod environments
+- **Firestore Rules**: Environment-specific security rules
+- **Function Configuration**: Different settings per environment
+- **Hosting**: Separate hosting configurations
+
+## 🔧 Development Commands
+
+### **Install Dependencies:**
+```bash
+cd xtara-firebase
+npm run install:all
+```
+
+### **Run Emulators:**
+```bash
+cd xtara-firebase
+npm run emulators
+```
+
+## 🏗️ Build Commands
+
+### **Deploy Functions:**
+```bash
+cd xtara-firebase
+npm run deploy:functions
+```
+
+### **Deploy Security Rules:**
+```bash
+cd xtara-firebase
+npm run deploy:rules
+```
+
+### **Deploy Hosting:**
+```bash
+cd xtara-firebase
+npm run deploy:hosting
+```
+
+### **Deploy Everything:**
+```bash
+cd xtara-firebase
+npm run deploy:all
+```
+
+## 🎯 Environment-Specific Deployments
+
+### **Development Deployments:**
+```bash
+cd xtara-firebase
+firebase use dev
+
+# Deploy to development environment
+npm run deploy:functions
+npm run deploy:rules
+npm run deploy:hosting
+```
+
+### **Production Deployments:**
+```bash
+cd xtara-firebase
+firebase use prod
+
+# Deploy to production environment
+npm run deploy:functions
+npm run deploy:rules
+npm run deploy:hosting
+```
+
+### **Deploy Hosting Scripts:**
+```bash
+# Deploy development hosting
+./deploy-hosting-dev.sh
+
+# Deploy production hosting
+./deploy-hosting-prod.sh
+```
+
+## 🎯 Project-Specific Deployments
+
+### **Deploy Career Functions:**
+```bash
+cd xtara-firebase
+npm run deploy:career
+```
+
+### **Deploy Career-AI Functions:**
+```bash
+cd xtara-firebase
+npm run deploy:career-ai
+```
+
+## 🏗️ Architecture Rules
+
+### **Development Rules:**
+- **Consolidated Firebase operations** for all projects
+- **Multi-codebase functions**: career and career-ai functions
+- **Unified security rules** for all collections
+- **Consistent project configuration** across environments
+- **DEPLOY ONLY AFFECTED FUNCTIONS**
+
+### **Key Areas:**
+- **Functions/career/**: Mobile app backend functions (career path generation)
+- **Functions/career-ai/**: AI pipeline functions (dream careers management)
+- **Firestore rules**: Unified security rules for all collections
+- **Firebase hosting**: Website hosting configuration
+- **Service accounts**: Separate keys for different environments
+
+## 🔧 Function Development
+
+### **Function Structure:**
+```
+xtara-firebase/
+├── functions/
+│   ├── career/          # Mobile app backend functions
+│   ├── career-ai/       # AI pipeline functions
+│   └── shared/          # Shared utilities
+├── firestore.rules      # Security rules
+├── firestore.indexes.json
+└── firebase.json        # Project configuration
+```
+
+### **Function Development Rules:**
+- **Use TypeScript** for all functions
+- **Follow the existing patterns** in each function directory
+- **Test functions locally** using Firebase emulators
+- **Deploy only affected functions** to avoid unnecessary deployments
+- **Use proper error handling** and logging
+
+## 🔒 Security Rules
+
+### **Firestore Rules:**
+- **Always test rules** in emulator before deployment
+- **Use least privilege principle**
+- **Validate data on both client and server**
+- **Keep rules simple and readable**
+
+### **Deploy Rules:**
+```bash
+cd xtara-firebase
+npm run deploy:rules
+```
+
+## 🌐 Hosting Configuration
+
+### **Hosting Setup:**
+- **Configure for multiple environments** (dev/prod)
+- **Use proper redirects** for SPA routing
+- **Optimize for performance** with caching rules
+
+### **Deploy Hosting:**
+```bash
+cd xtara-firebase
+npm run deploy:hosting
+```
+
+## 🔍 Debugging
+
+### **Emulator Usage:**
+```bash
+cd xtara-firebase
+npm run emulators
+```
+
+### **Function Logs:**
+```bash
+firebase functions:log
+```
+
+### **Project Configuration:**
+```bash
+firebase projects:list
+firebase use <project-id>
+```
+
+## 🚨 Best Practices
+
+### **Deployment:**
+1. **Always test in emulator first**
+2. **Deploy only affected functions**
+3. **Check function logs after deployment**
+4. **Verify security rules work correctly**
+5. **Test hosting configuration**
+
+### **Development:**
+1. **Use TypeScript for type safety**
+2. **Follow existing code patterns**
+3. **Add proper error handling**
+4. **Include comprehensive logging**
+5. **Test thoroughly before deployment**
+
+### **Security:**
+1. **Validate all inputs**
+2. **Use least privilege access**
+3. **Keep secrets secure**
+4. **Monitor function usage**
+5. **Regular security audits**
