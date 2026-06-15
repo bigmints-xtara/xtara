@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Save, X } from 'lucide-react';
 import type { AdminCareerPath } from '@/types/admin';
+import { formatSnakeCaseToTitleCase } from '@/lib/utils';
 
 interface CareerPathEditorProps {
   careerPath: AdminCareerPath | null;
@@ -9,182 +11,319 @@ interface CareerPathEditorProps {
   onCancel: () => void;
 }
 
+// Editable fields for CareerPath
+interface EditableFields {
+  title: string;
+  description: string;
+  whatYouDo: string;
+  whyItMatters: string;
+  matchReasoning: string;
+}
+
+const EMPTY_EDITABLE: EditableFields = {
+  title: '',
+  description: '',
+  whatYouDo: '',
+  whyItMatters: '',
+  matchReasoning: '',
+};
+
 export default function CareerPathEditor({ careerPath, onSave, onCancel }: CareerPathEditorProps) {
-  const [title, setTitle] = useState(careerPath?.title || '');
-  const [description, setDescription] = useState(careerPath?.description || '');
-  const [whatYouDo, setWhatYouDo] = useState(careerPath?.whatYouDo || '');
-  const [whyItMatters, setWhyItMatters] = useState(careerPath?.whyItMatters || '');
-  const [matchReasoning, setMatchReasoning] = useState(careerPath?.matchReasoning || '');
+  const [isSaving, setIsSaving] = useState(false);
+  const [formData, setFormData] = useState<EditableFields>(EMPTY_EDITABLE);
 
-  // Reset form when careerPath changes
-  if (careerPath) {
-    setTitle(careerPath.title || '');
-    setDescription(careerPath.description || '');
-    setWhatYouDo(careerPath.whatYouDo || '');
-    setWhyItMatters(careerPath.whyItMatters || '');
-    setMatchReasoning(careerPath.matchReasoning || '');
-  }
+  useEffect(() => {
+    if (careerPath) {
+      setFormData({
+        title: careerPath.title || '',
+        description: careerPath.description || '',
+        whatYouDo: careerPath.whatYouDo || '',
+        whyItMatters: careerPath.whyItMatters || '',
+        matchReasoning: careerPath.matchReasoning || '',
+      });
+    } else {
+      setFormData(EMPTY_EDITABLE);
+    }
+  }, [careerPath]);
 
-  const handleSave = async () => {
-    await onSave({
-      title,
-      description,
-      whatYouDo,
-      whyItMatters,
-      matchReasoning,
-    });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+
+    try {
+      await onSave({
+        title: formData.title,
+        description: formData.description,
+        whatYouDo: formData.whatYouDo,
+        whyItMatters: formData.whyItMatters,
+        matchReasoning: formData.matchReasoning,
+      });
+    } catch (error) {
+      alert(
+        `Error saving career path: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (!careerPath) {
-    return <div className="p-6 text-gray-500">Select a career path to view details.</div>;
+    return (
+      <div className="h-full flex items-center justify-center bg-gray-50">
+        <div className="text-center text-gray-500">
+          <p className="text-xl mb-2">Select a career path to view details.</p>
+          <p className="text-sm">
+            Choose a career path from the list or create a new one.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      {/* Overview - Read Only */}
-      <section className="bg-gray-50 rounded-lg p-4 space-y-2">
-        <h3 className="font-semibold text-gray-700 border-b pb-2">Overview</h3>
-        <div className="grid grid-cols-2 gap-2 text-sm">
-          <div><span className="font-medium">User ID:</span> {careerPath.userId}</div>
-          <div><span className="font-medium">Career:</span> {careerPath.careerName}</div>
-          <div><span className="font-medium">Match Score:</span> {careerPath.matchScore ?? '—'}</div>
-          <div><span className="font-medium">Salary Range:</span> {careerPath.expectedSalaryRange || '—'}</div>
+    <form onSubmit={handleSubmit} className="h-full flex flex-col">
+      {/* Header */}
+      <div className="p-6 border-b bg-white flex items-center justify-between">
+        <h2 className="text-xl font-bold">
+          Career Path Details
+        </h2>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 border rounded-lg hover:bg-gray-50 flex items-center gap-2"
+          >
+            <X size={18} />
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+          >
+            <Save size={18} />
+            {isSaving ? 'Saving...' : 'Save'}
+          </button>
         </div>
-      </section>
-
-      {/* Editable Fields */}
-      <section className="space-y-4">
-        <h3 className="font-semibold text-gray-700 border-b pb-2">Editable Fields</h3>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={3}
-            className="w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">What You Do</label>
-          <textarea
-            value={whatYouDo}
-            onChange={(e) => setWhatYouDo(e.target.value)}
-            rows={3}
-            className="w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Why It Matters</label>
-          <textarea
-            value={whyItMatters}
-            onChange={(e) => setWhyItMatters(e.target.value)}
-            rows={3}
-            className="w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Match Reasoning</label>
-          <textarea
-            value={matchReasoning}
-            onChange={(e) => setMatchReasoning(e.target.value)}
-            rows={3}
-            className="w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-      </section>
-
-      {/* Read-Only Lists */}
-      <section className="space-y-4">
-        <h3 className="font-semibold text-gray-700 border-b pb-2">AI-Generated Data (Read-Only)</h3>
-        
-        {careerPath.strengths?.length && (
-          <div>
-            <span className="text-sm font-medium text-gray-600">Strengths:</span>
-            <div className="flex flex-wrap gap-1 mt-1">
-              {careerPath.strengths.map((s, i) => (
-                <span key={i} className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">{s}</span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {careerPath.archetypes?.length && (
-          <div>
-            <span className="text-sm font-medium text-gray-600">Archetypes:</span>
-            <div className="flex flex-wrap gap-1 mt-1">
-              {careerPath.archetypes.map((a, i) => (
-                <span key={i} className="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded-full">{a}</span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {careerPath.streamSuggestions?.length && (
-          <div>
-            <span className="text-sm font-medium text-gray-600">Stream Suggestions:</span>
-            <div className="flex flex-wrap gap-1 mt-1">
-              {careerPath.streamSuggestions.map((s, i) => (
-                <span key={i} className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">{s}</span>
-              ))}
-            </div>
-          </div>
-        )}
-      </section>
-
-      {/* Career Pathway - Read Only */}
-      {careerPath.careerPathway?.length && (
-        <section className="space-y-2">
-          <h3 className="font-semibold text-gray-700 border-b pb-2">Career Pathway</h3>
-          {careerPath.careerPathway.map((step, i) => (
-            <div key={i} className="bg-gray-50 rounded px-3 py-2 text-sm">
-              <span className="font-medium">{step.title}</span> — {step.duration}
-              {step.note && <span className="text-gray-500 ml-2">({step.note})</span>}
-            </div>
-          ))}
-        </section>
-      )}
-
-      {/* Related Careers - Read Only */}
-      {careerPath.relatedCareers?.length && (
-        <section className="space-y-2">
-          <h3 className="font-semibold text-gray-700 border-b pb-2">Related Careers</h3>
-          {careerPath.relatedCareers.map((rc, i) => (
-            <div key={i} className="bg-gray-50 rounded px-3 py-2 text-sm">
-              <span className="font-medium">{rc.title}</span>: {rc.reason}
-            </div>
-          ))}
-        </section>
-      )}
-
-      {/* Actions */}
-      <div className="flex gap-3 pt-4 border-t">
-        <button
-          onClick={handleSave}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
-        >
-          Save Changes
-        </button>
-        <button
-          onClick={onCancel}
-          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-300 focus:ring-2 focus:ring-gray-400"
-        >
-          Cancel
-        </button>
       </div>
-    </div>
+
+      {/* Form Content */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        {/* Career Overview - Read Only */}
+        <section className="bg-white rounded-lg p-6 border">
+          <h3 className="text-lg font-semibold mb-4">Career Overview</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-xs text-gray-500 uppercase tracking-wide">User ID</p>
+              <p className="text-sm font-medium mt-1">{careerPath.userId || '—'}</p>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-xs text-gray-500 uppercase tracking-wide">Career</p>
+              <p className="text-sm font-medium mt-1">
+                {careerPath.careerName || '—'}
+              </p>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-xs text-gray-500 uppercase tracking-wide">Match Score</p>
+              <p className="text-sm font-medium mt-1">
+                {careerPath.matchScore ?? '—'}
+              </p>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-xs text-gray-500 uppercase tracking-wide">
+                Expected Salary Range
+              </p>
+              <p className="text-sm font-medium mt-1">
+                {careerPath.expectedSalaryRange || '—'}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Editable Fields */}
+        <section className="bg-white rounded-lg p-6 border">
+          <h3 className="text-lg font-semibold mb-4">Edit Details</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Title
+              </label>
+              <input
+                type="text"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter career title"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Description
+              </label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                rows={3}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter description"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                What You Do
+              </label>
+              <textarea
+                value={formData.whatYouDo}
+                onChange={(e) => setFormData({ ...formData, whatYouDo: e.target.value })}
+                rows={3}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Describe the day-to-day responsibilities"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Why It Matters
+              </label>
+              <textarea
+                value={formData.whyItMatters}
+                onChange={(e) => setFormData({ ...formData, whyItMatters: e.target.value })}
+                rows={3}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Explain the impact of this career"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Match Reasoning
+              </label>
+              <textarea
+                value={formData.matchReasoning}
+                onChange={(e) =>
+                  setFormData({ ...formData, matchReasoning: e.target.value })
+                }
+                rows={3}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Why this career is a good match"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Profile - Read Only Badge Chips */}
+        <section className="bg-white rounded-lg p-6 border">
+          <h3 className="text-lg font-semibold mb-4">Profile</h3>
+          <div className="space-y-4">
+            {careerPath.strengths && careerPath.strengths.length > 0 && (
+              <div>
+                <p className="text-sm font-medium text-gray-600 mb-2">Strengths</p>
+                <div className="flex flex-wrap gap-2">
+                  {careerPath.strengths.map((item, index) => (
+                    <span
+                      key={index}
+                      className="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full"
+                    >
+                      {formatSnakeCaseToTitleCase(item)}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {careerPath.archetypes && careerPath.archetypes.length > 0 && (
+              <div>
+                <p className="text-sm font-medium text-gray-600 mb-2">Archetypes</p>
+                <div className="flex flex-wrap gap-2">
+                  {careerPath.archetypes.map((item, index) => (
+                    <span
+                      key={index}
+                      className="bg-purple-100 text-purple-800 text-sm px-3 py-1 rounded-full"
+                    >
+                      {formatSnakeCaseToTitleCase(item)}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {careerPath.streamSuggestions &&
+              careerPath.streamSuggestions.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-2">
+                    Stream Suggestions
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {careerPath.streamSuggestions.map((item, index) => (
+                      <span
+                        key={index}
+                        className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full"
+                      >
+                        {formatSnakeCaseToTitleCase(item)}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            {!careerPath.strengths?.length &&
+              !careerPath.archetypes?.length &&
+              !careerPath.streamSuggestions?.length && (
+                <p className="text-sm text-gray-500">No profile data available.</p>
+              )}
+          </div>
+        </section>
+
+        {/* Pathway - Read Only */}
+        <section className="bg-white rounded-lg p-6 border">
+          <h3 className="text-lg font-semibold mb-4">Career Pathway</h3>
+          {careerPath.careerPathway && careerPath.careerPathway.length > 0 ? (
+            <div className="space-y-3">
+              {careerPath.careerPathway.map((step, index) => (
+                <div
+                  key={index}
+                  className="flex items-start gap-3 bg-gray-50 rounded-lg p-3"
+                >
+                  <span className="bg-blue-600 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">
+                    {index + 1}
+                  </span>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{step.title}</p>
+                    <p className="text-xs text-gray-500">{step.duration}</p>
+                    {step.note && (
+                      <p className="text-xs text-gray-400 mt-1">{step.note}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500">No pathway data available.</p>
+          )}
+        </section>
+
+        {/* Related Careers - Read Only */}
+        <section className="bg-white rounded-lg p-6 border">
+          <h3 className="text-lg font-semibold mb-4">Related Careers</h3>
+          {careerPath.relatedCareers && careerPath.relatedCareers.length > 0 ? (
+            <div className="space-y-2">
+              {careerPath.relatedCareers.map((item, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-50 rounded-lg p-3"
+                >
+                  <p className="text-sm font-medium">{item.title}</p>
+                  <p className="text-xs text-gray-500 mt-1">{item.reason}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500">No related careers data available.</p>
+          )}
+        </section>
+      </div>
+    </form>
   );
 }
