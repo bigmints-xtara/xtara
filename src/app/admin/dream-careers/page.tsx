@@ -7,13 +7,15 @@ import type { AdminCareerPath } from '@/types/admin';
 
 export default function AdminDreamCareersPage() {
   return (
-    <div className="h-full">
-      <AdminMasterDetail<AdminCareerPath>
-        config={dreamCareersConfig}
-        renderEditor={(careerPath, onSave, onCancel) => (
-          <CareerPathEditor careerPath={careerPath} onSave={onSave} onCancel={onCancel} />
-        )}
-      />
-    </div>
+    <AdminMasterDetail<AdminCareerPath>
+      config={dreamCareersConfig}
+      renderEditor={(careerPath, onSave, onCancel) => (
+        <CareerPathEditor
+          careerPath={careerPath}
+          onSave={onSave}
+          onCancel={onCancel}
+        />
+      )}
+    />
   );
 }
