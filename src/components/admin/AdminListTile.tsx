@@ -36,29 +36,32 @@ export default function AdminListTile({
 
     return (
         <div
-            role="button"
-            tabIndex={0}
-            aria-pressed={isSelected}
-            onClick={onTap}
-            onKeyDown={handleKeyDown}
-            className={`w-full text-left p-4 border-b cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${
+            className={`w-full text-left p-4 border-b transition-all relative ${
                 isSelected
                     ? 'bg-blue-50 border-l-4 border-l-blue-600'
                     : 'hover:bg-gray-50 hover:border-l-4 hover:border-l-gray-300'
             }`}
         >
-            <div className="flex items-start justify-between">
+            <div
+                role="button"
+                tabIndex={0}
+                aria-pressed={isSelected}
+                onClick={onTap}
+                onKeyDown={handleKeyDown}
+                className="absolute inset-0 z-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+            />
+            <div className="relative z-10 flex items-start justify-between pointer-events-none">
                 <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-gray-900 truncate">{title}</h3>
                     {domain && (
-                        <span className="inline-block mt-1 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
+                        <span className="inline-block mt-1 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded pointer-events-auto">
                             {domain}
                         </span>
                     )}
                     <p className="text-sm text-gray-600 mt-1">{subtitle}</p>
                 </div>
 
-                <div className="flex items-center gap-2 ml-4">
+                <div className="flex items-center gap-2 ml-4 pointer-events-auto">
                     <span
                         className={`px-2 py-1 text-xs rounded font-medium ${
                             statusColors[status.toLowerCase()] || 'bg-gray-100 text-gray-800'
@@ -74,7 +77,7 @@ export default function AdminListTile({
                             }}
                             className="p-1 hover:bg-gray-200 rounded"
                         >
-                            <MoreVertical size={18} />
+                            < MoreVertical size={18} />
                         </button>
 
                         <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg border hidden group-hover:block z-10">
