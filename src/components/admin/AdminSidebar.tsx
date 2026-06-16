@@ -51,7 +51,6 @@ const navigationItems: NavItem[] = [
         name: 'Sparks',
         href: '/admin/sparks',
         icon: Sparkles,
-        comingSoon: true,
     },
     {
         name: 'Dream Careers',
