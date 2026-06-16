@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Save, X, Plus, Trash2 } from 'lucide-react';
 import type { Challenge, ChallengeQuestion } from '@/types/admin';
+import { formatSnakeCaseToTitleCase } from '@/lib/utils';
 
 interface ChallengeEditorProps {
   challenge: Challenge | null;
@@ -136,7 +137,7 @@ export default function ChallengeEditor({ challenge, onSave, onCancel }: Challen
   const addOption = (questionIndex: number) => {
     if (!formData.questions) return;
     const updated = formData.questions.map((q, qi) => {
-      if (qi === questionIndex) {
+      if (qi === questionIndex && q.options.length < 4) {
         return { ...q, options: [...q.options, 'New Option'] };
       }
       return q;
@@ -403,7 +404,7 @@ export default function ChallengeEditor({ challenge, onSave, onCancel }: Challen
                 key={relevance}
                 className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm flex items-center gap-2"
               >
-                {relevance}
+                {formatSnakeCaseToTitleCase(relevance)}
                 <button
                   type="button"
                   onClick={() => removeRelevance(relevance)}
@@ -510,37 +511,36 @@ export default function ChallengeEditor({ challenge, onSave, onCancel }: Challen
                       )}
                     </div>
                   ))}
-                  <button
-                    type="button"
-                    onClick={() => addOption(qIndex)}
-                    className="text-sm text-blue-600 hover:text-blue-800"
-                  >
-                    + Add Option
-                  </button>
+                  {question.options.length < 4 && (
+                    <button
+                      type="button"
+                      onClick={() => addOption(qIndex)}
+                      className="text-sm text-blue-600 hover:text-blue-800"
+                    >
+                      + Add Option
+                    </button>
+                  )}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium mb-1">
-                    Correct Answer
+                    Correct Answer (Index 0-{question.options.length - 1})
                   </label>
-                  <select
+                  <input
+                    type="number"
+                    min="0"
+                    max={question.options.length - 1}
                     value={question.correctAnswer}
-                    onChange={(e) => updateQuestion(qIndex, { correctAnswer: parseInt(e.target.value, 10) })}
+                    onChange={(e) => updateQuestion(qIndex, { correctAnswer: parseInt(e.target.value, 10) || 0 })}
                     className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    {question.options.map((opt, idx) => (
-                      <option key={idx} value={idx}>
-                        {opt}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium mb-1">Explanation</label>
                   <textarea
                     value={question.explanation}
-                    onChange={(e) => updateQuestion(qIndex, { explanation: e.target.value })}
+                    onChange={(updateVal) => updateQuestion(qIndex, { explanation: updateVal.target.value })}
                     rows={2}
                     className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Explain the correct answer"
