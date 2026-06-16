@@ -49,12 +49,13 @@ env:
   PROJECT_ID: "bigmints-xtara"
   REGION: "us-central1"
   SERVICE_NAME: "xtara-web"
-  ARTIFACT_REPO: "us-docker.pkg.dev/bigminstxtara/xtara-web-artifacts"
-  IMAGE_NAME: "us-docker.pkg.dev/bigminstxtara/xtara-web-artifacts/xtara-web"
+  ARTIFACT_REPO: "us-docker.pkg.dev/bigmints-xtara/xtara-web-artifacts"
+  IMAGE_NAME: "us-docker.pkg.dev/bigmints-xtara/xtara-web-artifacts/xtara-web"
 
 permissions:
   # Required for OIDC token request
   contents: read
+  id-token: write
   # Required for Buildx cache to persist across runs
   pull-requests: write
 
@@ -138,6 +139,18 @@ jobs:
             NODE_ENV=production
             NEXT_TELEMETRY_DISABLED=1
             PORT=8080
+          secrets: |
+            NEXT_PUBLIC_FIREBASE_API_KEY=xtara-web/firebase-api-key:latest
+            NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=xtara-web/firebase-auth-domain:latest
+            NEXT_PUBLIC_FIREBASE_PROJECT_ID=xtara-web/firebase-project-id:latest
+            NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=xtara-web/firebase-storage-bucket:latest
+            NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=xtara-web/firebase-messaging-sender-id:latest
+            NEXT_PUBLIC_FIREBASE_APP_ID=xtara-web/firebase-app-id:latest
+            NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=xtara-web/firebase-measurement-id:latest
+            NEXT_PUBLIC_ALGOLIA_APP_ID=xtara-web/algolia-app-id:latest
+            NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=xtara-web/algolia-search-api-key:latest
+            NEXTAUTH_URL=xtara-web/nextauth-url:latest
+            NEXTAUTH_SECRET=xtara-web/nextauth-secret:latest
 
       # -----------------------------------------------------------------------
       # 7. Output deployment URL
