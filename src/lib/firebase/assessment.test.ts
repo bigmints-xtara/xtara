@@ -190,6 +190,7 @@ describe("Assessment Service", () => {
       });
       mockUpdateDoc.mockResolvedValueOnce(undefined);
 
+<<<<<<< HEAD
       const promise = waitForCareerPath("assess-1", 5);
       
       // Attempt 1: delay 2000ms
