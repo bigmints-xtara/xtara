@@ -30,7 +30,13 @@ const EMPTY_EDITABLE: EditableFields = {
 
 export default function CareerPathEditor({ careerPath, onSave, onCancel }: CareerPathEditorProps) {
   const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState<EditableFields>(EMPTY_EDITABLE);
+  const [formData, setFormData] = useState<EditableFields>(() => ({
+    title: careerPath?.title || '',
+    description: careerPath?.description || '',
+    whatYouDo: careerPath?.whatYouDo || '',
+    whyItMatters: careerPath?.whyItMatters || '',
+    matchReasoning: careerPath?.matchReasoning || '',
+  }));
 
   useEffect(() => {
     if (careerPath) {
@@ -41,8 +47,6 @@ export default function CareerPathEditor({ careerPath, onSave, onCancel }: Caree
         whyItMatters: careerPath.whyItMatters || '',
         matchReasoning: careerPath.matchReasoning || '',
       });
-    } else {
-      setFormData(EMPTY_EDITABLE);
     }
   }, [careerPath]);
 

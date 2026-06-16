@@ -13,20 +13,20 @@ interface StoryEditorProps {
 
 export default function StoryEditor({ story, onSave, onCancel }: StoryEditorProps) {
     const [isSaving, setIsSaving] = useState(false);
-    const [formData, setFormData] = useState<Partial<Story>>({
-        title: '',
-        description: '',
-        image: '',
-        career_clusters: [],
-        careerRelevance: [],
-        slides: [],
-        published: false,
-        draft: true,
-        inReview: false,
-        featured: false,
-        ad: false,
-        byXtara: false,
-    });
+    const [formData, setFormData] = useState<Partial<Story>>(() => ({
+        title: story?.title || '',
+        description: story?.description || '',
+        image: story?.image || '',
+        career_clusters: story?.career_clusters || [],
+        careerRelevance: story?.careerRelevance || [],
+        slides: story?.slides || [],
+        published: story?.published || false,
+        draft: story?.draft ?? true,
+        inReview: story?.inReview || false,
+        featured: story?.featured || false,
+        ad: story?.ad || false,
+        byXtara: story?.byXtara ?? true,
+    }));
 
     const [clusterInput, setClusterInput] = useState('');
     const [relevanceInput, setRelevanceInput] = useState('');
@@ -35,24 +35,6 @@ export default function StoryEditor({ story, onSave, onCancel }: StoryEditorProp
         if (story) {
             setFormData(story);
             setClusterInput(story.career_clusters[0] || '');
-        } else {
-            // Reset to blank state when creating a new story
-            setFormData({
-                title: '',
-                description: '',
-                image: '',
-                career_clusters: [],
-                careerRelevance: [],
-                slides: [],
-                published: false,
-                draft: true,
-                inReview: false,
-                featured: false,
-                ad: false,
-                byXtara: false,
-            });
-            setClusterInput('');
-            setRelevanceInput('');
         }
     }, [story]);
 

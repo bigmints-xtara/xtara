@@ -21,46 +21,30 @@ function EmptyQuestion(): ChallengeQuestion {
 
 export default function ChallengeEditor({ challenge, onSave, onCancel }: ChallengeEditorProps) {
   const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState<Partial<Challenge>>({
-    title: '',
-    image: '',
-    domain: '',
-    published: false,
-    draft: true,
-    inReview: false,
-    hyperlink: '',
-    hyperlinkText: '',
-    callToAction: '',
-    careerRelevance: [],
-    type: '',
-    rewardPerQuestion: 0,
-    instructions: '',
-    questions: [],
-  });
+  const [formData, setFormData] = useState<Partial<Challenge>>(() => ({
+    title: challenge?.title || '',
+    image: challenge?.image || '',
+    domain: challenge?.domain || '',
+    published: challenge?.published || false,
+    draft: challenge?.draft ?? true,
+    inReview: challenge?.inReview || false,
+    hyperlink: challenge?.hyperlink || '',
+    hyperlinkText: challenge?.hyperlinkText || '',
+    callToAction: challenge?.callToAction || '',
+    careerRelevance: challenge?.careerRelevance || [],
+    type: challenge?.type || '',
+    rewardPerQuestion: challenge?.rewardPerQuestion || 0,
+    instructions: challenge?.instructions || '',
+    questions: challenge?.questions || [],
+    publishedAt: challenge?.publishedAt,
+    publishedUntil: challenge?.publishedUntil,
+  }));
   const [relevanceInput, setRelevanceInput] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
     if (challenge) {
       setFormData(challenge);
-    } else {
-      setFormData({
-        title: '',
-        image: '',
-        domain: '',
-        published: false,
-        draft: true,
-        inReview: false,
-        hyperlink: '',
-        hyperlinkText: '',
-        callToAction: '',
-        careerRelevance: [],
-        type: '',
-        rewardPerQuestion: 0,
-        instructions: '',
-        questions: [],
-      });
-      setRelevanceInput('');
     }
     setErrors([]);
   }, [challenge]);
