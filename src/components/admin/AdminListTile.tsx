@@ -1,6 +1,7 @@
 'use client';
 
 import { MoreVertical } from 'lucide-react';
+import { formatSnakeCaseToTitleCase } from '@/lib/utils';
 
 interface AdminListTileProps {
     title: string;
@@ -24,7 +25,7 @@ export default function AdminListTile({
     const statusColors: Record<string, string> = {
         published: 'bg-green-100 text-green-800',
         draft: 'bg-orange-100 text-orange-800',
-        inreview: 'bg-blue-100 text-blue-800',
+        'in review': 'bg-blue-100 text-blue-800',
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -49,13 +50,13 @@ export default function AdminListTile({
         >
             <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 truncate">{title}</h3>
+                    <h3 className="font-semibold text-gray-900 truncate">{formatSnakeCaseToTitleCase(title)}</h3>
                     {domain && (
                         <span className="inline-block mt-1 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
-                            {domain}
+                            {formatSnakeCaseToTitleCase(domain)}
                         </span>
                     )}
-                    <p className="text-sm text-gray-600 mt-1">{subtitle}</p>
+                    <p className="text-sm text-gray-600 mt-1">{formatSnakeCaseToTitleCase(subtitle)}</p>
                 </div>
 
                 <div className="flex items-center gap-2 ml-4">
