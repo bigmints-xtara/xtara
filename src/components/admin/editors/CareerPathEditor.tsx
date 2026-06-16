@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Save, X } from 'lucide-react';
 import type { AdminCareerPath } from '@/types/admin';
 import { formatSnakeCaseToTitleCase } from '@/lib/utils';
@@ -30,25 +30,37 @@ const EMPTY_EDITABLE: EditableFields = {
 
 export default function CareerPathEditor({ careerPath, onSave, onCancel }: CareerPathEditorProps) {
   const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState<EditableFields>(() => ({
-    title: careerPath?.title || '',
-    description: careerPath?.description || '',
-    whatYouDo: careerPath?.whatYouDo || '',
-    whyItMatters: careerPath?.whyItMatters || '',
-    matchReasoning: careerPath?.matchReasoning || '',
-  }));
-
-  useEffect(() => {
+  const [formData, setFormData] = useState<EditableFields>(() => {
     if (careerPath) {
-      setFormData({
+      return {
         title: careerPath.title || '',
         description: careerPath.description || '',
         whatYouDo: careerPath.whatYouDo || '',
         whyItMatters: careerPath.whyItMatters || '',
         matchReasoning: careerPath.matchReasoning || '',
-      });
+      };
     }
-  }, [careerPath]);
+    return EMPTY_EDITABLE;
+  });
+
+  const isCreating = !careerPath;
+  const [prevId, setPrevId] = useState<string | null>(careerPath?.id || null);
+
+  if (careerPath?.id !== prevId) {
+    setPrevId(careerPath?.id || null);
+    setFormData(
+      careerPath
+        ? {
+            title: careerPath.title || '',
+            description: careerPath.description || '',
+            whatYouDo: careerPath.whatYouDo || '',
+            whyItMatters: careerPath.whyItMatters || '',
+            matchReasoning: careerPath.matchReasoning || '',
+          }
+        : EMPTY_EDITABLE
+    );
+  }
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,7 +101,7 @@ export default function CareerPathEditor({ careerPath, onSave, onCancel }: Caree
       {/* Header */}
       <div className="p-6 border-b bg-white flex items-center justify-between">
         <h2 className="text-xl font-bold">
-          Career Path Details
+          {isCreating ? 'Create Career Path' : 'Career Path Details'}
         </h2>
         <div className="flex gap-2">
           <button
@@ -119,18 +131,18 @@ export default function CareerPathEditor({ careerPath, onSave, onCancel }: Caree
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-50 rounded-lg p-3">
               <p className="text-xs text-gray-500 uppercase tracking-wide">User ID</p>
-              <p className="text-sm font-medium mt-1">{careerPath.userId || '—'}</p>
+              <p className="text-sm font-medium mt-1">{careerPath?.userId || '—'}</p>
             </div>
             <div className="bg-gray-50 rounded-lg p-3">
               <p className="text-xs text-gray-500 uppercase tracking-wide">Career</p>
               <p className="text-sm font-medium mt-1">
-                {careerPath.careerName || '—'}
+                {careerPath?.careerName || '—'}
               </p>
             </div>
             <div className="bg-gray-50 rounded-lg p-3">
               <p className="text-xs text-gray-500 uppercase tracking-wide">Match Score</p>
               <p className="text-sm font-medium mt-1">
-                {careerPath.matchScore ?? '—'}
+                {careerPath?.matchScore ?? '—'}
               </p>
             </div>
             <div className="bg-gray-50 rounded-lg p-3">
@@ -138,7 +150,7 @@ export default function CareerPathEditor({ careerPath, onSave, onCancel }: Caree
                 Expected Salary Range
               </p>
               <p className="text-sm font-medium mt-1">
-                {careerPath.expectedSalaryRange || '—'}
+                {careerPath?.expectedSalaryRange || '—'}
               </p>
             </div>
           </div>
@@ -221,7 +233,7 @@ export default function CareerPathEditor({ careerPath, onSave, onCancel }: Caree
         <section className="bg-white rounded-lg p-6 border">
           <h3 className="text-lg font-semibold mb-4">Profile</h3>
           <div className="space-y-4">
-            {careerPath.strengths && careerPath.strengths.length > 0 && (
+            {careerPath?.strengths && careerPath.strengths.length > 0 && (
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-2">Strengths</p>
                 <div className="flex flex-wrap gap-2">
@@ -237,7 +249,7 @@ export default function CareerPathEditor({ careerPath, onSave, onCancel }: Caree
               </div>
             )}
 
-            {careerPath.archetypes && careerPath.archetypes.length > 0 && (
+            {careerPath?.archetypes && careerPath.archetypes.length > 0 && (
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-2">Archetypes</p>
                 <div className="flex flex-wrap gap-2">
@@ -253,7 +265,7 @@ export default function CareerPathEditor({ careerPath, onSave, onCancel }: Caree
               </div>
             )}
 
-            {careerPath.streamSuggestions &&
+            {careerPath?.streamSuggestions &&
               careerPath.streamSuggestions.length > 0 && (
                 <div>
                   <p className="text-sm font-medium text-gray-600 mb-2">
@@ -272,9 +284,9 @@ export default function CareerPathEditor({ careerPath, onSave, onCancel }: Caree
                 </div>
               )}
 
-            {!careerPath.strengths?.length &&
-              !careerPath.archetypes?.length &&
-              !careerPath.streamSuggestions?.length && (
+            {!careerPath?.strengths?.length &&
+              !careerPath?.archetypes?.length &&
+              !careerPath?.streamSuggestions?.length && (
                 <p className="text-sm text-gray-500">No profile data available.</p>
               )}
           </div>
@@ -283,7 +295,7 @@ export default function CareerPathEditor({ careerPath, onSave, onCancel }: Caree
         {/* Pathway - Read Only */}
         <section className="bg-white rounded-lg p-6 border">
           <h3 className="text-lg font-semibold mb-4">Career Pathway</h3>
-          {careerPath.careerPathway && careerPath.careerPathway.length > 0 ? (
+          {careerPath?.careerPathway && careerPath.careerPathway.length > 0 ? (
             <div className="space-y-3">
               {careerPath.careerPathway.map((step, index) => (
                 <div
@@ -311,7 +323,7 @@ export default function CareerPathEditor({ careerPath, onSave, onCancel }: Caree
         {/* Related Careers - Read Only */}
         <section className="bg-white rounded-lg p-6 border">
           <h3 className="text-lg font-semibold mb-4">Related Careers</h3>
-          {careerPath.relatedCareers && careerPath.relatedCareers.length > 0 ? (
+          {careerPath?.relatedCareers && careerPath.relatedCareers.length > 0 ? (
             <div className="space-y-2">
               {careerPath.relatedCareers.map((item, index) => (
                 <div
