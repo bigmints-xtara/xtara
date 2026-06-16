@@ -18,6 +18,7 @@ import { useTenant } from '@/lib/hooks/useTenant';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { formatSnakeCaseToTitleCase } from '@/lib/utils';
 
 interface NavItem {
     name: string;
@@ -158,8 +159,8 @@ export default function AdminSidebar() {
                         </Avatar>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium truncate" title={tenant.displayName}>{tenant.displayName}</p>
-                            <p className="text-xs text-gray-500 truncate capitalize">
-                                {tenant.category?.replace(/_/g, ' ') || tenant.type}
+                            <p className="text-xs text-gray-500 truncate">
+                                {formatSnakeCaseToTitleCase(tenant.category || tenant.type)}
                             </p>
                         </div>
                     </div>

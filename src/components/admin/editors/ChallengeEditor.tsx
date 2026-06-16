@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Save, X, Plus, Trash2 } from 'lucide-react';
 import type { Challenge, ChallengeQuestion } from '@/types/admin';
+import { formatSnakeCaseToTitleCase } from '@/lib/utils';
 
 interface ChallengeEditorProps {
   challenge: Challenge | null;
@@ -387,7 +388,7 @@ export default function ChallengeEditor({ challenge, onSave, onCancel }: Challen
                 key={relevance}
                 className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm flex items-center gap-2"
               >
-                {relevance}
+                {formatSnakeCaseToTitleCase(relevance)}
                 <button
                   type="button"
                   onClick={() => removeRelevance(relevance)}
