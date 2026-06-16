@@ -3,6 +3,8 @@ node_modules
 
 # Build outputs
 .next
+out
+build
 
 # Git
 .git
@@ -36,20 +38,45 @@ Thumbs.db
 logs
 *.log
 
-# Deployment scripts (not needed in image)
+# Deployment scripts & tools
 deploy.sh
 start.sh
 set-env.sh
+scripts/
+scraper/
+scraper-v2/
+scraper-v3/
+dream_careers-manager-v2/
 
-# Coverage
+# Data & Assets (not needed for build)
+data_models/
+assets/
+unique_skills_list.txt
+
+# Documentation
+README.md
+AGENTS.md
+DEPLOYMENT.md
+SECRETS.md
+prompts.md
+
+# Testing
 coverage
-
-# TypeScript build info
-*.tsbuildinfo
-tsconfig.tsbuildinfo
-
-# Test artifacts
 test-results
+vitest.config.ts
+src/setup-tests.ts
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
 
 # Misc build artifacts
+*.tsbuildinfo
+tsconfig.tsbuildinfo
 .eslintcache
+components.json
+
+# Lockfiles for other package managers
+pnpm-lock.yaml
+pnpm-workspace.yaml
+yarn.lock
