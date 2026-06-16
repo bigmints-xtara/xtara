@@ -183,6 +183,8 @@ export interface CareerPath {
     careerCluster?: string;
     investmentLevel?: string;
     scholarships?: Scholarship[];
+    careerCommunities?: any[];
+    connect?: any;
 }
 
 type double = number;

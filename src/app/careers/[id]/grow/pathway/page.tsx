@@ -16,13 +16,17 @@ export default function PathwayListPage() {
         if (!careerPath) return [];
         const pathway = careerPath.careerPathway || [];
 
-        return pathway.map((step: string, idx: number) => ({
-            id: `step-${idx}`,
-            title: `Step ${idx + 1}: ${step}`,
-            description: "Follow this milestone to progress in your career.",
-            tag: "Milestone",
-            icon: <ListOrdered size={20} />
-        }));
+        return pathway.map((step: any, idx: number) => {
+            const titleText = typeof step === 'string' ? step : (step.title || step.step || '');
+            const descText = typeof step === 'string' ? "Follow this milestone to progress in your career." : (step.note || step.duration || "Follow this milestone to progress in your career.");
+            return {
+                id: `step-${idx}`,
+                title: `Step ${idx + 1}: ${titleText}`,
+                description: descText,
+                tag: "Milestone",
+                icon: <ListOrdered size={20} />
+            };
+        });
     };
 
     return (

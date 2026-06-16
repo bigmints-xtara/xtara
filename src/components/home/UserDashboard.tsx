@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 import { BookOpen, Trophy, Zap, Gamepad2, ChevronRight, Bell, Sparkles, TrendingUp, Puzzle, Grid, Target, Award } from "lucide-react";
 import { useState, useEffect } from "react";
 import DownloadAppModal from "./DownloadAppModal";
@@ -19,6 +20,7 @@ import { useTranslations } from "@/i18n/language-provider";
 
 export default function UserDashboard() {
     const { user, userProfile } = useAuth();
+    const queryClient = useQueryClient();
     const { t } = useTranslations();
     const [downloadModalOpen, setDownloadModalOpen] = useState(false);
     const [selectedFeature, setSelectedFeature] = useState("");
@@ -97,8 +99,7 @@ export default function UserDashboard() {
 
     const handleStoryComplete = async () => {
         // Refresh stories to update watched status
-        const storiesData = await FirestoreService.getStoriesForHome();
-        setStories(storiesData);
+        queryClient.invalidateQueries({ queryKey: ['stories'] });
     };
 
     const handleFeatureClick = (title: string, prefixKey: string) => {

@@ -12,7 +12,7 @@ import {
     onSnapshot,
     type Unsubscribe,
 } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db } from '@/lib/firebase/firebase';
 import type { AdminEntity, AdminConfig } from '@/types/admin';
 
 export class AdminService<T extends AdminEntity> {

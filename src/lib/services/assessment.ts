@@ -1,4 +1,4 @@
-import { db } from '../firebase';
+import { db } from '@/lib/firebase/firebase';
 import { doc, getDoc, setDoc, serverTimestamp, collection } from 'firebase/firestore';
 import { QuestionModel } from '../types';
 

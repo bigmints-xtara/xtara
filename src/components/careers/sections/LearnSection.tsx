@@ -164,7 +164,7 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
         return result;
     };
 
-    const getScholarships = () => {
+    const getScholarships = (): ResourceItem[] => {
         const scholarships: Scholarship[] = 
             careerPath.scholarships || 
             careerPath.learn?.scholarships || 
@@ -183,7 +183,7 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
         }));
     };
 
-    const getTrainings = () => {
+    const getTrainings = (): ResourceItem[] => {
         const trainings: OnlineTraining[] =
             careerPath.onlineTrainings ||
             careerPath.ragOutput?.learn?.onlineTrainings ||

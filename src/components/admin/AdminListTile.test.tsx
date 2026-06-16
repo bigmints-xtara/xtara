@@ -23,7 +23,7 @@ describe('AdminListTile', () => {
 
     it('triggers onTap when the subtitle (inside the button) is clicked', () => {
         render(<AdminListTile {...defaultProps} />);
-        const subtitle = screen.getByText('Test Subtitle');
+        const subtitle = screen.getByText(/test subtitle/i);
         fireEvent.click(subtitle);
         expect(defaultProps.onTap).toHaveBeenCalledTimes(1);
     });
