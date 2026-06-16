@@ -187,13 +187,15 @@ export default function AdminMasterDetail<T extends AdminEntity>({
                 <div className="p-4 border-b bg-white sticky top-0 z-10">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-xl font-bold">{config.entityNamePlural}</h2>
-                        <button
-                            onClick={handleCreate}
-                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                        >
-                            <Plus size={18} />
-                            New
-                        </button>
+                        {!config.hideNewButton && (
+                            <button
+                                onClick={handleCreate}
+                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                            >
+                                <Plus size={18} />
+                                New
+                            </button>
+                        )}
                     </div>
 
                     {/* Search */}

@@ -4,6 +4,7 @@ export const dreamCareersConfig: AdminConfig<AdminCareerPath> = {
   entityName: 'Career Path',
   entityNamePlural: 'Career Paths',
   collectionName: 'career_paths',
+  hideNewButton: true,
 
   createEmpty: () => ({
     userId: '',
@@ -20,13 +21,14 @@ export const dreamCareersConfig: AdminConfig<AdminCareerPath> = {
 
   getDomain: (entity) => entity.archetypes?.[0] || 'General',
 
-  getSearchText: (entity) => `${entity.careerName} ${entity.userId}`.toLowerCase(),
+  getSearchText: (entity) =>
+    `${entity.careerName || ''} ${entity.title || ''} ${entity.userId || ''}`.toLowerCase(),
 
   availableStatuses: ['all'],
 
   getAvailableDomains: (entities) => {
     const domains = new Set<string>();
-    entities.forEach(entity => {
+    entities.forEach((entity) => {
       if (entity.archetypes?.[0]) domains.add(entity.archetypes[0]);
     });
     return ['all', ...Array.from(domains)];
