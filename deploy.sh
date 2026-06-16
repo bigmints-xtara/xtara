@@ -182,7 +182,7 @@ print_header "Authenticating with Google Cloud"
 
 # Verify that ADC is configured. This check catches missing credentials early
 # so the build does not start before failing on auth.
-if gcloud auth application-default credentials-list --format=json &> /dev/null; then
+if gcloud auth application-default print-access-token &> /dev/null; then
     print_success "Application Default Credentials (ADC) are configured"
     print_info "Using Workload Identity Federation (preferred for CI/CD) or local ADC"
 else
@@ -222,8 +222,13 @@ print_success "Docker configured for Artifact Registry"
 
 print_header "Building Docker Image"
 
+# Default platforms for multi-architecture builds.
+# Users can override this to a single platform (e.g., linux/arm64) to avoid
+# slow QEMU emulation during local development.
+PLATFORMS="${PLATFORMS:-linux/amd64,linux/arm64}"
+
 print_info "Building image: $IMAGE_NAME:$VERSION_TAG"
-print_info "Platforms: linux/amd64, linux/arm64"
+print_info "Platforms: $PLATFORMS"
 print_info "Using Docker Buildx with BuildKit cache"
 
 # Build using docker buildx for multi-platform support with BuildKit cache.
@@ -231,7 +236,7 @@ print_info "Using Docker Buildx with BuildKit cache"
 # docker push step). --provenance=maximum stores build metadata for traceability.
 # --cache-from/to enables distributed BuildKit cache (useful for CI/CD).
 if [[ "$DRY_RUN" == "true" ]]; then
-    print_info "[DRY-RUN] docker buildx build --platform linux/amd64,linux/arm64 \\"
+    print_info "[DRY-RUN] docker buildx build --platform $PLATFORMS \\"
     print_info "  --provenance=maximum \\"
     print_info "  --cache-from=type=registry,ref=$IMAGE_NAME:cache \\"
     print_info "  --cache-to=type=registry,ref=$IMAGE_NAME:cache,mode=max \\"
@@ -241,7 +246,7 @@ if [[ "$DRY_RUN" == "true" ]]; then
     print_info "  ."
 else
     docker buildx build \
-        --platform linux/amd64,linux/arm64 \
+        --platform "$PLATFORMS" \
         --provenance=maximum \
         --cache-from=type=registry,ref=${IMAGE_NAME}:cache \
         --cache-to=type=registry,ref=${IMAGE_NAME}:cache,mode=max \
