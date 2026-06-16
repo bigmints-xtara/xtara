@@ -41,8 +41,11 @@ export const dreamCareersConfig: AdminConfig<AdminCareerPath> = {
     };
   },
 
-  fromFirestore: (data, id) => ({
-    ...(data as unknown as AdminCareerPath),
-    id,
-  }),
+  fromFirestore: (data, id) => {
+    const serialized = JSON.parse(JSON.stringify(data));
+    return {
+      ...(serialized as AdminCareerPath),
+      id,
+    };
+  },
 };
