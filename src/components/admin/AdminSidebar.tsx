@@ -39,19 +39,16 @@ const navigationItems: NavItem[] = [
         name: 'Challenges',
         href: '/admin/challenges',
         icon: Trophy,
-        comingSoon: true,
     },
     {
         name: 'Good Reads',
         href: '/admin/good-reads',
         icon: FileText,
-        comingSoon: true,
     },
     {
         name: 'Sparks',
         href: '/admin/sparks',
         icon: Sparkles,
-        comingSoon: true,
     },
     {
         name: 'Dream Careers',

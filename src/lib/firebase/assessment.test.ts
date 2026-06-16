@@ -70,7 +70,7 @@ describe("Assessment Service", () => {
         exists: vi.fn(() => true),
         data: vi.fn(() => ({
           value: JSON.stringify({ steps: [{ id: "q1", label: "Name", fieldType: "text" }] }),
-        }),
+        })),
       };
       mockGetDoc.mockResolvedValueOnce(mockSnapshot);
 
@@ -84,7 +84,7 @@ describe("Assessment Service", () => {
         exists: vi.fn(() => true),
         data: vi.fn(() => ({
           steps: [{ id: "q2", label: "Age", type: "number" }],
-        }),
+        })),
       };
       mockGetDoc.mockResolvedValueOnce(mockSnapshot);
 
@@ -154,8 +154,8 @@ describe("Assessment Service", () => {
     it("returns career path data when doc exists", async () => {
       const mockSnapshot = {
         exists: vi.fn(() => true),
-        data: vi.fn(() => ({ title: "Software Engineer" }),
-      });
+        data: vi.fn(() => ({ title: "Software Engineer" })),
+      };
       mockGetDoc.mockResolvedValueOnce(mockSnapshot);
 
       const result = await getCareerPath("cp-1");
@@ -164,13 +164,13 @@ describe("Assessment Service", () => {
 
     it("returns null when doc does not exist", async () => {
       const mockSnapshot = {
-        exists: vi.fn(() => true),
-        data: vi.fn(() => ({ title: "Software Engineer" }),
-      });
+        exists: vi.fn(() => false),
+        data: vi.fn(() => ({})),
+      };
       mockGetDoc.mockResolvedValueOnce(mockSnapshot);
 
       const result = await getCareerPath("cp-1");
-      expect(result).toEqual({ id: "cp-1", title: "Software Engineer" });
+      expect(result).toBeNull();
     });
   });
 
