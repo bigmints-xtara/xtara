@@ -16,6 +16,7 @@ import {
 import { useTenant } from '@/lib/hooks/useTenant';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 
 interface NavItem {
     name: string;
@@ -106,11 +107,13 @@ export default function AdminSidebar() {
                                 }}
                                 title={`${item.name} — Coming Soon`}
                                 aria-label={`${item.name} (Coming Soon)`}
-                                className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-gray-500 opacity-50 cursor-default hover:opacity-70 hover:text-gray-400"
+                                className="flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-all text-gray-500 opacity-50 cursor-not-allowed group w-full"
                             >
-                                <Icon size={20} />
-                                <span className="font-medium">{item.name}</span>
-                                <span className="text-xs bg-gray-700 text-gray-300 px-1.5 py-0.5 rounded-full font-medium">Soon</span>
+                                <div className="flex items-center gap-3">
+                                    <Icon size={20} />
+                                    <span className="font-medium">{item.name}</span>
+                                </div>
+                                <Badge variant="secondary" className="bg-gray-800 text-gray-400 border-gray-700 text-[10px] px-1.5 py-0 leading-none h-4">Soon</Badge>
                             </button>
                         );
                     }
