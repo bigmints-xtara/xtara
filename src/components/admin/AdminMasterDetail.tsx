@@ -299,7 +299,9 @@ export default function AdminMasterDetail<T extends AdminEntity>({
             {/* Right Panel - Detail */}
             <div className="flex-1 bg-gray-50">
                 {isCreating || selectedEntity ? (
-                    renderEditor(isCreating ? null : selectedEntity, handleSave, handleCancel)
+                    <div key={isCreating ? 'new' : selectedEntity?.id} className="h-full">
+                        {renderEditor(isCreating ? null : selectedEntity, handleSave, handleCancel)}
+                    </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center h-full text-gray-500">
                         <p className="text-xl mb-2">Select {config.entityName}</p>

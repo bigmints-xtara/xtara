@@ -12,25 +12,17 @@ interface SparkEditorProps {
 
 export default function SparkEditor({ spark, onSave, onCancel }: SparkEditorProps) {
     const [isSaving, setIsSaving] = useState(false);
-    const [formData, setFormData] = useState<Partial<Spark>>({
-        title: '',
-        type: '',
-        published: false,
-        draft: true,
-        inReview: false,
-    });
+    const [formData, setFormData] = useState<Partial<Spark>>(() => ({
+        title: spark?.title || '',
+        type: spark?.type || '',
+        published: spark?.published || false,
+        draft: spark?.draft ?? true,
+        inReview: spark?.inReview || false,
+    }));
 
     useEffect(() => {
         if (spark) {
             setFormData(spark);
-        } else {
-            setFormData({
-                title: '',
-                type: '',
-                published: false,
-                draft: true,
-                inReview: false,
-            });
         }
     }, [spark]);
 
