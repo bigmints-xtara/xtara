@@ -1,6 +1,7 @@
 "use client";
 
-import { CareerPath, getCareerPathById } from "@/lib/firebase/career-helpers";
+import { getCareerPathById } from "@/lib/firebase/career-helpers";
+import { CareerPath } from "@/types/career";
 import { ArrowLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

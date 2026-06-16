@@ -1,19 +1,7 @@
 import { useFirestoreQuery } from './useFirestoreQuery';
 import { db } from '@/lib/firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-
-interface CareerPath {
-  id: string;
-  userId: string;
-  title: string;
-  description: string;
-  matchScore: number;
-  archetypes: string[];
-  primaryCareer: any;
-  careerPathway: any[];
-  ragOutput: any;
-  createdAt: any;
-}
+import { CareerPath } from '@/types/career';
 
 export function useCareerPathQuery(pathId: string) {
   return useFirestoreQuery<CareerPath>(

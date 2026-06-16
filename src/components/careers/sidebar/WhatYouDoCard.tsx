@@ -1,5 +1,5 @@
 import { Briefcase } from "lucide-react";
-import { CareerPath } from "@/lib/firebase/career-helpers";
+import { CareerPath } from "@/types/career";
 
 interface WhatYouDoCardProps {
     careerPath: CareerPath;

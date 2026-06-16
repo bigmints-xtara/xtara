@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CareerPath } from "@/lib/firebase/career-helpers";
+import { CareerPath, CareerPathwayStep, InternshipExample, GovernmentExam } from "@/types/career";
 import ResourceList, { ResourceItem } from "@/components/careers/ResourceList";
 import ResourceDetailModal from "@/components/careers/ResourceDetailModal";
 import CareerPathwayTimeline from "@/components/careers/CareerPathwayTimeline";
@@ -20,22 +20,17 @@ export default function GrowSection({ careerPath, id }: GrowSectionProps) {
         setIsModalOpen(true);
     };
 
-    const getPathway = (): any[] => {
+    const getPathway = (): CareerPathwayStep[] => {
         // Get pathway data from multiple possible locations
         const pathwayData =
-            (careerPath.grow && careerPath.grow.careerPathway) ||
+            careerPath.grow?.careerPathway ||
             careerPath.careerPathway ||
-            (careerPath.ragOutput && careerPath.ragOutput.grow && careerPath.ragOutput.grow.careerPathway) ||
+            careerPath.ragOutput?.grow?.careerPathway ||
             [];
 
-        // If it's already an array of objects, return directly
-        if (Array.isArray(pathwayData) && pathwayData.length > 0 && typeof pathwayData[0] === 'object') {
-            return pathwayData;
-        }
-
         // If it's an array of strings, convert to objects
-        if (Array.isArray(pathwayData) && typeof pathwayData[0] === 'string') {
-            return pathwayData.map((step: string, idx: number) => ({
+        if (Array.isArray(pathwayData) && pathwayData.length > 0 && typeof pathwayData[0] === 'string') {
+            return (pathwayData as string[]).map((step: string) => ({
                 step: step,
                 title: step,
                 duration: '',
@@ -43,14 +38,18 @@ export default function GrowSection({ careerPath, id }: GrowSectionProps) {
             }));
         }
 
-        return [];
+        return pathwayData as CareerPathwayStep[];
     };
 
     const getInternships = () => {
-        const internships = careerPath.internshipExamples || (careerPath.ragOutput && careerPath.ragOutput.grow && careerPath.ragOutput.grow.internshipRoles) || [];
-        return internships.map((i: any, idx: number) => ({
+        const internships: InternshipExample[] = 
+            careerPath.internshipExamples || 
+            careerPath.ragOutput?.grow?.internshipRoles || 
+            [];
+            
+        return internships.map((i, idx) => ({
             id: `internship-${idx}`,
-            title: i.role || i.title,
+            title: i.role || i.title || "Internship",
             subtitle: i.company || i.organization,
             description: i.description,
             link: i.link,
@@ -58,8 +57,8 @@ export default function GrowSection({ careerPath, id }: GrowSectionProps) {
     };
 
     const getExams = () => {
-        const exams = careerPath.governmentExams || [];
-        return exams.map((e: any, idx: number) => ({
+        const exams: GovernmentExam[] = careerPath.governmentExams || [];
+        return exams.map((e, idx) => ({
             id: `exam-${idx}`,
             title: e.name,
             subtitle: e.examRequired ? "Required" : "Optional",
@@ -71,13 +70,13 @@ export default function GrowSection({ careerPath, id }: GrowSectionProps) {
         // Try multiple locations for salary data
         let salaryData = careerPath.salary ||
             careerPath.expectedSalaryRange ||
-            (careerPath.grow && careerPath.grow.expectedSalaryRange) ||
-            (careerPath.ragOutput && careerPath.ragOutput.grow && careerPath.ragOutput.grow.expectedSalaryRange);
+            careerPath.grow?.expectedSalaryRange ||
+            careerPath.ragOutput?.grow?.expectedSalaryRange;
 
         if (!salaryData) return [];
 
         const salaryRange = typeof salaryData === 'string' ? salaryData : JSON.stringify(salaryData);
-        const investmentLevel = careerPath.investmentLevel || (careerPath.ragOutput && careerPath.ragOutput.grow && careerPath.ragOutput.grow.investmentLevel);
+        const investmentLevel = careerPath.investmentLevel || careerPath.ragOutput?.grow?.investmentLevel;
 
         return [{
             id: 'salary',

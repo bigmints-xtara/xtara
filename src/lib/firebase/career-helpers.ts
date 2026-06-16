@@ -1,42 +1,6 @@
 import { db } from "./firebase";
 import { collection, query, where, getDocs, doc, getDoc, DocumentData, limit } from "firebase/firestore";
-
-export interface CareerPath {
-    id: string;
-    title: string;
-    description: string;
-    whatYouDo?: string;
-    whyItMatters?: string;
-    salary?: string;
-    education?: string;
-    technicalSkills?: string[];
-    softSkills?: string[];
-    courses?: any[];
-    careerPathway?: string[];
-    relatedCareers?: any[];
-    archetypes?: string[];
-    matchScore?: number;
-    quote?: string;
-    dreamTitle?: string;
-    notablePeople?: any[];
-    ragOutput?: any;
-    topInstitutions?: any[];
-    onlineTrainings?: any[];
-    toolsAndSoftware?: any[];
-    governmentExams?: any[];
-    primaryCareer?: {
-        courses?: any[];
-        careerCluster?: string;
-        [key: string]: any;
-    };
-    grow?: {
-        careerPathway?: any[];
-        expectedSalaryRange?: string;
-        [key: string]: any;
-    };
-    expectedSalaryRange?: string;
-    [key: string]: any;
-}
+import { CareerPath } from "@/types/career";
 
 export const getUserCareerPaths = async (userId: string): Promise<CareerPath[]> => {
     try {

@@ -4,7 +4,8 @@ import { useParams, useRouter } from "next/navigation";
 import { Users, Users2, ArrowRight } from "lucide-react";
 import CareerHubLayout from "@/components/careers/CareerHubLayout";
 import { useEffect, useState } from "react";
-import { getCareerPathById, CareerPath } from "@/lib/firebase/career-helpers";
+import { getCareerPathById } from "@/lib/firebase/career-helpers";
+import { CareerPath } from "@/types/career";
 
 export default function ConnectHubPage() {
     const { id } = useParams();
