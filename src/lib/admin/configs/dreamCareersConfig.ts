@@ -10,24 +10,26 @@ export const dreamCareersConfig: AdminConfig<AdminCareerPath> = {
     careerName: '',
     title: '',
     description: '',
+    archetypes: [],
   }),
 
   getId: (entity) => entity.id,
   getTitle: (entity) => entity.careerName || entity.title || 'Untitled',
-  getSubtitle: (entity) => entity.userId,
+  getSubtitle: (entity) => entity.userId || '',
 
-  getStatus: () => 'published',
+  getStatus: (entity) => 'published',
 
   getDomain: (entity) => entity.archetypes?.[0] || 'General',
 
-  getSearchText: (entity) => `${entity.careerName} ${entity.userId}`.toLowerCase(),
+  getSearchText: (entity) => `${entity.careerName || ''} ${entity.title || ''} ${entity.userId || ''}`.toLowerCase(),
 
   availableStatuses: ['all'],
 
   getAvailableDomains: (entities) => {
     const domains = new Set<string>();
     entities.forEach(entity => {
-      if (entity.archetypes?.[0]) domains.add(entity.archetypes[0]);
+      const domain = entity.archetypes?.[0];
+      if (domain) domains.add(domain);
     });
     return ['all', ...Array.from(domains)];
   },
