@@ -1,10 +1,12 @@
 import { AdminConfig, AdminCareerPath } from '@/types/admin';
 
 export const dreamCareersConfig: AdminConfig<AdminCareerPath> = {
-  entityName: 'Career Path',
-  entityNamePlural: 'Career Paths',
-  collectionName: 'career_paths',
+  entityName: 'Dream Career',
+  entityNamePlural: 'Dream Careers',
+  collectionName: 'dream_careers',
   hideNewButton: true,
+  orderByField: 'title',
+  orderByDirection: 'asc',
 
   createEmpty: () => ({
     userId: '',
@@ -15,21 +17,22 @@ export const dreamCareersConfig: AdminConfig<AdminCareerPath> = {
   }),
 
   getId: (entity) => entity.id,
-  getTitle: (entity) => entity.careerName || entity.title || 'Untitled',
-  getSubtitle: (entity) => entity.userId || '',
+  getTitle: (entity) => entity.title || entity.careerName || 'Untitled',
+  getSubtitle: (entity) => (entity as any).careerCluster || entity.userId || '',
 
   getStatus: (entity) => 'published',
 
-  getDomain: (entity) => entity.archetypes?.[0] || 'General',
+  getDomain: (entity) => entity.archetypes?.[0] || (entity as any).archetypeTags?.[0] || (entity as any).careerCluster || 'General',
 
-  getSearchText: (entity) => `${entity.careerName || ''} ${entity.title || ''} ${entity.userId || ''}`.toLowerCase(),
+  getSearchText: (entity) => `${entity.title || ''} ${entity.careerName || ''} ${(entity as any).careerCluster || ''} ${entity.description || ''}`.toLowerCase(),
 
   availableStatuses: ['all'],
 
   getAvailableDomains: (entities) => {
     const domains = new Set<string>();
     entities.forEach((entity) => {
-      if (entity.archetypes?.[0]) domains.add(entity.archetypes[0]);
+      const dom = entity.archetypes?.[0] || (entity as any).archetypeTags?.[0] || (entity as any).careerCluster;
+      if (dom) domains.add(dom);
     });
     return ['all', ...Array.from(domains)];
   },

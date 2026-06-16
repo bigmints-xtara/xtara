@@ -28,7 +28,14 @@ export class AdminService<T extends AdminEntity> {
     async getAll(): Promise<T[]> {
         try {
             const collectionRef = collection(db, this.config.collectionName);
-            const q = query(collectionRef, orderBy('createdAt', 'desc'));
+            let q;
+            if (this.config.orderByField) {
+                q = query(collectionRef, orderBy(this.config.orderByField, this.config.orderByDirection || 'desc'));
+            } else if (this.config.orderByField === null) {
+                q = query(collectionRef);
+            } else {
+                q = query(collectionRef, orderBy('createdAt', 'desc'));
+            }
             const snapshot = await getDocs(q);
 
             return snapshot.docs.map((doc) => {
@@ -51,7 +58,14 @@ export class AdminService<T extends AdminEntity> {
      */
     streamAll(callback: (entities: T[]) => void): Unsubscribe {
         const collectionRef = collection(db, this.config.collectionName);
-        const q = query(collectionRef, orderBy('createdAt', 'desc'));
+        let q;
+        if (this.config.orderByField) {
+            q = query(collectionRef, orderBy(this.config.orderByField, this.config.orderByDirection || 'desc'));
+        } else if (this.config.orderByField === null) {
+            q = query(collectionRef);
+        } else {
+            q = query(collectionRef, orderBy('createdAt', 'desc'));
+        }
 
         return onSnapshot(
             q,

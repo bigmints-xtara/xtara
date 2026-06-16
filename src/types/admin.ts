@@ -123,6 +123,8 @@ export interface AdminConfig<T extends AdminEntity> {
   entityNamePlural: string;
   collectionName: string;
   hideNewButton?: boolean;
+  orderByField?: string | null;
+  orderByDirection?: 'asc' | 'desc';
   
   // Entity operations
   createEmpty: () => Partial<T>;
