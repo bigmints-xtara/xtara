@@ -69,32 +69,40 @@ export function SchoolDashboard({ tenant }: SchoolDashboardProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {actions.map((action) => {
           const Icon = action.icon;
-          const CardComponent = (
-             <Card className={`h-full hover:shadow-md transition-all ${
-                action.comingSoon ? "opacity-70 cursor-not-allowed" : "hover:border-blue-400 cursor-pointer"
-              }`}>
-                <CardHeader>
-                  <div className={`${action.color} w-fit p-3 rounded-lg text-white mb-2`}>
-                    <Icon className="w-6 h-6" />
-                  </div>
-                  <CardTitle>{action.title}</CardTitle>
-                  <CardDescription>{action.subtitle}</CardDescription>
-                   {action.comingSoon && (
-                     <Badge variant="secondary" className="mt-2 w-fit">
-                       Coming Soon
-                     </Badge>
-                   )}
-                </CardHeader>
-              </Card>
+          const cardClasses = `h-full hover:shadow-md transition-all ${
+            action.comingSoon
+              ? "opacity-70 cursor-not-allowed"
+              : "hover:border-blue-400 cursor-pointer"
+          }`;
+
+          const content = (
+            <CardHeader>
+              <div className={`${action.color} w-fit p-3 rounded-lg text-white mb-2`}>
+                <Icon className="w-6 h-6" />
+              </div>
+              <CardTitle>{action.title}</CardTitle>
+              <CardDescription>{action.subtitle}</CardDescription>
+              {action.comingSoon && (
+                <Badge variant="secondary" className="mt-2 w-fit">
+                  Coming Soon
+                </Badge>
+              )}
+            </CardHeader>
           );
 
           if (action.comingSoon) {
-            return <div key={action.title}>{CardComponent}</div>;
+            return (
+              <Card key={action.title} className={cardClasses}>
+                {content}
+              </Card>
+            );
           }
 
           return (
-            <Link key={action.title} href={action.href}>
-              {CardComponent}
+            <Link key={action.title} href={action.href} className="block h-full">
+              <Card className={cardClasses}>
+                {content}
+              </Card>
             </Link>
           );
         })}

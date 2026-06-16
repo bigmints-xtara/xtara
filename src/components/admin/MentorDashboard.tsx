@@ -64,7 +64,7 @@ export function MentorDashboard({ tenant }: MentorDashboardProps) {
         {actions.map((action) => {
           const Icon = action.icon;
           return (
-            <Link key={action.title} href={action.href}>
+            <Link key={action.title} href={action.href} className="block h-full">
               <Card className="h-full hover:shadow-md hover:border-purple-400 transition-all cursor-pointer">
                 <CardHeader>
                    <div className={`${action.color} w-fit p-3 rounded-lg text-white mb-2`}>

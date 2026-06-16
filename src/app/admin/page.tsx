@@ -131,37 +131,40 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {adminCards.map((card) => {
                         const Icon = card.icon;
-                        const CardContent = (
-                            <div
-                                className={`p-6 bg-white border-2 rounded-xl hover: transition-all ${card.comingSoon
-                                        ? 'opacity-60 cursor-not-allowed'
-                                        : 'cursor-pointer hover:border-blue-500'
-                                    }`}
-                            >
-                                <div className="flex flex-col items-center text-center">
-                                    <div
-                                        className={`${card.color} w-16 h-16 rounded-full flex items-center justify-center mb-4`}
-                                    >
-                                        <Icon className="text-white" size={28} />
-                                    </div>
-                                    <h3 className="font-bold text-lg mb-2">{card.title}</h3>
-                                    <p className="text-sm text-gray-600">{card.subtitle}</p>
-                                    {card.comingSoon && (
-                                        <span className="mt-3 px-3 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
-                                            Coming Soon
-                                        </span>
-                                    )}
+                        const cardClasses = `p-6 bg-white border-2 rounded-xl transition-all h-full ${
+                            card.comingSoon
+                                ? 'opacity-60 cursor-not-allowed'
+                                : 'cursor-pointer hover:border-blue-500 hover:shadow-md'
+                        }`;
+
+                        const content = (
+                            <div className="flex flex-col items-center text-center">
+                                <div
+                                    className={`${card.color} w-16 h-16 rounded-full flex items-center justify-center mb-4`}
+                                >
+                                    <Icon className="text-white" size={28} />
                                 </div>
+                                <h3 className="font-bold text-lg mb-2">{card.title}</h3>
+                                <p className="text-sm text-gray-600">{card.subtitle}</p>
+                                {card.comingSoon && (
+                                    <span className="mt-3 px-3 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
+                                        Coming Soon
+                                    </span>
+                                )}
                             </div>
                         );
 
                         if (card.comingSoon) {
-                            return <div key={card.title}>{CardContent}</div>;
+                            return (
+                                <div key={card.title} className={cardClasses}>
+                                    {content}
+                                </div>
+                            );
                         }
 
                         return (
-                            <Link key={card.title} href={card.href}>
-                                {CardContent}
+                            <Link key={card.title} href={card.href} className={cardClasses}>
+                                {content}
                             </Link>
                         );
                     })}

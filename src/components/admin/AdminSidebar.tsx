@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -82,7 +83,18 @@ const navigationItems: NavItem[] = [
 
 export default function AdminSidebar() {
     const pathname = usePathname();
-    const { tenant } = useTenant();
+    const { tenant, loading } = useTenant();
+
+    const [isClient, setIsClient] = React.useState(false);
+
+    React.useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    const isActive = (href: string) => {
+        if (!isClient) return false;
+        return pathname === href;
+    };
 
     return (
         <aside className="w-64 bg-gray-900 text-white min-h-screen p-4 flex flex-col">
@@ -94,7 +106,7 @@ export default function AdminSidebar() {
             <nav className="space-y-2 flex-1">
                 {navigationItems.map((item) => {
                     const Icon = item.icon;
-                    const isActive = pathname === item.href;
+                    const active = isActive(item.href);
                     const isComingSoon = item.comingSoon ?? false;
 
                     if (isComingSoon) {
@@ -122,7 +134,7 @@ export default function AdminSidebar() {
                         <Link
                             key={item.href}
                             href={item.href}
-                            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive
+                            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${active
                                 ? 'bg-blue-600 text-white'
                                 : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                                 }`}
@@ -134,7 +146,7 @@ export default function AdminSidebar() {
                 })}
             </nav>
 
-            {tenant && (
+            {isClient && tenant && (
                 <div className="mt-4">
                     <Separator className="bg-gray-800 my-4" />
                     <div className="flex items-center gap-3">
