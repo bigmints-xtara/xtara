@@ -6,7 +6,8 @@ import { useState, useEffect } from "react";
 import DownloadAppModal from "./DownloadAppModal";
 import CurrentGoalCard from "./CurrentGoalCard";
 import StorySlideshow from "./StorySlideshow";
-import { FirestoreService, Story, GoodRead, Challenge, GameInstance, Spark } from "@/lib/firebase/firestore-service";
+import { FirestoreService, Story } from "@/lib/firebase/firestore-service";
+import { useStoriesQuery, useGoodReadsQuery, useChallengesQuery, useGamesQuery, useSparksQuery } from "@/lib/query/useContentQuery";
 import { AchievementsService, TierData, MedalData } from "@/lib/firebase/achievements-service";
 import { getUserCareerPath } from "@/lib/firebase/assessment";
 import Carousel from "@/components/ui/Carousel";
@@ -31,38 +32,11 @@ export default function UserDashboard() {
     const [storySlideshowOpen, setStorySlideshowOpen] = useState(false);
 
     // Data State
-    const [stories, setStories] = useState<Story[]>([]);
-    const [goodReads, setGoodReads] = useState<GoodRead[]>([]);
-    const [challenges, setChallenges] = useState<Challenge[]>([]);
-    const [games, setGames] = useState<GameInstance[]>([]);
-    const [sparks, setSparks] = useState<Spark[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [storiesData, readsData, challengesData, gamesData, sparksData] = await Promise.all([
-                    FirestoreService.getStoriesForHome(),
-                    FirestoreService.getGoodReadsForHome(),
-                    FirestoreService.getChallengesForHome(),
-                    FirestoreService.getPlayableGames(),
-                    FirestoreService.getSparksForHome()
-                ]);
-
-                setStories(storiesData);
-                setGoodReads(readsData);
-                setChallenges(challengesData);
-                setGames(gamesData);
-                setSparks(sparksData);
-            } catch (error) {
-                console.error("Error fetching dashboard data:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
+    const { data: stories = [] } = useStoriesQuery();
+    const { data: goodReads = [] } = useGoodReadsQuery();
+    const { data: challenges = [] } = useChallengesQuery();
+    const { data: games = [] } = useGamesQuery();
+    const { data: sparks = [] } = useSparksQuery();
 
     // Auto-detect career path if not set in profile
     useEffect(() => {

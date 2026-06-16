@@ -1,26 +1,15 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getCareerPathById } from "@/lib/firebase/career-helpers";
-import { CareerPath } from "@/types/career";
+
 import CareerHubLayout from "@/components/careers/CareerHubLayout";
 import ResourceList from "@/components/careers/ResourceList";
 import { Users } from "lucide-react";
+import { useCareerPathQuery } from "@/lib/query/useCareerPath";
 
 export default function CommunitiesListPage() {
     const { id } = useParams();
-    const [careerPath, setCareerPath] = useState<CareerPath | null>(null);
-
-    useEffect(() => {
-        const fetchPath = async () => {
-            if (id) {
-                const path = await getCareerPathById(id as string);
-                setCareerPath(path);
-            }
-        };
-        fetchPath();
-    }, [id]);
+    const { data: careerPath } = useCareerPathQuery(id as string);
 
     const getItems = () => {
         if (!careerPath) return [];

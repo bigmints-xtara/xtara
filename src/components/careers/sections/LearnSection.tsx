@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getCareerTools } from "@/lib/firebase/career-helpers";
+import { useState } from "react";
 import { CareerPath, Course, ToolAndSoftware, Scholarship, OnlineTraining } from "@/types/career";
 import ResourceList, { ResourceItem } from "@/components/careers/ResourceList";
 import ToolsGrid from "@/components/careers/ToolsGrid";
 import ResourceDetailModal from "@/components/careers/ResourceDetailModal";
 import { GraduationCap, Video, Wrench, Search } from "lucide-react";
+import { useCareerToolsQuery } from "@/lib/query/useCareerPath";
 
 interface LearnSectionProps {
     careerPath: CareerPath;
@@ -14,7 +14,8 @@ interface LearnSectionProps {
 }
 
 export default function LearnSection({ careerPath, id }: LearnSectionProps) {
-    const [tools, setTools] = useState<ToolAndSoftware[]>([]);
+    const cluster = careerPath.primaryCareer?.careerCluster || careerPath.careerCluster;
+    const { data: tools = [] } = useCareerToolsQuery(cluster);
     const [selectedItem, setSelectedItem] = useState<ResourceItem | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -22,28 +23,6 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
-
-    useEffect(() => {
-        const fetchTools = async () => {
-            console.log('🔧 [LearnSection] useEffect triggered');
-            console.log('🔧 [LearnSection] careerPath:', careerPath);
-            console.log('🔧 [LearnSection] primaryCareer:', careerPath.primaryCareer);
-
-            // Get cluster from primaryCareer or fallback
-            const cluster = careerPath.primaryCareer?.careerCluster || careerPath.careerCluster;
-            console.log('🔧 [LearnSection] cluster:', cluster);
-
-            if (cluster) {
-                console.log('🔧 [LearnSection] Fetching tools for cluster:', cluster);
-                const fetchedTools = await getCareerTools(cluster);
-                console.log('🔧 [LearnSection] Fetched tools:', fetchedTools);
-                setTools(fetchedTools);
-            } else {
-                console.warn('🔧 [LearnSection] No cluster found!');
-            }
-        };
-        fetchTools();
-    }, [careerPath]);
 
     // Data Transformation Helpers
     const parseCourseName = (courseName: string) => {

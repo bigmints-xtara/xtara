@@ -1,26 +1,16 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getCareerPathById } from "@/lib/firebase/career-helpers";
-import { CareerPath } from "@/types/career";
+
 import CareerHubLayout from "@/components/careers/CareerHubLayout";
+import { useCareerPathQuery } from "@/lib/query/useCareerPath";
 import ResourceList from "@/components/careers/ResourceList";
 import { GraduationCap } from "lucide-react";
 
 export default function CoursesListPage() {
     const { id } = useParams();
-    const [careerPath, setCareerPath] = useState<CareerPath | null>(null);
 
-    useEffect(() => {
-        const fetchPath = async () => {
-            if (id) {
-                const path = await getCareerPathById(id as string);
-                setCareerPath(path);
-            }
-        };
-        fetchPath();
-    }, [id]);
+    const { data: careerPath } = useCareerPathQuery(id as string);
 
     const getItems = () => {
         if (!careerPath) return [];

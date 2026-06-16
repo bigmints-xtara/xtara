@@ -1,11 +1,10 @@
 "use client";
 
-import { getCareerPathById } from "@/lib/firebase/career-helpers";
-import { CareerPath } from "@/types/career";
+
 import { ArrowLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import Navbar from "@/components/layout/Navbar";
+import { useCareerPathQuery } from "@/lib/query/useCareerPath";
 
 interface CareerHubLayoutProps {
     title: string;
@@ -24,24 +23,7 @@ export default function CareerHubLayout({
 }: CareerHubLayoutProps) {
     const { id } = useParams();
     const router = useRouter();
-    const [careerPath, setCareerPath] = useState<CareerPath | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchPath = async () => {
-            if (!id) return;
-            // We fetch this just to ensure parent career exists and maybe show title in nav
-            try {
-                const path = await getCareerPathById(id as string);
-                setCareerPath(path);
-            } catch (error) {
-                console.error("Error fetching career", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchPath();
-    }, [id]);
+    const { data: careerPath, isLoading: loading } = useCareerPathQuery(id as string);
 
     if (loading) {
         return (
