@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getCareerPathById, CareerPath } from "@/lib/firebase/career-helpers";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import {
@@ -22,6 +21,7 @@ import SalaryInsightsCard from "@/components/careers/sidebar/SalaryInsightsCard"
 import MatchReasoningCard from "@/components/careers/sidebar/MatchReasoningCard";
 import SlideshowOverlay from "@/components/career-path/SlideshowOverlay";
 import { generateSlidesFromCareer } from "@/lib/career-slides-utils";
+import { useCareerPathQuery } from "@/lib/query/useCareerPath";
 
 
 export default function CareerDetailPage() {
@@ -29,22 +29,10 @@ export default function CareerDetailPage() {
     const router = useRouter();
     const { user, userProfile } = useAuth();
     const [activeTab, setActiveTab] = useState("learn");
-    const [careerPath, setCareerPath] = useState<CareerPath | null>(null);
-    const [loading, setLoading] = useState(true);
+    const { data: careerPath, isLoading: loading } = useCareerPathQuery(id as string);
     const [switching, setSwitching] = useState(false);
     const [switchError, setSwitchError] = useState<string | null>(null);
     const [isSlideshowOpen, setIsSlideshowOpen] = useState(false);
-
-    useEffect(() => {
-        const fetchPath = async () => {
-            if (!id) return;
-            setLoading(true);
-            const path = await getCareerPathById(id as string);
-            setCareerPath(path);
-            setLoading(false);
-        };
-        fetchPath();
-    }, [id]);
 
     // Check if this is the currently pursuing career
     const isPursuing = useMemo(() => {

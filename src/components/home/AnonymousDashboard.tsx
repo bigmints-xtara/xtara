@@ -9,7 +9,7 @@ import SalesCard from "./SalesCard";
 import LockedContentOverlay from "./LockedContentOverlay";
 import PreviewStatsCard, { createPreviewStats } from "./PreviewStatsCard";
 import { CareerPath } from "@/types/career";
-import { FirestoreService, Story, GoodRead, Challenge, GameInstance, Spark } from "@/lib/firebase/firestore-service";
+import { useStoriesQuery, useGoodReadsQuery, useChallengesQuery, useGamesQuery, useSparksQuery } from "@/lib/query/useContentQuery";
 import Carousel from "@/components/ui/Carousel";
 import Skeleton from "@/components/ui/Skeleton";
 
@@ -19,11 +19,11 @@ export default function AnonymousDashboard() {
     const [loading, setLoading] = useState(true);
 
     // Preview content state
-    const [stories, setStories] = useState<Story[]>([]);
-    const [goodReads, setGoodReads] = useState<GoodRead[]>([]);
-    const [challenges, setChallenges] = useState<Challenge[]>([]);
-    const [games, setGames] = useState<GameInstance[]>([]);
-    const [sparks, setSparks] = useState<Spark[]>([]);
+    const { data: stories = [] } = useStoriesQuery(5);
+    const { data: goodReads = [] } = useGoodReadsQuery(5);
+    const { data: challenges = [] } = useChallengesQuery(5);
+    const { data: games = [] } = useGamesQuery(5);
+    const { data: sparks = [] } = useSparksQuery(5);
 
     useEffect(() => {
         async function loadData() {
@@ -31,26 +31,6 @@ export default function AnonymousDashboard() {
                 const data = await getUserCareerPath(user.uid);
                 setCareerPath(data);
             }
-
-            // Load preview content (limited to 4-5 items each)
-            try {
-                const [storiesData, readsData, challengesData, gamesData, sparksData] = await Promise.all([
-                    FirestoreService.getStoriesForHome(),
-                    FirestoreService.getGoodReadsForHome(),
-                    FirestoreService.getChallengesForHome(),
-                    FirestoreService.getPlayableGames(),
-                    FirestoreService.getSparksForHome()
-                ]);
-
-                setStories(storiesData.slice(0, 5));
-                setGoodReads(readsData.slice(0, 5));
-                setChallenges(challengesData.slice(0, 5));
-                setGames(gamesData.slice(0, 5));
-                setSparks(sparksData.slice(0, 5));
-            } catch (error) {
-                console.error("Error loading preview content:", error);
-            }
-
             setLoading(false);
         }
         loadData();

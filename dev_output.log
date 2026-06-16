@@ -1,0 +1,26 @@
+
+> xtara-web@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.0 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+✓ Ready in 1389ms
+○ Compiling / ...
+⨯ Error: Only plain objects, and a few built-ins, can be passed to Client Components from Server Components. Classes or null prototypes are not supported.
+  <... client={{}} children={{...}}>
+              ^^^^
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2526849916'
+}
+ GET / 500 in 15.4s (compile: 13.5s, render: 1848ms)
+✓ Compiled in 936ms
+ GET / 200 in 1137ms (compile: 374ms, render: 764ms)

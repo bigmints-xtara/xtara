@@ -1,9 +1,8 @@
 "use client";
 
-import { CareerPath, getCareerPathById } from "@/lib/firebase/career-helpers";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCareerPathQuery } from "@/lib/query/useCareerPath";
 import { useTranslations } from "@/i18n/language-provider";
 
 interface CurrentGoalCardProps {
@@ -17,30 +16,8 @@ export default function CurrentGoalCard({
   userName,
   className,
 }: CurrentGoalCardProps) {
-  const [career, setCareer] = useState<CareerPath | null>(null);
-  const [loading, setLoading] = useState(false);
+  const { data: career, isLoading: loading } = useCareerPathQuery(pursuingCareerId);
   const { t } = useTranslations();
-
-  useEffect(() => {
-    const fetchCareer = async () => {
-      if (!pursuingCareerId) {
-        setCareer(null);
-        return;
-      }
-
-      setLoading(true);
-      try {
-        const data = await getCareerPathById(pursuingCareerId);
-        setCareer(data);
-      } catch (error) {
-        console.error("Error fetching pursuing career:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCareer();
-  }, [pursuingCareerId]);
 
   const GreetingHeader = ({ isLight = false }: { isLight?: boolean }) => (
     <div className="mb-1">

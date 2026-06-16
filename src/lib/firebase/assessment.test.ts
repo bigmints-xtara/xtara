@@ -15,11 +15,13 @@ vi.mock("./firebase", () => ({
   app: {},
 }));
 
-const mockGetDoc = vi.fn();
-const mockSetDoc = vi.fn();
-const mockUpdateDoc = vi.fn();
-const mockGetDocs = vi.fn();
-const mockServerTimestamp = vi.fn(() => new Date("2025-01-01"));
+const { mockGetDoc, mockSetDoc, mockUpdateDoc, mockGetDocs, mockServerTimestamp } = vi.hoisted(() => ({
+  mockGetDoc: vi.fn(),
+  mockSetDoc: vi.fn(),
+  mockUpdateDoc: vi.fn(),
+  mockGetDocs: vi.fn(),
+  mockServerTimestamp: vi.fn(() => new Date("2025-01-01")),
+}));
 
 vi.mock("firebase/firestore", () => ({
   getFirestore: vi.fn(() => ({})),
@@ -52,7 +54,7 @@ vi.mock("firebase/storage", () => ({
   getStorage: vi.fn(() => ({})),
 }));
 
-const { getQuestionnaire, saveAssessment, waitForCareerPath, getCareerPath, generateRecommendations } = require("./assessment");
+import { getQuestionnaire, saveAssessment, waitForCareerPath, getCareerPath, generateRecommendations } from "./assessment";
 
 describe("Assessment Service", () => {
   beforeEach(() => {
@@ -70,7 +72,7 @@ describe("Assessment Service", () => {
         exists: vi.fn(() => true),
         data: vi.fn(() => ({
           value: JSON.stringify({ steps: [{ id: "q1", label: "Name", fieldType: "text" }] }),
-        }),
+        })),
       };
       mockGetDoc.mockResolvedValueOnce(mockSnapshot);
 
@@ -84,7 +86,7 @@ describe("Assessment Service", () => {
         exists: vi.fn(() => true),
         data: vi.fn(() => ({
           steps: [{ id: "q2", label: "Age", type: "number" }],
-        }),
+        })),
       };
       mockGetDoc.mockResolvedValueOnce(mockSnapshot);
 
@@ -154,8 +156,8 @@ describe("Assessment Service", () => {
     it("returns career path data when doc exists", async () => {
       const mockSnapshot = {
         exists: vi.fn(() => true),
-        data: vi.fn(() => ({ title: "Software Engineer" }),
-      });
+        data: vi.fn(() => ({ title: "Software Engineer" })),
+      };
       mockGetDoc.mockResolvedValueOnce(mockSnapshot);
 
       const result = await getCareerPath("cp-1");
@@ -164,9 +166,9 @@ describe("Assessment Service", () => {
 
     it("returns null when doc does not exist", async () => {
       const mockSnapshot = {
-        exists: vi.fn(() => true),
-        data: vi.fn(() => ({ title: "Software Engineer" }),
-      });
+        exists: vi.fn(() => false),
+        data: vi.fn(() => null),
+      };
       mockGetDoc.mockResolvedValueOnce(mockSnapshot);
 
       const result = await getCareerPath("cp-1");

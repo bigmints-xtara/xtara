@@ -1,28 +1,29 @@
 import { useFirestoreQuery } from './useFirestoreQuery';
-import { db } from '@/lib/firebase/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { getCareerPathById, getCareerTools, CareerPath } from '@/lib/firebase/career-helpers';
 
-interface CareerPath {
-  id: string;
-  userId: string;
-  title: string;
-  description: string;
-  matchScore: number;
-  archetypes: string[];
-  primaryCareer: any;
-  careerPathway: any[];
-  ragOutput: any;
-  createdAt: any;
+export function useCareerPathQuery(pathId: string | undefined) {
+  return useFirestoreQuery<CareerPath | null>(
+    ['career-path', pathId || ''],
+    async () => {
+      if (!pathId) return null;
+      return getCareerPathById(pathId);
+    },
+    { 
+      staleTime: 300000,
+      enabled: !!pathId 
+    }
+  );
 }
 
-export function useCareerPathQuery(pathId: string) {
-  return useFirestoreQuery<CareerPath>(
-    ['career-path', pathId],
+export function useCareerToolsQuery(careerCluster?: string) {
+  return useFirestoreQuery<any[]>(
+    ['career-tools', careerCluster || 'all'],
     async () => {
-      const snap = await getDoc(doc(db, 'career_paths', pathId));
-      if (!snap.exists()) throw new Error('Career path not found');
-      return { id: snap.id, ...snap.data() } as CareerPath;
+      return getCareerTools(careerCluster);
     },
-    { staleTime: 300000 }
+    { 
+      staleTime: 300000,
+      // We might want it always enabled if we want all tools when no cluster is provided
+    }
   );
 }
