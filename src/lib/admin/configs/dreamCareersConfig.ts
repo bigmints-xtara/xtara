@@ -4,6 +4,7 @@ export const dreamCareersConfig: AdminConfig<AdminCareerPath> = {
   entityName: 'Career Path',
   entityNamePlural: 'Career Paths',
   collectionName: 'career_paths',
+  hideNewButton: true,
 
   createEmpty: () => ({
     userId: '',
@@ -27,9 +28,8 @@ export const dreamCareersConfig: AdminConfig<AdminCareerPath> = {
 
   getAvailableDomains: (entities) => {
     const domains = new Set<string>();
-    entities.forEach(entity => {
-      const domain = entity.archetypes?.[0];
-      if (domain) domains.add(domain);
+    entities.forEach((entity) => {
+      if (entity.archetypes?.[0]) domains.add(entity.archetypes[0]);
     });
     return ['all', ...Array.from(domains)];
   },
