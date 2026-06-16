@@ -27,94 +27,91 @@ export default function AdminListTile({
         inreview: 'bg-blue-100 text-blue-800',
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            onTap();
-        }
-    };
-
     return (
         <div
-            role="button"
-            tabIndex={0}
-            aria-pressed={isSelected}
-            onClick={onTap}
-            onKeyDown={handleKeyDown}
-            className={`w-full text-left p-4 border-b cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${
+            className={`w-full border-b transition-all relative group/tile ${
                 isSelected
                     ? 'bg-blue-50 border-l-4 border-l-blue-600'
                     : 'hover:bg-gray-50 hover:border-l-4 hover:border-l-gray-300'
             }`}
         >
-            <div className="flex items-start justify-between">
-                <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 truncate">{title}</h3>
-                    {domain && (
-                        <span className="inline-block mt-1 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
-                            {domain}
+            <button
+                type="button"
+                aria-pressed={isSelected}
+                onClick={onTap}
+                className="w-full text-left p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+            >
+                <div className="flex items-start justify-between pr-8">
+                    <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 truncate">{title}</h3>
+                        {domain && (
+                            <span className="inline-block mt-1 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
+                                {domain}
+                            </span>
+                        )}
+                        <p className="text-sm text-gray-600 mt-1">{subtitle}</p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <span
+                            className={`px-2 py-1 text-xs rounded font-medium ${
+                                statusColors[status.toLowerCase()] || 'bg-gray-100 text-gray-800'
+                            }`}
+                        >
+                            {status}
                         </span>
-                    )}
-                    <p className="text-sm text-gray-600 mt-1">{subtitle}</p>
+                    </div>
                 </div>
+            </button>
 
-                <div className="flex items-center gap-2 ml-4">
-                    <span
-                        className={`px-2 py-1 text-xs rounded font-medium ${
-                            statusColors[status.toLowerCase()] || 'bg-gray-100 text-gray-800'
-                        }`}
+            <div className="absolute right-4 top-4 z-20">
+                <div className="relative group">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                        }}
+                        className="p-1 hover:bg-gray-200 rounded text-gray-500"
                     >
-                        {status}
-                    </span>
+                        <MoreVertical size={18} />
+                    </button>
 
-                    <div className="relative group">
+                    <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg border hidden group-hover:block shadow-lg">
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
+                                onAction('edit');
                             }}
-                            className="p-1 hover:bg-gray-200 rounded"
+                            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
                         >
-                            <MoreVertical size={18} />
+                            Edit
                         </button>
-
-                        <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg border hidden group-hover:block z-10">
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onAction('edit');
-                                }}
-                                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
-                            >
-                                Edit
-                            </button>
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onAction('duplicate');
-                                }}
-                                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
-                            >
-                                Duplicate
-                            </button>
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onAction(status === 'Published' ? 'unpublish' : 'publish');
-                                }}
-                                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
-                            >
-                                {status === 'Published' ? 'Unpublish' : 'Publish'}
-                            </button>
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onAction('delete');
-                                }}
-                                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
-                            >
-                                Delete
-                            </button>
-                        </div>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onAction('duplicate');
+                            }}
+                            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+                        >
+                            Duplicate
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onAction(status === 'Published' ? 'unpublish' : 'publish');
+                            }}
+                            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+                        >
+                            {status === 'Published' ? 'Unpublish' : 'Publish'}
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onAction('delete');
+                            }}
+                            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
+                        >
+                            Delete
+                        </button>
                     </div>
                 </div>
             </div>
