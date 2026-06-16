@@ -13,6 +13,7 @@ import {
     LayoutDashboard,
     BarChart3,
     Settings,
+    Gamepad2,
 } from 'lucide-react';
 import { useTenant } from '@/lib/hooks/useTenant';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -55,10 +56,15 @@ const navigationItems: NavItem[] = [
         icon: Sparkles,
     },
     {
+        name: 'Games',
+        href: '/admin/games',
+        icon: Gamepad2,
+    },
+    {
         name: 'Dream Careers',
         href: '/admin/dream-careers',
         icon: Star,
-        comingSoon: true,
+        comingSoon: false,
     },
     {
         name: 'Content Resources',

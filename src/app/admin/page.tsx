@@ -10,7 +10,8 @@ import {
     Library,
     Settings,
     BarChart3,
-    Loader2
+    Loader2,
+    Gamepad2
 } from 'lucide-react';
 import { useTenant } from '@/lib/hooks/useTenant';
 import { SchoolDashboard } from '@/components/admin/SchoolDashboard';
@@ -30,7 +31,6 @@ const adminCards = [
         icon: Trophy,
         color: 'bg-green-500',
         href: '/admin/challenges',
-        comingSoon: true,
     },
     {
         title: 'Good Reads',
@@ -38,7 +38,6 @@ const adminCards = [
         icon: FileText,
         color: 'bg-teal-500',
         href: '/admin/good-reads',
-        comingSoon: true,
     },
     {
         title: 'Sparks',
@@ -46,7 +45,13 @@ const adminCards = [
         icon: Sparkles,
         color: 'bg-pink-500',
         href: '/admin/sparks',
-        comingSoon: true,
+    },
+    {
+        title: 'Games',
+        subtitle: 'Manage active game instances and schedules',
+        icon: Gamepad2,
+        color: 'bg-indigo-500',
+        href: '/admin/games',
     },
     {
         title: 'Dream Careers',
@@ -54,7 +59,6 @@ const adminCards = [
         icon: Star,
         color: 'bg-orange-500',
         href: '/admin/dream-careers',
-        comingSoon: true,
     },
     {
         title: 'Content Resources',
