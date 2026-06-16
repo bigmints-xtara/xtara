@@ -140,30 +140,19 @@ if [[ "${1:-}" == "--migrate" ]]; then
 fi
 
 # ===========================
-# Legacy Behavior (fallback)
+# Legacy Behavior (deprecated)
 # ===========================
 
-echo "⚠ DEPRECATED: set-env.sh is being replaced by scripts/manage-secrets.sh"
-echo "⚠ Use --migrate to migrate existing env vars, or switch to manage-secrets.sh"
+print_error "set-env.sh is no longer supported for setting environment variables directly."
+print_info "Please use scripts/manage-secrets.sh instead."
 echo ""
-echo "Setting environment variables for $SERVICE_NAME..."
-
-# Read environment variables from .env.local (if needed)
-# Or set them directly here
-
-gcloud run services update "$SERVICE_NAME" \
-  --region "$REGION" \
-  --project "$PROJECT_ID" \
-  --update-env-vars \
-  NEXT_PUBLIC_FIREBASE_PROJECT_ID=bigmints-xtara
-
-# Note: Add other environment variables as needed:
-# NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key,\
-# NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain,\
-# etc.
-
+print_info "To migrate existing environment variables to Secret Manager:"
+print_info "  ./set-env.sh --migrate"
 echo ""
-echo "✓ Environment variables updated successfully"
+print_info "To manage secrets manually:"
+print_info "  ./scripts/manage-secrets.sh help"
+echo ""
+exit 1
 echo ""
 echo "To view current environment variables:"
 echo "gcloud run services describe $SERVICE_NAME --region $REGION --format='value(spec.template.spec.containers[0].env)'"
