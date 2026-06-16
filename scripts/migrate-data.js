@@ -1,19 +1,20 @@
 const admin = require('firebase-admin');
 const path = require('path');
 
-// Absolute paths to credentials
-const CREDENTIALS_DIR = '/Users/pretheesh/Projects/project-xtara/credentials';
-const DEV_KEY = path.join(CREDENTIALS_DIR, 'serviceAccountKey_Dev.json');
-const PROD_KEY = path.join(CREDENTIALS_DIR, 'serviceAccountKey_Prod.json');
+// Credentials path from environment or relative to script
+// Note: Hardcoded local paths are deprecated in favor of environment variables.
+const CREDENTIALS_DIR = process.env.CREDENTIALS_DIR || path.join(__dirname, '../credentials');
+const DEV_KEY_PATH = process.env.FIREBASE_DEV_KEY || path.join(CREDENTIALS_DIR, 'serviceAccountKey_Dev.json');
+const PROD_KEY_PATH = process.env.FIREBASE_PROD_KEY || path.join(CREDENTIALS_DIR, 'serviceAccountKey_Prod.json');
 
 // Initialize Dev App
 const devApp = admin.initializeApp({
-    credential: admin.credential.cert(require(DEV_KEY))
+    credential: admin.credential.cert(require(DEV_KEY_PATH))
 }, 'dev');
 
 // Initialize Prod App
 const prodApp = admin.initializeApp({
-    credential: admin.credential.cert(require(PROD_KEY))
+    credential: admin.credential.cert(require(PROD_KEY_PATH))
 }, 'prod');
 
 const dbDev = devApp.firestore();

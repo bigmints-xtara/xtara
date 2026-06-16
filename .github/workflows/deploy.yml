@@ -49,8 +49,8 @@ env:
   PROJECT_ID: "bigmints-xtara"
   REGION: "us-central1"
   SERVICE_NAME: "xtara-web"
-  ARTIFACT_REPO: "us-docker.pkg.dev/bigminstxtara/xtara-web-artifacts"
-  IMAGE_NAME: "us-docker.pkg.dev/bigminstxtara/xtara-web-artifacts/xtara-web"
+  ARTIFACT_REPO: "us-docker.pkg.dev/bigmints-xtara/xtara-web-artifacts"
+  IMAGE_NAME: "us-docker.pkg.dev/bigmints-xtara/xtara-web-artifacts/xtara-web"
 
 permissions:
   # Required for OIDC token request
@@ -115,7 +115,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version_tag }}
