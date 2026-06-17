@@ -30,12 +30,13 @@ export default function SparkLearningPage() {
                 
                 // Construct slides array dynamically based on what's available
                 const availableSlides: SparkSlide[] = [];
-                if (data.hook?.content || data.hook?.title) availableSlides.push(data.hook);
-                if (data.context?.content || data.context?.title) availableSlides.push(data.context);
-                if (data.concept?.content || data.concept?.title) availableSlides.push(data.concept);
-                if (data.example?.content || data.example?.title) availableSlides.push(data.example);
-                if (data.takeaway?.content || data.takeaway?.title) availableSlides.push(data.takeaway);
-                
+                if (data.content && Array.isArray(data.content)) {
+                    data.content.forEach(lesson => {
+                        if (lesson.slides && Array.isArray(lesson.slides)) {
+                            availableSlides.push(...lesson.slides);
+                        }
+                    });
+                }
                 setSlides(availableSlides);
             }
             setLoading(false);
@@ -104,9 +105,9 @@ export default function SparkLearningPage() {
                             </div>
                         )}
                         
-                        {currentSlide.title && (
-                            <h2 className="text-2xl md:text-3xl font-bold text-center">
-                                {currentSlide.title}
+                        {(currentSlide.title || currentSlide.type) && (
+                            <h2 className="text-2xl md:text-3xl font-bold text-center capitalize">
+                                {currentSlide.title || currentSlide.type}
                             </h2>
                         )}
 

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { FirestoreService, Spark, SparkQuestion } from "@/lib/firebase/firestore-service";
+import { FirestoreService, Spark, SparkKnowledgeCheck } from "@/lib/firebase/firestore-service";
 import { AchievementsService } from "@/lib/firebase/achievements-service";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,7 +41,14 @@ export default function SparkQuizPage() {
         fetchSpark();
     }, [id]);
 
-    const questions = spark?.questions || [];
+    const questions: SparkKnowledgeCheck[] = [];
+    if (spark?.content && Array.isArray(spark.content)) {
+        spark.content.forEach(lesson => {
+            if (lesson.knowledge_check && Array.isArray(lesson.knowledge_check)) {
+                questions.push(...lesson.knowledge_check);
+            }
+        });
+    }
     const currentQuestion = questions[currentQuestionIndex];
 
     const handleSelectOption = (optionIndex: number) => {
@@ -66,7 +73,7 @@ export default function SparkQuizPage() {
         
         let correctCount = 0;
         questions.forEach((q, idx) => {
-            if (selectedAnswers[idx] === q.correctOptionIndex) {
+            if (q.options[selectedAnswers[idx]] === q.correct_answer) {
                 correctCount++;
             }
         });

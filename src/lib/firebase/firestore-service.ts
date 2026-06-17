@@ -66,17 +66,25 @@ export interface GameInstance {
 }
 
 export interface SparkSlide {
+    type: string;
     title?: string;
-    content?: string;
-    image?: string;
+    content: string;
+    image?: string; // added to match what UI expects, though flutter had it different, maybe content is text
 }
 
-export interface SparkQuestion {
-    id: string;
+export interface SparkKnowledgeCheck {
     question: string;
     options: string[];
-    correctOptionIndex: number;
-    explanation?: string;
+    correct_answer: string;
+    reinforcement?: string;
+}
+
+export interface SparkLesson {
+    lesson_number: number;
+    title: string;
+    slides: SparkSlide[];
+    knowledge_check: SparkKnowledgeCheck[];
+    closing_hook?: string;
 }
 
 export interface Spark {
@@ -84,12 +92,7 @@ export interface Spark {
     title: string;
     type: string;
     published?: boolean;
-    hook?: SparkSlide;
-    context?: SparkSlide;
-    concept?: SparkSlide;
-    example?: SparkSlide;
-    takeaway?: SparkSlide;
-    questions?: SparkQuestion[];
+    content: SparkLesson[];
     rewardPerQuestion?: number;
     medalPoints?: number;
 }
@@ -382,7 +385,8 @@ export const FirestoreService = {
                 id: doc.id,
                 title: doc.data().title || '',
                 type: doc.data().type || 'sparks',
-                published: doc.data().published
+                published: doc.data().published,
+                content: doc.data().content || [],
             }));
         } catch (e) {
             console.error("Error fetching sparks:", e);
@@ -469,12 +473,7 @@ export const FirestoreService = {
                     id: docSnap.id,
                     title: data.title || '',
                     type: data.type || '',
-                    hook: data.hook,
-                    context: data.context,
-                    concept: data.concept,
-                    example: data.example,
-                    takeaway: data.takeaway,
-                    questions: data.questions || [],
+                    content: data.content || [],
                     rewardPerQuestion: data.rewardPerQuestion || 2,
                     medalPoints: data.medalPoints || 0,
                     published: data.published
