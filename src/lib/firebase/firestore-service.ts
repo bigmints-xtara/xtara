@@ -1,5 +1,5 @@
 import { db } from './firebase';
-import { collection, query, where, orderBy, getDocs, Timestamp, limit } from 'firebase/firestore';
+import { collection, query, where, orderBy, getDocs, Timestamp, limit, doc, getDoc } from 'firebase/firestore';
 
 // --- Interfaces matching Flutter Models ---
 
@@ -30,6 +30,17 @@ export interface GoodRead {
     image: string;
     publishedAt?: Date;
     publishUntil?: Date;
+    summary?: string;
+    hyperlink?: string;
+    content?: string;
+}
+
+export interface ChallengeQuestion {
+    id: string;
+    question: string;
+    options: string[];
+    correctOptionIndex: number;
+    explanation?: string;
 }
 
 export interface Challenge {
@@ -38,6 +49,9 @@ export interface Challenge {
     image: string;
     publishedAt?: Date;
     publishUntil?: Date;
+    content?: string;
+    points?: number;
+    questions?: ChallengeQuestion[];
 }
 
 export interface GameInstance {
@@ -51,11 +65,33 @@ export interface GameInstance {
     };
 }
 
+export interface SparkSlide {
+    title?: string;
+    content?: string;
+    image?: string;
+}
+
+export interface SparkQuestion {
+    id: string;
+    question: string;
+    options: string[];
+    correctOptionIndex: number;
+    explanation?: string;
+}
+
 export interface Spark {
     id: string;
     title: string;
     type: string;
     published?: boolean;
+    hook?: SparkSlide;
+    context?: SparkSlide;
+    concept?: SparkSlide;
+    example?: SparkSlide;
+    takeaway?: SparkSlide;
+    questions?: SparkQuestion[];
+    rewardPerQuestion?: number;
+    medalPoints?: number;
 }
 
 // --- Service Class ---
@@ -184,6 +220,30 @@ export const FirestoreService = {
         }
     },
 
+    async getGoodReadById(id: string): Promise<GoodRead | null> {
+        try {
+            const docRef = doc(db, 'good_reads', id);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                return {
+                    id: docSnap.id,
+                    title: data.title || '',
+                    image: data.image || '',
+                    summary: data.summary || data.content || '',
+                    hyperlink: data.hyperlink || '',
+                    content: data.content || '',
+                    publishedAt: data.publishedAt?.toDate(),
+                    publishUntil: data.publishUntil?.toDate()
+                } as GoodRead;
+            }
+            return null;
+        } catch (e) {
+            console.error("Error fetching good read by id:", e);
+            return null;
+        }
+    },
+
     // CHALLENGES
     async getChallengesForHome(limitCount = 5): Promise<Challenge[]> {
         try {
@@ -243,6 +303,30 @@ export const FirestoreService = {
         } catch (e) {
             console.error("Error fetching challenges:", e);
             return [];
+        }
+    },
+
+    async getChallengeById(id: string): Promise<Challenge | null> {
+        try {
+            const docRef = doc(db, 'challenges', id);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                return {
+                    id: docSnap.id,
+                    title: data.title || '',
+                    image: data.image || '',
+                    content: data.content || '',
+                    points: data.points || 10,
+                    questions: data.questions || [],
+                    publishedAt: data.publishedAt?.toDate(),
+                    publishUntil: data.publishUntil?.toDate()
+                } as Challenge;
+            }
+            return null;
+        } catch (e) {
+            console.error("Error fetching challenge by id:", e);
+            return null;
         }
     },
 
@@ -372,6 +456,34 @@ export const FirestoreService = {
         } catch (e) {
             console.error("Error checking story watch status:", e);
             return false;
+        }
+    },
+
+    async getSparkById(id: string): Promise<Spark | null> {
+        try {
+            const docRef = doc(db, 'sparks', id);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                return {
+                    id: docSnap.id,
+                    title: data.title || '',
+                    type: data.type || '',
+                    hook: data.hook,
+                    context: data.context,
+                    concept: data.concept,
+                    example: data.example,
+                    takeaway: data.takeaway,
+                    questions: data.questions || [],
+                    rewardPerQuestion: data.rewardPerQuestion || 2,
+                    medalPoints: data.medalPoints || 0,
+                    published: data.published
+                } as Spark;
+            }
+            return null;
+        } catch (e) {
+            console.error("Error fetching spark by id:", e);
+            return null;
         }
     }
 };
