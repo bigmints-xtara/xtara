@@ -5,7 +5,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import { Suspense } from "react";
 import { LanguageProvider } from "@/i18n/language-provider";
-import { ReactQueryProvider } from "@/lib/query/query-client";
+import ReactQueryProvider from "@/lib/query/query-client";
 import { getLocaleFromCookie } from "@/i18n/server";
 import { getMessages } from "@/i18n/messages";
 import type { Metadata } from "next";

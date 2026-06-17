@@ -15,11 +15,13 @@ vi.mock("./firebase", () => ({
   app: {},
 }));
 
-const mockGetDoc = vi.fn();
-const mockSetDoc = vi.fn();
-const mockUpdateDoc = vi.fn();
-const mockGetDocs = vi.fn();
-const mockServerTimestamp = vi.fn(() => new Date("2025-01-01"));
+const { mockGetDoc, mockSetDoc, mockUpdateDoc, mockGetDocs, mockServerTimestamp } = vi.hoisted(() => ({
+  mockGetDoc: vi.fn(),
+  mockSetDoc: vi.fn(),
+  mockUpdateDoc: vi.fn(),
+  mockGetDocs: vi.fn(),
+  mockServerTimestamp: vi.fn(() => new Date("2025-01-01")),
+}));
 
 vi.mock("firebase/firestore", () => ({
   getFirestore: vi.fn(() => ({})),
@@ -52,7 +54,7 @@ vi.mock("firebase/storage", () => ({
   getStorage: vi.fn(() => ({})),
 }));
 
-const { getQuestionnaire, saveAssessment, waitForCareerPath, getCareerPath, generateRecommendations } = require("./assessment");
+import { getQuestionnaire, saveAssessment, waitForCareerPath, getCareerPath, generateRecommendations } from "./assessment";
 
 describe("Assessment Service", () => {
   beforeEach(() => {
@@ -70,7 +72,7 @@ describe("Assessment Service", () => {
         exists: vi.fn(() => true),
         data: vi.fn(() => ({
           value: JSON.stringify({ steps: [{ id: "q1", label: "Name", fieldType: "text" }] }),
-        }),
+        })),
       };
       mockGetDoc.mockResolvedValueOnce(mockSnapshot);
 
@@ -84,7 +86,7 @@ describe("Assessment Service", () => {
         exists: vi.fn(() => true),
         data: vi.fn(() => ({
           steps: [{ id: "q2", label: "Age", type: "number" }],
-        }),
+        })),
       };
       mockGetDoc.mockResolvedValueOnce(mockSnapshot);
 
@@ -153,9 +155,10 @@ describe("Assessment Service", () => {
   describe("getCareerPath", () => {
     it("returns career path data when doc exists", async () => {
       const mockSnapshot = {
+        id: "cp-1",
         exists: vi.fn(() => true),
-        data: vi.fn(() => ({ title: "Software Engineer" }),
-      });
+        data: vi.fn(() => ({ title: "Software Engineer" })),
+      };
       mockGetDoc.mockResolvedValueOnce(mockSnapshot);
 
       const result = await getCareerPath("cp-1");
@@ -164,13 +167,13 @@ describe("Assessment Service", () => {
 
     it("returns null when doc does not exist", async () => {
       const mockSnapshot = {
-        exists: vi.fn(() => true),
-        data: vi.fn(() => ({ title: "Software Engineer" }),
-      });
+        exists: vi.fn(() => false),
+        data: vi.fn(() => ({})),
+      };
       mockGetDoc.mockResolvedValueOnce(mockSnapshot);
 
-      const result = await getCareerPath("cp-1");
-      expect(result).toEqual({ id: "cp-1", title: "Software Engineer" });
+      const result = await getCareerPath("cp-2");
+      expect(result).toBeNull();
     });
   });
 
@@ -186,8 +189,12 @@ describe("Assessment Service", () => {
         docs: [{ id: "cp-1" }],
       });
       mockUpdateDoc.mockResolvedValueOnce(undefined);
-
-      const result = await waitForCareerPath("assess-1", 30);
+      const promise = waitForCareerPath("assess-1", 5);
+      
+      // Attempt 1: delay 2000ms
+      await vi.advanceTimersByTimeAsync(2000);
+      
+      const result = await promise;
       expect(result).toBe("cp-1");
       expect(mockUpdateDoc).toHaveBeenCalled();
     });
@@ -198,10 +205,16 @@ describe("Assessment Service", () => {
         docs: [],
       });
 
-      const result = waitForCareerPath("assess-1", 3);
-      // Advance timers for 3 attempts × 2 seconds = 6 seconds
-      await vi.advanceTimersByTimeAsync(7000);
-      const resolved = await result;
+      const promise = waitForCareerPath("assess-1", 3);
+      
+      // Attempt 1: delay 2000ms
+      await vi.advanceTimersByTimeAsync(2000);
+      // Attempt 2: delay 4000ms
+      await vi.advanceTimersByTimeAsync(4000);
+      // Attempt 3: delay 8000ms
+      await vi.advanceTimersByTimeAsync(8000);
+      
+      const resolved = await promise;
       expect(resolved).toBeNull();
     });
   });

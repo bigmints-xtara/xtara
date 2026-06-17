@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCircle2, Star, Target, Zap } from "lucide-react";
-import { CareerPath } from "@/lib/firebase/career-helpers";
+import { CareerPath } from "@/types/career";
 
 interface MatchReasoningCardProps {
     careerPath: CareerPath;

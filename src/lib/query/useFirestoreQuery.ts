@@ -1,7 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 export function useFirestoreQuery<T>(
-  key: string | string[],
+  key: string | any[],
   queryFactory: () => Promise<T>,
   options?: Partial<UseQueryOptions<T>>
 ) {

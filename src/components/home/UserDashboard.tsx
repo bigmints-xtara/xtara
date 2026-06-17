@@ -1,12 +1,15 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 import { BookOpen, Trophy, Zap, Gamepad2, ChevronRight, Bell, Sparkles, TrendingUp, Puzzle, Grid, Target, Award } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import DownloadAppModal from "./DownloadAppModal";
 import CurrentGoalCard from "./CurrentGoalCard";
 import StorySlideshow from "./StorySlideshow";
-import { FirestoreService, Story, GoodRead, Challenge, GameInstance, Spark } from "@/lib/firebase/firestore-service";
+import { FirestoreService, Story } from "@/lib/firebase/firestore-service";
+import { useStoriesQuery, useGoodReadsQuery, useChallengesQuery, useGamesQuery, useSparksQuery } from "@/lib/query/useContentQuery";
 import { AchievementsService, TierData, MedalData } from "@/lib/firebase/achievements-service";
 import { getUserCareerPath } from "@/lib/firebase/assessment";
 import Carousel from "@/components/ui/Carousel";
@@ -18,6 +21,8 @@ import { useTranslations } from "@/i18n/language-provider";
 
 export default function UserDashboard() {
     const { user, userProfile } = useAuth();
+    const router = useRouter();
+    const queryClient = useQueryClient();
     const { t } = useTranslations();
     const [downloadModalOpen, setDownloadModalOpen] = useState(false);
     const [selectedFeature, setSelectedFeature] = useState("");
@@ -31,38 +36,11 @@ export default function UserDashboard() {
     const [storySlideshowOpen, setStorySlideshowOpen] = useState(false);
 
     // Data State
-    const [stories, setStories] = useState<Story[]>([]);
-    const [goodReads, setGoodReads] = useState<GoodRead[]>([]);
-    const [challenges, setChallenges] = useState<Challenge[]>([]);
-    const [games, setGames] = useState<GameInstance[]>([]);
-    const [sparks, setSparks] = useState<Spark[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [storiesData, readsData, challengesData, gamesData, sparksData] = await Promise.all([
-                    FirestoreService.getStoriesForHome(),
-                    FirestoreService.getGoodReadsForHome(),
-                    FirestoreService.getChallengesForHome(),
-                    FirestoreService.getPlayableGames(),
-                    FirestoreService.getSparksForHome()
-                ]);
-
-                setStories(storiesData);
-                setGoodReads(readsData);
-                setChallenges(challengesData);
-                setGames(gamesData);
-                setSparks(sparksData);
-            } catch (error) {
-                console.error("Error fetching dashboard data:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
+    const { data: stories = [] } = useStoriesQuery();
+    const { data: goodReads = [] } = useGoodReadsQuery();
+    const { data: challenges = [] } = useChallengesQuery();
+    const { data: games = [] } = useGamesQuery();
+    const { data: sparks = [] } = useSparksQuery();
 
     // Auto-detect career path if not set in profile
     useEffect(() => {
@@ -123,8 +101,7 @@ export default function UserDashboard() {
 
     const handleStoryComplete = async () => {
         // Refresh stories to update watched status
-        const storiesData = await FirestoreService.getStoriesForHome();
-        setStories(storiesData);
+        queryClient.invalidateQueries({ queryKey: ['stories'] });
     };
 
     const handleFeatureClick = (title: string, prefixKey: string) => {
@@ -255,7 +232,7 @@ export default function UserDashboard() {
                             {goodReads.map((read, index) => (
                                 <div
                                     key={read.id}
-                                    onClick={() => handleFeatureClick(read.title, "read")}
+                                    onClick={() => router.push(`/dashboard/good-reads/${read.id}`)}
                                     className="flex-none w-[300px] h-48 rounded-xl overflow-hidden relative group border border-border bg-card transition-all cursor-pointer hover:border-accent/50"
                                 >
                                     <div className="absolute inset-0 bg-muted" style={{ backgroundColor: getBrandColor(index + 2) }} />
@@ -284,7 +261,7 @@ export default function UserDashboard() {
                             {challenges.map((challenge, index) => (
                                 <div
                                     key={challenge.id}
-                                    onClick={() => handleFeatureClick(challenge.title, "challenge")}
+                                    onClick={() => router.push(`/dashboard/challenges`)}
                                     className="flex-none w-[300px] h-48 rounded-xl overflow-hidden relative group border border-border bg-card transition-all cursor-pointer hover:border-secondary/50"
                                 >
                                     <div className="absolute inset-0 bg-muted" style={{ backgroundColor: getBrandColor(index + 4) }} />
@@ -313,7 +290,7 @@ export default function UserDashboard() {
                             {sparks.map((spark) => (
                                 <div
                                     key={spark.id}
-                                    onClick={() => handleFeatureClick(spark.title, "spark")}
+                                    onClick={() => router.push(`/dashboard/sparks/${spark.id}`)}
                                     className="flex-none w-[300px] h-48 rounded-xl relative overflow-hidden cursor-pointer group border border-border bg-card transition-all hover:border-accent flex flex-col justify-between p-5"
                                 >
                                     <div className="absolute top-0 right-0 w-24 h-24 bg-accent/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110" />

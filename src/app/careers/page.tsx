@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { getUserCareerPaths, CareerPath } from "@/lib/firebase/career-helpers";
+import { getUserCareerPaths } from "@/lib/firebase/career-helpers";
+import { CareerPath } from "@/types/career";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";

@@ -87,17 +87,10 @@ export const challengesConfig: AdminConfig<Challenge> = {
     const result: Record<string, unknown> = { ...data, id };
 
     // Convert Firestore Timestamps back to Date objects
-    if ('publishedAt' in result && result.publishedAt instanceof Timestamp) {
-      result.publishedAt = (result.publishedAt as Timestamp).toDate();
-    }
-    if ('publishedUntil' in result && result.publishedUntil instanceof Timestamp) {
-      result.publishedUntil = (result.publishedUntil as Timestamp).toDate();
-    }
-    if ('createdAt' in result && result.createdAt instanceof Timestamp) {
-      result.createdAt = (result.createdAt as Timestamp).toDate();
-    }
-    if ('updatedAt' in result && result.updatedAt instanceof Timestamp) {
-      result.updatedAt = (result.updatedAt as Timestamp).toDate();
+    for (const key in result) {
+      if (result[key] instanceof Timestamp) {
+        result[key] = (result[key] as Timestamp).toDate();
+      }
     }
 
     return result as unknown as Challenge;

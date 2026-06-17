@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Save, X } from 'lucide-react';
 import type { Spark } from '@/types/admin';
+import { formatSnakeCaseToTitleCase } from '@/lib/utils';
 
 interface SparkEditorProps {
   spark: Spark | null;
@@ -12,25 +13,17 @@ interface SparkEditorProps {
 
 export default function SparkEditor({ spark, onSave, onCancel }: SparkEditorProps) {
     const [isSaving, setIsSaving] = useState(false);
-    const [formData, setFormData] = useState<Partial<Spark>>({
-        title: '',
-        type: '',
-        published: false,
-        draft: true,
-        inReview: false,
-    });
+    const [formData, setFormData] = useState<Partial<Spark>>(() => ({
+        title: spark?.title || '',
+        type: spark?.type || '',
+        published: spark?.published || false,
+        draft: spark?.draft ?? true,
+        inReview: spark?.inReview || false,
+    }));
 
     useEffect(() => {
         if (spark) {
             setFormData(spark);
-        } else {
-            setFormData({
-                title: '',
-                type: '',
-                published: false,
-                draft: true,
-                inReview: false,
-            });
         }
     }, [spark]);
 
@@ -52,6 +45,8 @@ export default function SparkEditor({ spark, onSave, onCancel }: SparkEditorProp
         if (formData.inReview) return 'inReview';
         return 'draft';
     };
+
+    const typeValue = formData.type || '';
 
     const setStatus = (status: string) => {
         setFormData({
@@ -114,14 +109,21 @@ export default function SparkEditor({ spark, onSave, onCancel }: SparkEditorProp
                             <label className="block text-sm font-medium mb-1">
                                 Type <span className="text-red-500">*</span>
                             </label>
-                            <input
-                                type="text"
-                                required
-                                value={formData.type || ''}
-                                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="e.g. motivation, fact, tip"
-                            />
+                            <div className="flex flex-col gap-2">
+                                <input
+                                    type="text"
+                                    required
+                                    value={typeValue}
+                                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="e.g. motivation, fact, tip"
+                                />
+                                {typeValue && (
+                                    <p className="text-xs text-gray-500">
+                                        Preview: <span className="font-medium text-blue-600">{formatSnakeCaseToTitleCase(typeValue)}</span>
+                                    </p>
+                                )}
+                            </div>
                         </div>
 
                         <div>

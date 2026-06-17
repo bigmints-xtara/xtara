@@ -232,4 +232,60 @@ export class AchievementsService {
             return { total: 0, common: 0, rare: 0, epic: 0 };
         }
     }
+
+    private async _addPointsRecord(userId: string, category: string, source: string, sourceId: string, basePoints: number, bonusPoints: number = 0) {
+        try {
+            const { setDoc, addDoc, serverTimestamp } = await import('firebase/firestore');
+            
+            // First check if already awarded
+            const q = query(collection(db, 'users', userId, 'points'), where('sourceId', '==', sourceId), where('category', '==', category));
+            const existing = await getDocs(q);
+            if (!existing.empty) return false; // Already awarded
+            
+            await addDoc(collection(db, 'users', userId, 'points'), {
+                category,
+                source,
+                sourceId,
+                basePoints,
+                bonusPoints,
+                totalPoints: basePoints + bonusPoints,
+                timestamp: serverTimestamp(),
+            });
+            return true;
+        } catch (error) {
+            console.error('Error adding points record', error);
+            return false;
+        }
+    }
+
+    async addPointsForGoodRead(userId: string, goodReadId: string): Promise<void> {
+        await this._addPointsRecord(userId, 'goodReads', 'Good Read', goodReadId, 5, 0);
+    }
+
+    async addPointsForChallenge(userId: string, challengeId: string, quizScore: number, isPractice: boolean): Promise<void> {
+        if (isPractice) return;
+        await this._addPointsRecord(userId, 'challenges', 'Reading Challenge', challengeId, 10, quizScore);
+    }
+
+    async addPointsForSpark(userId: string, sparkId: string, score: number, isPerfect: boolean, medalPoints: number, sparkTitle: string): Promise<void> {
+        const added = await this._addPointsRecord(userId, 'sparks', 'Spark', sparkId, score, isPerfect ? medalPoints : 0);
+        
+        // Award medal if perfect and points added (not already played)
+        if (added && isPerfect && medalPoints > 0) {
+            try {
+                const { addDoc, serverTimestamp } = await import('firebase/firestore');
+                await addDoc(collection(db, 'users', userId, 'medals'), {
+                    title: `Perfect Spark: ${sparkTitle}`,
+                    description: 'Awarded for getting all answers correct on a Spark quiz.',
+                    rarity: 'common',
+                    points: medalPoints,
+                    type: 'spark_perfect',
+                    sourceId: sparkId,
+                    earnedAt: serverTimestamp()
+                });
+            } catch (e) {
+                console.error("Failed to award medal", e);
+            }
+        }
+    }
 }

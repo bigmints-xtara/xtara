@@ -3,23 +3,12 @@
 import { useParams, useRouter } from "next/navigation";
 import { Users, Users2, ArrowRight } from "lucide-react";
 import CareerHubLayout from "@/components/careers/CareerHubLayout";
-import { useEffect, useState } from "react";
-import { getCareerPathById, CareerPath } from "@/lib/firebase/career-helpers";
+import { useCareerPathQuery } from "@/lib/query/useCareerPath";
 
 export default function ConnectHubPage() {
     const { id } = useParams();
     const router = useRouter();
-    const [careerPath, setCareerPath] = useState<CareerPath | null>(null);
-
-    useEffect(() => {
-        const fetchPath = async () => {
-            if (id) {
-                const path = await getCareerPathById(id as string);
-                setCareerPath(path);
-            }
-        };
-        fetchPath();
-    }, [id]);
+    const { data: careerPath } = useCareerPathQuery(id as string);
 
     const sections = [
         {

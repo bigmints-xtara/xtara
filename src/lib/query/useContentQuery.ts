@@ -1,48 +1,53 @@
 import { useFirestoreQuery } from './useFirestoreQuery';
-import { db } from '@/lib/firebase/firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { FirestoreService, Story, GoodRead, Challenge, Spark, GameInstance } from '@/lib/firebase/firestore-service';
 
 const TWELVE_HOURS = 43200000;
 
-export function useStoriesQuery() {
-  return useFirestoreQuery<any[]>(
-    ['stories'],
+export function useStoriesQuery(limitCount = 5) {
+  return useFirestoreQuery<Story[]>(
+    ['stories', limitCount],
     async () => {
-      const snap = await getDocs(collection(db, 'stories'));
-      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      return FirestoreService.getStoriesForHome(limitCount);
     },
     { staleTime: TWELVE_HOURS }
   );
 }
 
-export function useGoodReadsQuery() {
-  return useFirestoreQuery<any[]>(
-    ['good-reads'],
+export function useGoodReadsQuery(limitCount = 5) {
+  return useFirestoreQuery<GoodRead[]>(
+    ['good-reads', limitCount],
     async () => {
-      const snap = await getDocs(collection(db, 'good_reads'));
-      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      return FirestoreService.getGoodReadsForHome(limitCount);
     },
     { staleTime: TWELVE_HOURS }
   );
 }
 
-export function useChallengesQuery() {
-  return useFirestoreQuery<any[]>(
-    ['challenges'],
+export function useChallengesQuery(limitCount = 5) {
+  return useFirestoreQuery<Challenge[]>(
+    ['challenges', limitCount],
     async () => {
-      const snap = await getDocs(collection(db, 'challenges'));
-      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      return FirestoreService.getChallengesForHome(limitCount);
     },
     { staleTime: TWELVE_HOURS }
   );
 }
 
-export function useSparksQuery() {
-  return useFirestoreQuery<any[]>(
-    ['sparks'],
+export function useSparksQuery(limitCount = 5) {
+  return useFirestoreQuery<Spark[]>(
+    ['sparks', limitCount],
     async () => {
-      const snap = await getDocs(collection(db, 'sparks'));
-      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      return FirestoreService.getSparksForHome(limitCount);
+    },
+    { staleTime: TWELVE_HOURS }
+  );
+}
+
+export function useGamesQuery(limitCount = 5) {
+  return useFirestoreQuery<GameInstance[]>(
+    ['games', limitCount],
+    async () => {
+      return FirestoreService.getPlayableGames(limitCount);
     },
     { staleTime: TWELVE_HOURS }
   );
