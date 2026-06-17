@@ -112,12 +112,19 @@ export interface AdminCareerPath extends AdminEntity {
   relatedCareers?: RelatedCareer[];
   strengths?: string[];
   description?: string;
+  internshipExamples?: any[];
+  onlineTrainings?: any[];
+  topInstitutions?: any[];
+  toolsAndSoftware?: any[];
 }
 
 export interface AdminConfig<T extends AdminEntity> {
   entityName: string;
   entityNamePlural: string;
   collectionName: string;
+  hideNewButton?: boolean;
+  orderByField?: string | null;
+  orderByDirection?: 'asc' | 'desc';
   
   // Entity operations
   createEmpty: () => Partial<T>;

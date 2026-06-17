@@ -187,13 +187,15 @@ export default function AdminMasterDetail<T extends AdminEntity>({
                 <div className="p-4 border-b bg-white sticky top-0 z-10">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-xl font-bold">{config.entityNamePlural}</h2>
-                        <button
-                            onClick={handleCreate}
-                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                        >
-                            <Plus size={18} />
-                            New
-                        </button>
+                        {!config.hideNewButton && (
+                            <button
+                                onClick={handleCreate}
+                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                            >
+                                <Plus size={18} />
+                                New
+                            </button>
+                        )}
                     </div>
 
                     {/* Search */}
@@ -299,7 +301,9 @@ export default function AdminMasterDetail<T extends AdminEntity>({
             {/* Right Panel - Detail */}
             <div className="flex-1 bg-gray-50">
                 {isCreating || selectedEntity ? (
-                    renderEditor(isCreating ? null : selectedEntity, handleSave, handleCancel)
+                    <div key={isCreating ? 'new' : selectedEntity?.id} className="h-full">
+                        {renderEditor(isCreating ? null : selectedEntity, handleSave, handleCancel)}
+                    </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center h-full text-gray-500">
                         <p className="text-xl mb-2">Select {config.entityName}</p>

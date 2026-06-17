@@ -1,33 +1,38 @@
 import { AdminConfig, AdminCareerPath } from '@/types/admin';
 
 export const dreamCareersConfig: AdminConfig<AdminCareerPath> = {
-  entityName: 'Career Path',
-  entityNamePlural: 'Career Paths',
-  collectionName: 'career_paths',
+  entityName: 'Dream Career',
+  entityNamePlural: 'Dream Careers',
+  collectionName: 'dream_careers',
+  hideNewButton: true,
+  orderByField: 'title',
+  orderByDirection: 'asc',
 
   createEmpty: () => ({
     userId: '',
     careerName: '',
     title: '',
     description: '',
+    archetypes: [],
   }),
 
   getId: (entity) => entity.id,
-  getTitle: (entity) => entity.careerName || entity.title || 'Untitled',
-  getSubtitle: (entity) => entity.userId,
+  getTitle: (entity) => entity.title || entity.careerName || 'Untitled',
+  getSubtitle: (entity) => (entity as any).careerCluster || entity.userId || '',
 
-  getStatus: () => 'published',
+  getStatus: (entity) => 'published',
 
-  getDomain: (entity) => entity.archetypes?.[0] || 'General',
+  getDomain: (entity) => entity.archetypes?.[0] || (entity as any).archetypeTags?.[0] || (entity as any).careerCluster || 'General',
 
-  getSearchText: (entity) => `${entity.careerName} ${entity.userId}`.toLowerCase(),
+  getSearchText: (entity) => `${entity.title || ''} ${entity.careerName || ''} ${(entity as any).careerCluster || ''} ${entity.description || ''}`.toLowerCase(),
 
   availableStatuses: ['all'],
 
   getAvailableDomains: (entities) => {
     const domains = new Set<string>();
-    entities.forEach(entity => {
-      if (entity.archetypes?.[0]) domains.add(entity.archetypes[0]);
+    entities.forEach((entity) => {
+      const dom = entity.archetypes?.[0] || (entity as any).archetypeTags?.[0] || (entity as any).careerCluster;
+      if (dom) domains.add(dom);
     });
     return ['all', ...Array.from(domains)];
   },
@@ -41,8 +46,11 @@ export const dreamCareersConfig: AdminConfig<AdminCareerPath> = {
     };
   },
 
-  fromFirestore: (data, id) => ({
-    ...(data as unknown as AdminCareerPath),
-    id,
-  }),
+  fromFirestore: (data, id) => {
+    const serialized = JSON.parse(JSON.stringify(data));
+    return {
+      ...(serialized as AdminCareerPath),
+      id,
+    };
+  },
 };

@@ -41,25 +41,30 @@ export default function CareerPathPreview({ careerPath }: CareerPathPreviewProps
                         <h3 className="text-2xl font-bold text-gray-900">Career Pathway</h3>
                     </div>
                     <div className="space-y-4">
-                        {careerPath.careerPathway.map((step: CareerPathwayStep, index: number) => (
-                            <div key={index} className="relative pl-8 pb-6 last:pb-0">
-                                {/* Timeline line */}
-                                {index < careerPath.careerPathway!.length - 1 && (
-                                    <div className="absolute left-[11px] top-6 bottom-0 w-0.5 bg-blue-200"></div>
-                                )}
-                                {/* Timeline dot */}
-                                <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
-                                    {index + 1}
-                                </div>
-                                <div className="bg-gray-50 rounded-lg p-4">
-                                    <h4 className="font-semibold text-lg text-gray-900">{step.title}</h4>
-                                    <p className="text-sm text-blue-600 font-medium mt-1">{step.duration}</p>
-                                    {step.note && (
-                                        <p className="text-sm text-gray-600 mt-2">{step.note}</p>
+                        {((careerPath.careerPathway || []) as any[]).map((step: any, index: number) => {
+                            const title = typeof step === 'string' ? step : (step.title || step.step || '');
+                            const duration = typeof step === 'string' ? '' : step.duration;
+                            const note = typeof step === 'string' ? '' : step.note;
+                            return (
+                                <div key={index} className="relative pl-8 pb-6 last:pb-0">
+                                    {/* Timeline line */}
+                                    {index < careerPath.careerPathway!.length - 1 && (
+                                        <div className="absolute left-[11px] top-6 bottom-0 w-0.5 bg-blue-200"></div>
                                     )}
+                                    {/* Timeline dot */}
+                                    <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
+                                        {index + 1}
+                                    </div>
+                                    <div className="bg-gray-50 rounded-lg p-4">
+                                        <h4 className="font-semibold text-lg text-gray-900">{title}</h4>
+                                        {duration && <p className="text-sm text-blue-600 font-medium mt-1">{duration}</p>}
+                                        {note && (
+                                            <p className="text-sm text-gray-600 mt-2">{note}</p>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             )}

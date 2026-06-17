@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -12,10 +13,13 @@ import {
     LayoutDashboard,
     BarChart3,
     Settings,
+    Gamepad2,
 } from 'lucide-react';
 import { useTenant } from '@/lib/hooks/useTenant';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { formatSnakeCaseToTitleCase } from '@/lib/utils';
 
 interface NavItem {
     name: string;
@@ -39,25 +43,28 @@ const navigationItems: NavItem[] = [
         name: 'Challenges',
         href: '/admin/challenges',
         icon: Trophy,
-        comingSoon: true,
+        comingSoon: false,
     },
     {
         name: 'Good Reads',
         href: '/admin/good-reads',
         icon: FileText,
-        comingSoon: true,
     },
     {
         name: 'Sparks',
         href: '/admin/sparks',
         icon: Sparkles,
-        comingSoon: true,
+    },
+    {
+        name: 'Games',
+        href: '/admin/games',
+        icon: Gamepad2,
     },
     {
         name: 'Dream Careers',
         href: '/admin/dream-careers',
         icon: Star,
-        comingSoon: true,
+        comingSoon: false,
     },
     {
         name: 'Content Resources',
@@ -81,7 +88,18 @@ const navigationItems: NavItem[] = [
 
 export default function AdminSidebar() {
     const pathname = usePathname();
-    const { tenant } = useTenant();
+    const { tenant, loading } = useTenant();
+
+    const [isClient, setIsClient] = React.useState(false);
+
+    React.useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    const isActive = (href: string) => {
+        if (!isClient) return false;
+        return pathname === href;
+    };
 
     return (
         <aside className="w-64 bg-gray-900 text-white min-h-screen p-4 flex flex-col">
@@ -93,7 +111,7 @@ export default function AdminSidebar() {
             <nav className="space-y-2 flex-1">
                 {navigationItems.map((item) => {
                     const Icon = item.icon;
-                    const isActive = pathname === item.href;
+                    const active = isActive(item.href);
                     const isComingSoon = item.comingSoon ?? false;
 
                     if (isComingSoon) {
@@ -106,11 +124,13 @@ export default function AdminSidebar() {
                                 }}
                                 title={`${item.name} — Coming Soon`}
                                 aria-label={`${item.name} (Coming Soon)`}
-                                className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-gray-500 opacity-50 cursor-default hover:opacity-70 hover:text-gray-400"
+                                className="flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-all text-gray-500 opacity-50 cursor-not-allowed group w-full"
                             >
-                                <Icon size={20} />
-                                <span className="font-medium">{item.name}</span>
-                                <span className="text-xs bg-gray-700 text-gray-300 px-1.5 py-0.5 rounded-full font-medium">Soon</span>
+                                <div className="flex items-center gap-3">
+                                    <Icon size={20} />
+                                    <span className="font-medium">{item.name}</span>
+                                </div>
+                                <Badge variant="secondary" className="bg-gray-800 text-gray-400 border-gray-700 text-[10px] px-1.5 py-0 leading-none h-4">Soon</Badge>
                             </button>
                         );
                     }
@@ -119,7 +139,7 @@ export default function AdminSidebar() {
                         <Link
                             key={item.href}
                             href={item.href}
-                            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive
+                            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${active
                                 ? 'bg-blue-600 text-white'
                                 : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                                 }`}
@@ -131,7 +151,7 @@ export default function AdminSidebar() {
                 })}
             </nav>
 
-            {tenant && (
+            {isClient && tenant && (
                 <div className="mt-4">
                     <Separator className="bg-gray-800 my-4" />
                     <div className="flex items-center gap-3">
@@ -143,8 +163,8 @@ export default function AdminSidebar() {
                         </Avatar>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium truncate" title={tenant.displayName}>{tenant.displayName}</p>
-                            <p className="text-xs text-gray-500 truncate capitalize">
-                                {tenant.category?.replace(/_/g, ' ') || tenant.type}
+                            <p className="text-xs text-gray-500 truncate">
+                                {formatSnakeCaseToTitleCase(tenant.category || tenant.type)}
                             </p>
                         </div>
                     </div>

@@ -11,6 +11,7 @@ export function formatSnakeCaseToTitleCase(str: string): string {
   }
   return str
     .split('_')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
 }

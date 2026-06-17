@@ -29,22 +29,9 @@ export function useUserProfileQuery(uid: string | null) {
       return getUserProfile(uid);
     },
     enabled: !!uid,
-    staleTime: 60_000,
-    gcTime: 5 * 60 * 1000,
+    staleTime: 300000, // 5 minutes
+    gcTime: 1800000,   // 30 minutes
     retry: 2,
-  });
-}
-
-export function useUserProfile(uid: string | null) {
-  return useQuery({
-    queryKey: ["user-profile", uid],
-    queryFn: async () => {
-      if (!uid) return null;
-      const snap = await getDoc(doc(db, "users", uid));
-      return snap.exists() ? { id: snap.id, ...snap.data() } : null;
-    },
-    enabled: !!uid,
-    staleTime: 300000,
   });
 }
 
@@ -62,12 +49,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(authUser);
       setLoading(false);
 
-      // Invalidate and refetch the profile query when UID changes
+      // Pre-fetch or invalidate profile when auth state changes
       if (authUser) {
-        queryClient.invalidateQueries({
+        queryClient.prefetchQuery({
           queryKey: ["auth", "userProfile", authUser.uid],
+          queryFn: () => getUserProfile(authUser.uid),
         });
       } else {
+        queryClient.setQueryData(["auth", "userProfile", null], null);
         queryClient.invalidateQueries({ queryKey: ["auth", "userProfile"] });
       }
     });

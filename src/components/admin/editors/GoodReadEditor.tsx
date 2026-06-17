@@ -13,44 +13,27 @@ interface GoodReadEditorProps {
 
 export default function GoodReadEditor({ goodRead, onSave, onCancel }: GoodReadEditorProps) {
   const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState<Partial<GoodRead>>({
-    title: '',
-    type: '',
-    domain: '',
-    content: '',
-    image: '',
-    hyperlink: '',
-    hyperlinkText: '',
-    careerRelevance: [],
-    published: false,
-    draft: true,
-    inReview: false,
-    publishedAt: undefined,
-    publishedUntil: undefined,
-  });
+  const [formData, setFormData] = useState<Partial<GoodRead>>(() => ({
+    title: goodRead?.title || '',
+    type: goodRead?.type || '',
+    domain: goodRead?.domain || '',
+    content: goodRead?.content || '',
+    image: goodRead?.image || '',
+    hyperlink: goodRead?.hyperlink || '',
+    hyperlinkText: goodRead?.hyperlinkText || '',
+    careerRelevance: goodRead?.careerRelevance || [],
+    published: goodRead?.published || false,
+    draft: goodRead?.draft ?? true,
+    inReview: goodRead?.inReview || false,
+    publishedAt: goodRead?.publishedAt,
+    publishedUntil: goodRead?.publishedUntil,
+  }));
 
   const [relevanceInput, setRelevanceInput] = useState('');
 
   useEffect(() => {
     if (goodRead) {
       setFormData(goodRead);
-    } else {
-      setFormData({
-        title: '',
-        type: '',
-        domain: '',
-        content: '',
-        image: '',
-        hyperlink: '',
-        hyperlinkText: '',
-        careerRelevance: [],
-        published: false,
-        draft: true,
-        inReview: false,
-        publishedAt: undefined,
-        publishedUntil: undefined,
-      });
-      setRelevanceInput('');
     }
   }, [goodRead]);
 

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { CareerPath, getCareerTools } from "@/lib/firebase/career-helpers";
+import { useState } from "react";
+import { CareerPath, Course, ToolAndSoftware, Scholarship, OnlineTraining } from "@/types/career";
 import ResourceList, { ResourceItem } from "@/components/careers/ResourceList";
 import ToolsGrid from "@/components/careers/ToolsGrid";
 import ResourceDetailModal from "@/components/careers/ResourceDetailModal";
 import { GraduationCap, Video, Wrench, Search } from "lucide-react";
+import { useCareerToolsQuery } from "@/lib/query/useCareerPath";
 
 interface LearnSectionProps {
     careerPath: CareerPath;
@@ -13,7 +14,8 @@ interface LearnSectionProps {
 }
 
 export default function LearnSection({ careerPath, id }: LearnSectionProps) {
-    const [tools, setTools] = useState<any[]>([]);
+    const cluster = careerPath.primaryCareer?.careerCluster || careerPath.careerCluster;
+    const { data: tools = [] } = useCareerToolsQuery(cluster);
     const [selectedItem, setSelectedItem] = useState<ResourceItem | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -22,31 +24,7 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
         setIsModalOpen(true);
     };
 
-    useEffect(() => {
-        const fetchTools = async () => {
-            console.log('🔧 [LearnSection] useEffect triggered');
-            console.log('🔧 [LearnSection] careerPath:', careerPath);
-            console.log('🔧 [LearnSection] primaryCareer:', careerPath.primaryCareer);
-
-            // Get cluster from primaryCareer or fallback
-            const cluster = careerPath.primaryCareer?.careerCluster || careerPath.careerCluster;
-            console.log('🔧 [LearnSection] cluster:', cluster);
-
-            if (cluster) {
-                console.log('🔧 [LearnSection] Fetching tools for cluster:', cluster);
-                const fetchedTools = await getCareerTools(cluster);
-                console.log('🔧 [LearnSection] Fetched tools:', fetchedTools);
-                setTools(fetchedTools);
-            } else {
-                console.warn('🔧 [LearnSection] No cluster found!');
-            }
-        };
-        fetchTools();
-    }, [careerPath]);
-
     // Data Transformation Helpers
-    // Helper to format course name (replicates Flutter logic)
-    // Helper to format course name (replicates Flutter logic)
     const parseCourseName = (courseName: string) => {
         if (!courseName) return { title: 'Course', specialization: '' };
 
@@ -75,23 +53,23 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
     };
 
     const getCourses = () => {
-        const rawCourses =
-            (careerPath.primaryCareer && careerPath.primaryCareer.courses) ||
+        const rawCourses: Course[] =
+            careerPath.primaryCareer?.courses ||
             careerPath.courses ||
             careerPath.recommendedCourses ||
-            (careerPath.learn && careerPath.learn.courses) ||
-            (careerPath.ragOutput && careerPath.ragOutput.learn && careerPath.ragOutput.learn.courses) ||
+            careerPath.learn?.courses ||
+            careerPath.ragOutput?.learn?.courses ||
             [];
 
         const expandedCourses: ResourceItem[] = [];
 
-        rawCourses.forEach((c: any, idx: number) => {
+        rawCourses.forEach((c, idx) => {
             // Check if course has streams
             const streams = c.stream;
 
             if (streams && Array.isArray(streams) && streams.length > 0) {
                 // Create a recommended course for each stream
-                streams.forEach((stream: any, sIdx: number) => {
+                streams.forEach((stream, sIdx) => {
                     const streamName = stream.name || stream.display_course_name || stream.course_name;
                     const courseName = c.course || c.name || c.title || "Course";
 
@@ -101,18 +79,10 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
                     // Parse the course name to see if we can extract a clean title
                     const { title: cleanTitle, specialization } = parseCourseName(stream.display_course_name || courseName);
 
-                    // Construct a clean display
-                    // Title: "Bachelor of Arts"
-                    // Subtitle: "Economics, Philosophy, Political Science • 3 years" or similar
-
-                    // If streamName is available and distinct, prefer it for specialization
                     let finalSpecialization = streamName;
                     if (!finalSpecialization && specialization) {
                         finalSpecialization = specialization;
                     }
-
-                    // Format specialization with bullets if comma separated for better readability? 
-                    // Or keep commas. Let's keep commas but ensure it's distinct.
 
                     const subtitleParts = [];
                     if (level) {
@@ -173,19 +143,18 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
 
     const getTools = () => {
         // Combine fetched tools with any fallback data
-        const mergedTools = [
+        const mergedTools: ToolAndSoftware[] = [
             ...tools,
             ...(careerPath.toolsAndSoftware || []),
-            ...((careerPath.ragOutput && careerPath.ragOutput.learn && careerPath.ragOutput.learn.toolsAndSoftware) || [])
+            ...(careerPath.ragOutput?.learn?.toolsAndSoftware || [])
         ];
 
         console.log('🔧 [getTools] State tools:', tools.length);
         console.log('🔧 [getTools] Merged tools:', mergedTools.length);
 
-        // Dedup by id? For now just return all
-        const result = mergedTools.map((t: any, idx: number) => ({
+        const result = mergedTools.map((t, idx) => ({
             id: t.id || `tool-${idx}`,
-            title: t.name || t.toolName,
+            title: t.name || t.toolName || "Unknown Tool",
             description: t.description,
             tag: "Tool",
             icon: <Wrench size={20} />
@@ -195,9 +164,13 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
         return result;
     };
 
-    const getScholarships = () => {
-        const scholarships = careerPath.scholarships || (careerPath.learn && careerPath.learn.scholarships) || [];
-        return scholarships.map((s: any, idx: number) => ({
+    const getScholarships = (): ResourceItem[] => {
+        const scholarships: Scholarship[] = 
+            careerPath.scholarships || 
+            careerPath.learn?.scholarships || 
+            [];
+            
+        return scholarships.map((s, idx) => ({
             id: `scholarship-${idx}`,
             title: s.name,
             subtitle: `${s.type} • ${s.level}`,
@@ -210,14 +183,15 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
         }));
     };
 
-    const getTrainings = () => {
-        const trainings =
+    const getTrainings = (): ResourceItem[] => {
+        const trainings: OnlineTraining[] =
             careerPath.onlineTrainings ||
-            (careerPath.ragOutput && careerPath.ragOutput.learn && careerPath.ragOutput.learn.onlineTrainings) ||
+            careerPath.ragOutput?.learn?.onlineTrainings ||
             [];
-        return trainings.map((t: any, idx: number) => ({
+            
+        return trainings.map((t, idx) => ({
             id: `training-${idx}`,
-            title: t.title || t.name,
+            title: t.title || t.name || "Training",
             subtitle: t.provider,
             description: t.description,
             tag: t.platform || "Online",
