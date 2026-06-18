@@ -55,7 +55,9 @@ export interface Spark {
     id: string;
     title: string;
     type: string;
-    published?: boolean;
+    published: boolean;
+    draft: boolean;
+    inReview: boolean;
 }
 
 // --- Service Class ---
@@ -298,7 +300,9 @@ export const FirestoreService = {
                 id: doc.id,
                 title: doc.data().title || '',
                 type: doc.data().type || 'sparks',
-                published: doc.data().published
+                published: doc.data().published || false,
+                draft: doc.data().draft || false,
+                inReview: doc.data().inReview || false,
             }));
         } catch (e) {
             console.error("Error fetching sparks:", e);

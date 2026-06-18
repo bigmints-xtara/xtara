@@ -30,8 +30,8 @@ export interface Spark extends AdminEntity {
   title: string;
   type: string;
   published: boolean;
-  draft: boolean;
-  inReview: boolean;
+  draft: boolean;      // ADDED
+  inReview: boolean;   // ADDED
 }
 
 export interface GameInstance extends AdminEntity {
