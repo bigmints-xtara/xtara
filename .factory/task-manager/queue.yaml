@@ -29,3 +29,18 @@
   error: null
   errorCategory: null
   durationMs: null
+- id: q_1781792508604_p1mudd
+  storyFile: features/fix-data-deduplicate-careerpath-interface.yaml
+  kind: FeatureStory
+  status: ready-to-build
+  priority: 0
+  phase: 0
+  dependsOn: []
+  engine: factory
+  addedAt: 2026-06-18T14:21:48.604Z
+  startedAt: null
+  completedAt: null
+  output: ""
+  error: null
+  errorCategory: null
+  durationMs: null

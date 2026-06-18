@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getCareerPathById, CareerPath } from "@/lib/firebase/career-helpers";
+import { getCareerPathById } from "@/lib/firebase/career-helpers";
+import { CareerPath } from "@/types/career";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import {

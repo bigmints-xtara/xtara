@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CareerPath } from "@/lib/firebase/career-helpers";
+import { CareerPath } from "@/types/career";
 import ResourceList, { ResourceItem } from "@/components/careers/ResourceList";
 import ResourceDetailModal from "@/components/careers/ResourceDetailModal";
 import { Users, Star } from "lucide-react";

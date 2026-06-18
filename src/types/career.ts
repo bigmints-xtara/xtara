@@ -31,50 +31,160 @@ export interface SlideshowData {
     slides: CareerSlideData[];
 }
 
-// Additional types for career path details
+// --- Sub-interfaces for CareerPath ---
+
 export interface CareerPathwayStep {
+    id?: string;
     title: string;
-    duration: string;
+    description: string;
+    duration?: string;
+    order?: number;
+    [key: string]: unknown;
+}
+
+export interface CourseItem {
+    course?: string;
+    name?: string;
+    title?: string;
+    description?: string;
+    details?: string;
+    course_type?: string;
+    degree_type?: string;
+    level?: string;
+    type?: string;
+    duration_year?: number;
+    durationYear?: number;
+    duration?: string;
+    degreeType?: string;
+    stream?: Array<{
+        name?: string;
+        display_course_name?: string;
+        course_name?: string;
+    }>;
+    [key: string]: unknown;
+}
+
+export interface TrainingItem {
+    title?: string;
+    name?: string;
+    provider?: string;
+    description?: string;
+    platform?: string;
+    link?: string;
+    [key: string]: unknown;
+}
+
+export interface ScholarshipItem {
+    name?: string;
+    type?: string;
+    level?: string;
     note?: string;
+    country?: string;
+    link?: string;
+    [key: string]: unknown;
+}
+
+export interface ToolItem {
+    id?: string;
+    name?: string;
+    toolName?: string;
+    description?: string;
+    clusters?: string | string[];
+    isActive?: boolean;
+    [key: string]: unknown;
+}
+
+export interface PrimaryCareer {
+    courses?: CourseItem[];
+    careerCluster?: string;
+    [key: string]: unknown;
+}
+
+export interface RagOutput {
+    learn?: {
+        courses?: CourseItem[];
+        toolsAndSoftware?: ToolItem[];
+        onlineTrainings?: TrainingItem[];
+        scholarships?: ScholarshipItem[];
+        [key: string]: unknown;
+    };
+    connect?: Record<string, unknown>;
+    grow?: Record<string, unknown>;
+    [key: string]: unknown;
 }
 
 export interface RelatedCareer {
-    title: string;
-    reason: string;
-}
-
-export interface ROIInsight {
-    investmentLevel: string;
-    expectedSalaryRange: string;
-    paybackPeriod: string;
-    verdict: string;
-}
-
-
-export interface CareerPath {
-    id: string;
-    userId: string;
-    careerName: string; // Document field is likely 'title' or 'careerName'. Flutter maps from 'title' usually but let's check. 
-    // Flutter code uses 'careerName' or 'title' implicitly via mapping logic. 
-    // Wait, `SlideshowData.fromCareerPath` uses specific keys like `whatYouDo`, `matchScore`.
-    // Let's add all the raw fields we expect from Firestore.
+    id?: string;
     title?: string;
+    reason?: string;
+    [key: string]: unknown;
+}
+
+// --- Unified CareerPath Interface ---
+// Merged from src/types/career.ts and src/lib/firebase/career-helpers.ts
+export interface CareerPath {
+    // Required fields
+    id: string;
+
+    // Core career info (merged from both definitions)
+    userId?: string;
+    assessmentId?: string;
+    careerName?: string;
+    title?: string;
+    description?: string;
     whatYouDo?: string;
     whyItMatters?: string;
-    matchScore?: number | double;
-    streamSuggestions?: string[];
-    expectedSalaryRange?: string;
+
+    // Match data
+    matchScore?: number;
     matchReasoning?: string;
     archetypes?: string[];
-    careerPathway?: CareerPathwayStep[];
-    internshipExamples?: any[];
-    onlineTrainings?: any[];
-    topInstitutions?: any[];
-    relatedCareers?: RelatedCareer[];
-    toolsAndSoftware?: any[];
-    strengths?: string[];
-    description?: string;
-    createdAt: any;
-}
 
-type double = number;
+    // Career details
+    salary?: string;
+    expectedSalaryRange?: string;
+    education?: string;
+    streamSuggestions?: string[];
+    strengths?: string[];
+    double?: boolean;
+
+    // Skills
+    technicalSkills?: string[];
+    softSkills?: string[];
+
+    // Learning resources - typed arrays (no more any[])
+    courses?: CourseItem[];
+    careerPathway?: CareerPathwayStep[];
+    topInstitutions?: string[];
+    onlineTrainings?: TrainingItem[];
+    toolsAndSoftware?: ToolItem[];
+    scholarships?: ScholarshipItem[];
+
+    // Related / supplementary data
+    relatedCareers?: RelatedCareer[];
+    internshipExamples?: Record<string, unknown>[];
+    governmentExams?: Record<string, unknown>[];
+    quote?: string;
+    dreamTitle?: string;
+    notablePeople?: Record<string, unknown>[];
+    careerCluster?: string;
+    recommendedCourses?: CourseItem[];
+    learn?: {
+        courses?: CourseItem[];
+        scholarships?: ScholarshipItem[];
+        [key: string]: unknown;
+    };
+    primaryCareer?: PrimaryCareer;
+    grow?: {
+        careerPathway?: CareerPathwayStep[];
+        expectedSalaryRange?: string;
+        [key: string]: unknown;
+    };
+    ragOutput?: RagOutput;
+
+    // Metadata
+    createdAt?: string | number | Date;
+
+    // Catch-all for Firestore flexibility
+    [key: string]: unknown;
+}

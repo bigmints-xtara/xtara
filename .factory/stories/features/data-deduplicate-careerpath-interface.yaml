@@ -37,4 +37,4 @@ behavior:
   - TypeScript compiler catches mismatched fields across the codebase.
   - Nested types (CareerPathwayStep, PrimaryCareer, RagOutput) are explicitly typed.
 config: {}
-status: ready-to-build
+status: failed

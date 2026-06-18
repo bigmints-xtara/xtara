@@ -1,42 +1,8 @@
 import { db } from "./firebase";
-import { collection, query, where, getDocs, doc, getDoc, DocumentData, limit } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc, limit } from "firebase/firestore";
+import { CareerPath } from '@/types/career';
 
-export interface CareerPath {
-    id: string;
-    title: string;
-    description: string;
-    whatYouDo?: string;
-    whyItMatters?: string;
-    salary?: string;
-    education?: string;
-    technicalSkills?: string[];
-    softSkills?: string[];
-    courses?: any[];
-    careerPathway?: string[];
-    relatedCareers?: any[];
-    archetypes?: string[];
-    matchScore?: number;
-    quote?: string;
-    dreamTitle?: string;
-    notablePeople?: any[];
-    ragOutput?: any;
-    topInstitutions?: any[];
-    onlineTrainings?: any[];
-    toolsAndSoftware?: any[];
-    governmentExams?: any[];
-    primaryCareer?: {
-        courses?: any[];
-        careerCluster?: string;
-        [key: string]: any;
-    };
-    grow?: {
-        careerPathway?: any[];
-        expectedSalaryRange?: string;
-        [key: string]: any;
-    };
-    expectedSalaryRange?: string;
-    [key: string]: any;
-}
+export { CareerPath };
 
 export const getUserCareerPaths = async (userId: string): Promise<CareerPath[]> => {
     try {
@@ -61,7 +27,6 @@ export const getCareerPathById = async (pathId: string): Promise<CareerPath | nu
         if (docSnap.exists()) {
             return { ...docSnap.data(), id: docSnap.id } as CareerPath;
         } else {
-            // Try searching by 'id' field if document ID doesn't match
             const q = query(collection(db, "career_paths"), where("id", "==", pathId), limit(1));
             const querySnapshot = await getDocs(q);
             if (!querySnapshot.empty) {
@@ -75,37 +40,44 @@ export const getCareerPathById = async (pathId: string): Promise<CareerPath | nu
     }
 };
 
-export const getCareerTools = async (careerCluster?: string): Promise<any[]> => {
+interface ToolRecord {
+    id: string;
+    name?: string;
+    description?: string;
+    clusters?: string | string[];
+    isActive?: boolean;
+    [key: string]: unknown;
+}
+
+const normalizeCluster = (str: string): string => {
+    return str.toLowerCase()
+        .replace(/&/g, 'and')
+        .replace(/[^\w\s]/g, '')
+        .trim()
+        .replace(/\s+/g, '_')
+        .replace(/-/g, '_')
+        .replace(/^_+|_+$/g, '');
+};
+
+export const getCareerTools = async (careerCluster?: string): Promise<ToolRecord[]> => {
     try {
         const toolsRef = collection(db, "career_tools");
-        // FIX: User screenshot shows 'isActive' boolean, not 'status' string
         const q = query(toolsRef, where("isActive", "==", true));
         const snapshot = await getDocs(q);
 
-        const tools = snapshot.docs.map(doc => ({
+        const tools: ToolRecord[] = snapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data()
-        }));
+        }) as ToolRecord);
 
         if (!careerCluster) return tools;
 
-        // Normalization function that handles emojis and special chars properly
-        const normalize = (str: string) => {
-            return str.toLowerCase()
-                .replace(/&/g, 'and')       // Replace & with 'and' FIRST
-                .replace(/[^\w\s]/g, '')    // Remove emojis and special chars
-                .trim()                     // Remove leading/trailing spaces
-                .replace(/\s+/g, '_')       // Spaces to underscore
-                .replace(/-/g, '_')         // Dashes to underscore
-                .replace(/^_+|_+$/g, '');   // Remove leading/trailing underscores
-        };
+        const targetCluster = normalizeCluster(careerCluster);
 
-        const targetCluster = normalize(careerCluster);
-
-        return tools.filter((tool: any) => {
+        return tools.filter((tool: ToolRecord) => {
             if (!tool.clusters) return false;
             const clusters = Array.isArray(tool.clusters) ? tool.clusters : [tool.clusters];
-            return clusters.some((c: any) => normalize(c.toString()) === targetCluster);
+            return clusters.some((c) => normalizeCluster(String(c)) === targetCluster);
         });
     } catch (error) {
         console.error("Error fetching career tools:", error);

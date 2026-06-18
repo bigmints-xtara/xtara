@@ -1,0 +1,40 @@
+name: "Fix: data-deduplicate-careerpath-interface"
+description: |-
+  Automated fix task created by Factory TPM.
+
+  Original story: /home/bigmints/projects/xtara/xtara-web/.factory/stories/features/data-deduplicate-careerpath-interface.yaml
+  Issue: Build fails because: (1) career-helpers.ts import/export of CareerPath from @/types/career is broken - Next.js reports "The export CareerPath was not found in module". (2) CurrentGoalCard.tsx imports getCareerPathById from @/types/career but that function doesn't exist in the types file. The CLI's changes to career.ts may have introduced a syntax error causing zero exports.
+status: ready-to-build
+feature:
+  name: Fix
+  slug: fix
+target: {}
+stack: {}
+acceptance_criteria: []
+fix_instructions: >-
+  Fix the CareerPath type deduplication build errors:
+
+
+  1. Check `src/types/career.ts` for syntax errors. The build says "The module
+  has no exports at all" which means there's likely a syntax error. Verify the
+  file parses correctly with `npx tsc --noEmit src/types/career.ts`.
+
+
+  2. In `src/lib/firebase/career-helpers.ts`:
+     - Change `import { CareerPath } from '@/types/career';` to `import type { CareerPath } from '@/types/career';`
+     - Remove `export { CareerPath };` or change to `export type { CareerPath } from '@/types/career';`
+
+  3. In `src/components/home/CurrentGoalCard.tsx`:
+     - Change `import { CareerPath, getCareerPathById } from "@/types/career"` to:
+       ```typescript
+       import type { CareerPath } from "@/types/career";
+       import { getCareerPathById } from "@/lib/firebase/career-helpers";
+       ```
+     - Search the codebase for any other files importing `getCareerPathById` from `@/types/career` and fix them similarly.
+
+  4. Verify the build passes with `npm run build`.
+original_story: /home/bigmints/projects/xtara/xtara-web/.factory/stories/features/data-deduplicate-careerpath-interface.yaml
+phase: 0
+dependsOn: []
+createdBy: factory-tpm
+createdAt: 2026-06-18T14:21:48.593Z

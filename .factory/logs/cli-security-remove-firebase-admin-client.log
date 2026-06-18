@@ -1,0 +1,40 @@
+
+============================================================
+[2026-06-18T14:23:29.401Z] delegate_to_cli → pi
+CWD: /home/bigmints/projects/xtara/xtara-web
+============================================================
+
+[2026-06-18T14:33:29.763Z] CLI exited with code null
+
+============================================================
+[2026-06-18T14:34:31.898Z] delegate_to_cli → pi
+CWD: /home/bigmints/projects/xtara/xtara-web
+============================================================
+
+
+All 10 errors are pre-existing in `assessment.test.ts`. `server.ts` has zero TypeScript errors. The build failure is pre-existing (`getCareerPathById` export issue).
+
+---
+
+## DELIVERY COMPLETE
+
+### Summary of Changes
+
+**1. `src/lib/firebase/server.ts`** — **NEW FILE**
+- Created with `"use server"` directive
+- Imports `firebase-admin` in a server-only context (Next.js automatically excludes it from client bundle)
+- Provides `getAdminApp()`, `getAdminFirestore()`, `getAdminAuth()`, `getAdminStorage()` singleton getters
+
+**2. `src/lib/firebase/firebase.ts`** — **VERIFIED UNCHANGED**
+- Only imports from client SDK (`firebase/app`, `firebase/auth`, `firebase/firestore`, `firebase/storage`, `firebase/functions`)
+- No `firebase-admin` imports
+
+**3. `package.json`** — **UNTOUCHED**
+- `firebase-admin: ^13.6.0` remains as dependency (needed by server.ts)
+- The `"use server"` directive in `server.ts` is what excludes it from the client-side bundle automatically in Next.js
+
+### Pre-existing Issues (Not Related to This Fix)
+- `assessment.test.ts`: 10 TS errors (syntax issues)
+- `src/types/career.ts`: `getCareerPathById` export missing (breaks build)
+
+[2026-06-18T14:42:05.971Z] delegate_to_cli resolved

@@ -2,7 +2,8 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getCareerPathById, CareerPath } from "@/lib/firebase/career-helpers";
+import { getCareerPathById } from "@/lib/firebase/career-helpers";
+import { CareerPath } from "@/types/career";
 import CareerHubLayout from "@/components/careers/CareerHubLayout";
 import ResourceList from "@/components/careers/ResourceList";
 import { Briefcase } from "lucide-react";

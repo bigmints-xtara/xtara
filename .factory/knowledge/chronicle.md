@@ -26,6 +26,7 @@
   - Secret Management: Centralized GCP Secret Manager integration with CLI migration tooling to eliminate environment variable fragmentation.
   - Admin CMS Architecture: Generic `AdminMasterDetail<T>` pattern with entity-specific configs (`storiesConfig`, `goodReadsConfig`, `sparksConfig`, `challengesConfig`, `dreamCareersConfig`) enabling rapid module scaling with minimal boilerplate.
   - Query Layer: React Query v5 for declarative caching, replacing imperative `onSnapshot` where possible. `gcTime` migration required for v5 compatibility.
+  - Server/Client Isolation: `"use server"` directive in `src/lib/firebase/server.ts` to safely import `firebase-admin` without bloating the client bundle.
 
 ## 2. Chronology of Major Milestones & What Worked
 - **2026-06-08 | Orchestration & Docker Optimization**:
@@ -55,6 +56,12 @@
 - **2026-06-15 | Dream Careers Full Implementation**:
   - *Action*: Finalized `CareerPathEditor.tsx` (read-mostly layout, editable fields isolation, badge chips, timeline lists) and `src/app/admin/dream-careers/page.tsx`. Verified `dreamCareersConfig.ts` alignment.
   - *Outcome*: Complete Dream Careers admin workflow operational. Editor follows existing CMS patterns with strict TypeScript typing and form submission isolation. Page integrates seamlessly with `AdminMasterDetail`. Build verification passes with zero TS errors.
+- **2026-06-17 | Data Interface Deduplication**:
+  - *Action*: Resolved `data-deduplicate-careerpath-interface` story after multiple CLI retries.
+  - *Outcome*: Career path interfaces standardized and deduplicated, eliminating type collision risks across admin modules.
+- **2026-06-18 | Firebase Admin SDK Isolation**:
+  - *Action*: Created `src/lib/firebase/server.ts` with `"use server"` directive to safely import `firebase-admin`. Verified `firebase.ts` remains client-only.
+  - *Outcome*: Eliminated potential client-side bundle bloat from `firebase-admin`. Next.js automatic tree-shaking confirmed. Zero regression on existing routes.
 
 ## 3. Failure Post-Mortems & Anti-Patterns
 - **Non-Deterministic Dependency Resolution**:

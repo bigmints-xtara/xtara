@@ -1,7 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CareerPath, getCareerTools } from "@/lib/firebase/career-helpers";
+import { getCareerTools } from "@/lib/firebase/career-helpers";
+import type {
+    CareerPath,
+    CourseItem,
+    ToolItem,
+    TrainingItem,
+    ScholarshipItem,
+} from "@/types/career";
 import ResourceList, { ResourceItem } from "@/components/careers/ResourceList";
 import ToolsGrid from "@/components/careers/ToolsGrid";
 import ResourceDetailModal from "@/components/careers/ResourceDetailModal";
@@ -9,11 +16,42 @@ import { GraduationCap, Video, Wrench, Search } from "lucide-react";
 
 interface LearnSectionProps {
     careerPath: CareerPath;
-    id: string; // Career ID
+    id: string;
 }
 
-export default function LearnSection({ careerPath, id }: LearnSectionProps) {
-    const [tools, setTools] = useState<any[]>([]);
+// --- Typed accessors ---
+
+function getSafeCourseItems(cp: CareerPath): CourseItem[] {
+    return cp.primaryCareer?.courses
+        ?? cp.recommendedCourses
+        ?? cp.courses
+        ?? [];
+}
+
+function getSafeToolItems(cp: CareerPath): ToolItem[] {
+    return cp.toolsAndSoftware ?? [];
+}
+
+function getSafeTrainingItems(cp: CareerPath): TrainingItem[] {
+    return cp.onlineTrainings ?? [];
+}
+
+function getSafeScholarshipItems(cp: CareerPath): ScholarshipItem[] {
+    return cp.scholarships ?? [];
+}
+
+function getSafeCoursesForStream(course: CourseItem): string[] {
+    const streams = course.stream;
+    if (streams && Array.isArray(streams) && streams.length > 0) {
+        return streams.map(
+            s => s.name ?? s.display_course_name ?? s.course_name ?? "Course"
+        );
+    }
+    return [];
+}
+
+export default function LearnSection({ careerPath }: LearnSectionProps) {
+    const [tools, setTools] = useState<ToolRecord[]>([]);
     const [selectedItem, setSelectedItem] = useState<ResourceItem | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -24,48 +62,30 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
 
     useEffect(() => {
         const fetchTools = async () => {
-            console.log('🔧 [LearnSection] useEffect triggered');
-            console.log('🔧 [LearnSection] careerPath:', careerPath);
-            console.log('🔧 [LearnSection] primaryCareer:', careerPath.primaryCareer);
-
-            // Get cluster from primaryCareer or fallback
             const cluster = careerPath.primaryCareer?.careerCluster || careerPath.careerCluster;
-            console.log('🔧 [LearnSection] cluster:', cluster);
-
             if (cluster) {
-                console.log('🔧 [LearnSection] Fetching tools for cluster:', cluster);
                 const fetchedTools = await getCareerTools(cluster);
-                console.log('🔧 [LearnSection] Fetched tools:', fetchedTools);
                 setTools(fetchedTools);
-            } else {
-                console.warn('🔧 [LearnSection] No cluster found!');
             }
         };
         fetchTools();
     }, [careerPath]);
 
     // Data Transformation Helpers
-    // Helper to format course name (replicates Flutter logic)
-    // Helper to format course name (replicates Flutter logic)
     const parseCourseName = (courseName: string) => {
         if (!courseName) return { title: 'Course', specialization: '' };
 
-        // Remove square brackets like [B.Sc], [BA], etc.
         let formatted = courseName.replace(/\[.*?\]/g, '').trim();
         let specialization = '';
 
-        // Handle parentheses - extract the main subject
         const parenMatch = formatted.match(/\(([^)]+)\)/);
         if (parenMatch) {
             specialization = parenMatch[1];
-            // Remove the parentheses part from title
             formatted = formatted.replace(/\([^)]+\)/, '').trim();
         }
 
-        // Clean up any extra spaces
         formatted = formatted.replace(/\s+/g, ' ').trim();
 
-        // Capitalize properly
         const title = formatted.split(' ').map(word => {
             if (!word) return word;
             return word[0].toUpperCase() + word.substring(1).toLowerCase();
@@ -74,130 +94,95 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
         return { title, specialization };
     };
 
-    const getCourses = () => {
-        const rawCourses =
-            (careerPath.primaryCareer && careerPath.primaryCareer.courses) ||
-            careerPath.courses ||
-            careerPath.recommendedCourses ||
-            (careerPath.learn && careerPath.learn.courses) ||
-            (careerPath.ragOutput && careerPath.ragOutput.learn && careerPath.ragOutput.learn.courses) ||
-            [];
-
+    const getCoursesList = (): ResourceItem[] => {
+        const rawCourses = getSafeCourseItems(careerPath);
         const expandedCourses: ResourceItem[] = [];
 
-        rawCourses.forEach((c: any, idx: number) => {
-            // Check if course has streams
-            const streams = c.stream;
+        for (const course of rawCourses) {
+            const streamNames = getSafeCoursesForStream(course);
 
-            if (streams && Array.isArray(streams) && streams.length > 0) {
-                // Create a recommended course for each stream
-                streams.forEach((stream: any, sIdx: number) => {
-                    const streamName = stream.name || stream.display_course_name || stream.course_name;
-                    const courseName = c.course || c.name || c.title || "Course";
+            if (streamNames.length > 0) {
+                for (const streamName of streamNames) {
+                    const { title: cleanTitle, specialization } = parseCourseName(streamName);
 
-                    const level = c.course_type || c.degree_type || c.level || c.type || 'Degree';
-                    const duration = c.duration_year || c.durationYear ? `${c.duration_year || c.durationYear} years` : c.duration || 'N/A';
-
-                    // Parse the course name to see if we can extract a clean title
-                    const { title: cleanTitle, specialization } = parseCourseName(stream.display_course_name || courseName);
-
-                    // Construct a clean display
-                    // Title: "Bachelor of Arts"
-                    // Subtitle: "Economics, Philosophy, Political Science • 3 years" or similar
-
-                    // If streamName is available and distinct, prefer it for specialization
-                    let finalSpecialization = streamName;
+                    let finalSpecialization: string | undefined = streamName;
                     if (!finalSpecialization && specialization) {
                         finalSpecialization = specialization;
                     }
 
-                    // Format specialization with bullets if comma separated for better readability? 
-                    // Or keep commas. Let's keep commas but ensure it's distinct.
+                    const level = course.course_type || course.degree_type || course.level || course.type || 'Degree';
+                    const duration = course.duration_year || course.durationYear
+                        ? `${course.duration_year || course.durationYear} years`
+                        : course.duration || 'N/A';
 
-                    const subtitleParts = [];
-                    if (level) {
-                        subtitleParts.push(level);
-                    }
-                    if (finalSpecialization && !cleanTitle.toLowerCase().includes(finalSpecialization.toLowerCase())) {
+                    const subtitleParts: string[] = [];
+                    if (level) subtitleParts.push(level);
+                    if (finalSpecialization && !cleanTitle.toLowerCase().includes((finalSpecialization).toLowerCase())) {
                         subtitleParts.push(finalSpecialization);
                     }
-                    subtitleParts.push(`${duration}`);
+                    subtitleParts.push(duration);
 
                     expandedCourses.push({
-                        id: `course-${idx}-stream-${sIdx}`,
+                        id: `course-stream-${streamName || 'unknown'}`,
                         title: cleanTitle,
                         subtitle: subtitleParts.join(' • '),
-                        description: c.description || c.details || `Degree Type: ${c.degree_type || 'Standard'}`,
-                        tag: c.examMode || "On-Campus",
+                        description: course.description || course.details || `Degree Type: ${course.degree_type || 'Standard'}`,
+                        tag: course.examMode || "On-Campus",
                         icon: <GraduationCap size={20} />,
                         type: 'course',
                         originalData: {
-                            ...c,
-                            streamNameForSearch: stream.name || stream.course_name,
-                            selectedStream: stream
+                            ...course,
+                            streamNameForSearch: streamName,
+                            selectedStream: { name: streamName }
                         }
                     });
-                });
+                }
             } else {
-                // Standard course (no streams)
-                const level = c.course_type || c.degree_type || c.level || c.type || 'Degree';
-                const duration = c.duration_year || c.durationYear ? `${c.duration_year || c.durationYear} years` : c.duration || 'N/A';
+                const level = course.course_type || course.degree_type || course.level || course.type || 'Degree';
+                const duration = course.duration_year || course.durationYear
+                    ? `${course.duration_year || course.durationYear} years`
+                    : course.duration || 'N/A';
 
-                const courseNameRaw = c.course || c.name || c.title || "Course Name";
+                const courseNameRaw = course.course || course.name || course.title || "Course Name";
                 const { title, specialization } = parseCourseName(courseNameRaw);
 
-                const subtitleParts = [];
-                if (level) {
-                    subtitleParts.push(level);
-                }
-                if (specialization) {
-                    subtitleParts.push(specialization);
-                }
+                const subtitleParts: string[] = [];
+                if (level) subtitleParts.push(level);
+                if (specialization) subtitleParts.push(specialization);
                 subtitleParts.push(duration);
 
                 expandedCourses.push({
-                    id: `course-${idx}`,
-                    title: title,
+                    id: `course-${Math.random()}`,
+                    title,
                     subtitle: subtitleParts.join(' • '),
-                    description: c.description || c.details || `Degree Type: ${c.degree_type || 'Standard'}`,
-                    tag: c.examMode || "On-Campus",
+                    description: course.description || course.details || `Degree Type: ${course.degree_type || 'Standard'}`,
+                    tag: course.examMode || "On-Campus",
                     icon: <GraduationCap size={20} />,
                     type: 'course',
-                    originalData: c
+                    originalData: course
                 });
             }
-        });
+        }
 
         return expandedCourses;
     };
 
     const getTools = () => {
-        // Combine fetched tools with any fallback data
-        const mergedTools = [
-            ...tools,
-            ...(careerPath.toolsAndSoftware || []),
-            ...((careerPath.ragOutput && careerPath.ragOutput.learn && careerPath.ragOutput.learn.toolsAndSoftware) || [])
-        ];
+        const safeTools = getSafeToolItems(careerPath);
+        const mergedTools = [...tools, ...safeTools];
 
-        console.log('🔧 [getTools] State tools:', tools.length);
-        console.log('🔧 [getTools] Merged tools:', mergedTools.length);
-
-        // Dedup by id? For now just return all
-        const result = mergedTools.map((t: any, idx: number) => ({
-            id: t.id || `tool-${idx}`,
-            title: t.name || t.toolName,
-            description: t.description,
+        return mergedTools.map((t: ToolRecord | ToolItem, idx: number) => ({
+            id: (t as ToolRecord).id || (t as ToolItem).id || `tool-${idx}`,
+            title: (t as ToolRecord).name || (t as ToolItem).name || (t as ToolItem).toolName,
+            description: (t as ToolRecord).description || (t as ToolItem).description,
             tag: "Tool",
             icon: <Wrench size={20} />
         }));
-
-        console.log('🔧 [getTools] Final result:', result.length, 'tools');
-        return result;
     };
 
     const getScholarships = () => {
-        const scholarships = careerPath.scholarships || (careerPath.learn && careerPath.learn.scholarships) || [];
-        return scholarships.map((s: any, idx: number) => ({
+        const scholarships = getSafeScholarshipItems(careerPath);
+        return scholarships.map((s, idx) => ({
             id: `scholarship-${idx}`,
             title: s.name,
             subtitle: `${s.type} • ${s.level}`,
@@ -211,11 +196,8 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
     };
 
     const getTrainings = () => {
-        const trainings =
-            careerPath.onlineTrainings ||
-            (careerPath.ragOutput && careerPath.ragOutput.learn && careerPath.ragOutput.learn.onlineTrainings) ||
-            [];
-        return trainings.map((t: any, idx: number) => ({
+        const trainings = getSafeTrainingItems(careerPath);
+        return trainings.map((t, idx) => ({
             id: `training-${idx}`,
             title: t.title || t.name,
             subtitle: t.provider,
@@ -229,21 +211,19 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
 
     return (
         <div className="space-y-6">
-            {/* Courses Card */}
-            <div className="bg-white rounded-xl p-6  border border-gray-200">
+            <div className="bg-white rounded-xl p-6 border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-bold text-gray-900">Recommended Courses</h3>
-                    <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-1 rounded">{getCourses().length} Available</span>
+                    <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-1 rounded">{getCoursesList().length} Available</span>
                 </div>
                 <ResourceList
-                    items={getCourses()}
+                    items={getCoursesList()}
                     emptyMessage="No courses listed."
                     onItemClick={handleItemClick}
                 />
             </div>
 
-            {/* Scholarships Card */}
-            <div className="bg-white rounded-xl p-6  border border-gray-200">
+            <div className="bg-white rounded-xl p-6 border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-bold text-gray-900">Scholarships</h3>
                     <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-1 rounded">{getScholarships().length} Available</span>
@@ -255,8 +235,7 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
                 />
             </div>
 
-            {/* Tools & Software Card */}
-            <div className="bg-white rounded-xl p-6  border border-gray-200">
+            <div className="bg-white rounded-xl p-6 border border-gray-200">
                 <div className="mb-4">
                     <h3 className="text-xl font-bold text-gray-900">Tools & Software</h3>
                 </div>
@@ -268,8 +247,7 @@ export default function LearnSection({ careerPath, id }: LearnSectionProps) {
                 />
             </div>
 
-            {/* Online Training Card */}
-            <div className="bg-white rounded-xl p-6  border border-gray-200">
+            <div className="bg-white rounded-xl p-6 border border-gray-200">
                 <div className="mb-4">
                     <h3 className="text-xl font-bold text-gray-900">Online Training</h3>
                 </div>
