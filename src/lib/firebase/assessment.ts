@@ -188,13 +188,16 @@ export async function getCareerPath(documentId: string): Promise<any> {
 }
 
 export async function waitForCareerPath(assessmentId: string, maxAttempts = 30): Promise<string | null> {
-    let attempts = 0;
+    const backoffDelays = [2000, 4000, 8000, 16000];
 
-    while (attempts < maxAttempts) {
+    for (let i = 0; i < maxAttempts; i++) {
+        const delay = backoffDelays[Math.min(i, backoffDelays.length - 1)];
+
         try {
             const q = query(
                 collection(db, 'career_paths'),
                 where('assessmentId', '==', assessmentId),
+                orderBy('createdAt', 'desc'),
                 limit(1)
             );
 
@@ -220,12 +223,10 @@ export async function waitForCareerPath(assessmentId: string, maxAttempts = 30):
                 return careerPathId;
             }
 
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            attempts++;
+            await new Promise(resolve => setTimeout(resolve, delay));
         } catch (error) {
             console.error("Error polling for career path:", error);
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            attempts++;
+            await new Promise(resolve => setTimeout(resolve, delay));
         }
     }
 

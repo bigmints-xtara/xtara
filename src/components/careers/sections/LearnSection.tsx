@@ -8,6 +8,7 @@ import type {
     ToolItem,
     TrainingItem,
     ScholarshipItem,
+    ToolRecord,
 } from "@/types/career";
 import ResourceList, { ResourceItem } from "@/components/careers/ResourceList";
 import ToolsGrid from "@/components/careers/ToolsGrid";
@@ -51,7 +52,7 @@ function getSafeCoursesForStream(course: CourseItem): string[] {
 }
 
 export default function LearnSection({ careerPath }: LearnSectionProps) {
-    const [tools, setTools] = useState<ToolRecord[]>([]);
+    const [tools, setTools] = useState<ToolItem[]>([]);
     const [selectedItem, setSelectedItem] = useState<ResourceItem | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -171,10 +172,10 @@ export default function LearnSection({ careerPath }: LearnSectionProps) {
         const safeTools = getSafeToolItems(careerPath);
         const mergedTools = [...tools, ...safeTools];
 
-        return mergedTools.map((t: ToolRecord | ToolItem, idx: number) => ({
-            id: (t as ToolRecord).id || (t as ToolItem).id || `tool-${idx}`,
-            title: (t as ToolRecord).name || (t as ToolItem).name || (t as ToolItem).toolName,
-            description: (t as ToolRecord).description || (t as ToolItem).description,
+        return mergedTools.map((t: ToolItem, idx: number) => ({
+            id: t.id || `tool-${idx}`,
+            title: t.name || t.toolName,
+            description: t.description,
             tag: "Tool",
             icon: <Wrench size={20} />
         }));

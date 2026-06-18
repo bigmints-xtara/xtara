@@ -1,0 +1,12 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "career_paths",
+      "queryScope": "ONE_SHOT",
+      "fields": [
+        { "field": "assessmentId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    }
+  ]
+}

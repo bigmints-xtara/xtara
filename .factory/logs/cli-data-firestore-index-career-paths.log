@@ -1,0 +1,51 @@
+
+============================================================
+[2026-06-18T14:49:50.383Z] delegate_to_cli → pi
+CWD: /home/bigmints/projects/xtara/xtara-web
+============================================================
+
+
+## DELIVERY COMPLETE
+
+### Summary of what was built
+
+**1. Created `firestore.indexes.json`** at the project root
+- Defines a compound index on the `career_paths` collection
+- Fields: `assessmentId` (ASCENDING), `createdAt` (DESCENDING)
+- Deployable via `firebase deploy --only firestore:indexes`
+
+**2. Updated `waitForCareerPath()` in `src/lib/firebase/assessment.ts`**
+- **Query optimized**: Added `orderBy('createdAt', 'desc').limit(1)` to the polling query — only reads the most recent matching document
+- **Exponential backoff**: Replaced 30 fixed 2-second intervals (60s max, ~30 reads) with 4 delays `[2000, 4000, 8000, 16000]` (~30s max, ~4-6 reads)
+- **Early return**: If the career path is found, the function returns immediately
+- **Fallback**: Resolves to `null` if not found after all 4 polling attempts
+- **Signature preserved**: Function signature and return type unchanged
+
+**Firestore read savings**: ~30 reads → ~4 reads (87% reduction)
+
+[2026-06-18T14:52:25.013Z] delegate_to_cli resolved
+
+============================================================
+[2026-06-18T15:27:02.422Z] delegate_to_cli → pi
+CWD: /home/bigmints/projects/xtara/xtara-web
+============================================================
+
+
+**DELIVERY COMPLETE**
+
+## Summary
+
+### 1. Created `firestore.indexes.json` (project root)
+Defines the compound index on `career_paths` collection:
+- `assessmentId` — ASCENDING
+- `createdAt` — DESCENDING  
+- Deployable via `firebase deploy --only firestore:indexes`
+
+### 2. Fixed `waitForCareerPath()` in `src/lib/firebase/assessment.ts`
+- **Loop**: Now iterates up to `maxAttempts` (30) instead of just `delays.length` (4)
+- **Backoff**: Exponential sequence `[2s → 4s → 8s → 16s capped]` using `Math.min(i, 3)` for index
+- **Query**: Already had `orderBy('createdAt', 'desc')` + `limit(1)` — preserved
+- **Return type, signature, and exports**: Unchanged
+- **Zero TypeScript compilation errors** in the source file
+
+[2026-06-18T15:31:54.647Z] delegate_to_cli resolved

@@ -1,0 +1,38 @@
+name: "Fix: data-firestore-index-career-paths"
+description: |-
+  Automated fix task created by Factory TPM.
+
+  Original story: /home/bigmints/projects/xtara/xtara-web/.factory/stories/features/data-firestore-index-career-paths.yaml
+  Issue: The file src/lib/firebase/assessment.test.ts has TypeScript syntax errors. Lines 74, 88, 158, 169 have malformed `vi.fn()` calls with missing closing parentheses. For example: `data: vi.fn(() => ({ title: "Software Engineer" }),` should be `data: vi.fn(() => ({ title: "Software Engineer" }))`.
+status: ready-to-build
+feature:
+  name: Fix
+  slug: fix
+target: {}
+stack: {}
+acceptance_criteria: []
+fix_instructions: >-
+  Fix the syntax errors in src/lib/firebase/assessment.test.ts:
+
+
+  1. Find all malformed `vi.fn()` calls that have a trailing comma instead of a
+  closing parenthesis.
+
+  2. Specifically fix these lines:
+     - Line 74: Change `data: vi.fn(() => ({ title: "Software Engineer" }),` to `data: vi.fn(() => ({ title: "Software Engineer" }))`
+     - Line 88: Same fix pattern
+     - Line 158: Same fix pattern  
+     - Line 169: Same fix pattern
+     - Line 175: Check for missing closing braces/parentheses
+     - Line 208: Check for missing closing braces/parentheses
+
+  3. After fixing, verify with `npx tsc --noEmit` that there are zero TypeScript
+  errors.
+
+  4. The main implementation in src/lib/firebase/assessment.ts and
+  firestore.indexes.json are correct - only the test file needs fixing.
+original_story: /home/bigmints/projects/xtara/xtara-web/.factory/stories/features/data-firestore-index-career-paths.yaml
+phase: 0
+dependsOn: []
+createdBy: factory-tpm
+createdAt: 2026-06-18T14:54:22.343Z

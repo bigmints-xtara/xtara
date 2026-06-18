@@ -1,13 +1,6 @@
 "use client";
 
-interface CareerPathwayStep {
-    step?: string;
-    title?: string;
-    location?: string;
-    duration?: string;
-    description?: string;
-    note?: string;
-}
+import type { CareerPathwayStep } from "@/types/career";
 
 interface CareerPathwayTimelineProps {
     steps: CareerPathwayStep[];

@@ -35,9 +35,12 @@ export interface SlideshowData {
 
 export interface CareerPathwayStep {
     id?: string;
-    title: string;
-    description: string;
+    step?: string;
+    title?: string;
+    location?: string;
     duration?: string;
+    description?: string;
+    note?: string;
     order?: number;
     [key: string]: unknown;
 }

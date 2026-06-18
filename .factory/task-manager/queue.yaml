@@ -44,3 +44,18 @@
   error: null
   errorCategory: null
   durationMs: null
+- id: q_1781794462352_m1x595
+  storyFile: features/fix-data-firestore-index-career-paths.yaml
+  kind: FeatureStory
+  status: ready-to-build
+  priority: 0
+  phase: 0
+  dependsOn: []
+  engine: factory
+  addedAt: 2026-06-18T14:54:22.352Z
+  startedAt: null
+  completedAt: null
+  output: ""
+  error: null
+  errorCategory: null
+  durationMs: null
